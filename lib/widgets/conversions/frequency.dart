@@ -1268,7 +1268,7 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
         break;
 
       default:
-        formula = 'Unknown unit';
+        formula = 'Pick units to start';
     }
     return formula;
   }
@@ -1320,7 +1320,7 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
                     Expanded(
                       // This will take all available space, pushing the IconButton to the left and centering the text
                       child: Text(
-                        'Convert Time',
+                        'Convert Frequency',
                         textAlign: TextAlign
                             .center, // This centers the text within the available space
                         style: TextStyle(

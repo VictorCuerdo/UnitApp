@@ -767,7 +767,7 @@ class _TimeUnitConverterState extends State<TimeUnitConverter> {
         break;
       // ... additional cases for other 'from' units ...
       default:
-        formula = 'Unknown unit';
+        formula = 'Pick units to start';
     }
     return formula;
   }

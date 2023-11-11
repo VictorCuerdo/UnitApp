@@ -3584,7 +3584,7 @@ class _DistanceUnitConverterState extends State<DistanceUnitConverter> {
 
 // ... after the last specific unit case ...
       default:
-        formula = 'Select both units to see the formula';
+        formula = 'Pick units to start';
         break;
     }
     return formula;
@@ -3637,7 +3637,7 @@ class _DistanceUnitConverterState extends State<DistanceUnitConverter> {
                     Expanded(
                       // This will take all available space, pushing the IconButton to the left and centering the text
                       child: Text(
-                        'Convert Volume',
+                        'Convert Distance',
                         textAlign: TextAlign
                             .center, // This centers the text within the available space
                         style: TextStyle(

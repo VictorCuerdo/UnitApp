@@ -1686,7 +1686,7 @@ class _AngleUnitConverterState extends State<AngleUnitConverter> {
         break;
 
       default:
-        formula = 'No conversion formula available for the selected units';
+        formula = 'Pick units to start';
     }
     return formula;
   }
@@ -1738,7 +1738,7 @@ class _AngleUnitConverterState extends State<AngleUnitConverter> {
                     Expanded(
                       // This will take all available space, pushing the IconButton to the left and centering the text
                       child: Text(
-                        'Convert Volume',
+                        'Convert Angle',
                         textAlign: TextAlign
                             .center, // This centers the text within the available space
                         style: TextStyle(

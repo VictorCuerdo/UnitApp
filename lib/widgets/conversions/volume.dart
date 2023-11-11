@@ -3765,7 +3765,7 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
         }
         break;
       default:
-        formula = 'No conversion formula available for the selected units';
+        formula = 'Pick units to start';
     }
     return formula;
   }

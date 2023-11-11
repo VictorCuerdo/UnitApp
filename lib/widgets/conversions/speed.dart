@@ -808,7 +808,7 @@ class _SpeedUnitConverterState extends State<SpeedUnitConverter> {
         }
         break;
       default:
-        formula = 'Unknown unit';
+        formula = 'Pick units to start';
     }
     return formula;
   }

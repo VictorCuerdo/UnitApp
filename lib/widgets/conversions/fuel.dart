@@ -694,7 +694,7 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
         break;
 
       default:
-        formula = 'No conversion formula available for the selected units';
+        formula = 'Pick units to start';
     }
     return formula;
   }
@@ -746,11 +746,11 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
                     Expanded(
                       // This will take all available space, pushing the IconButton to the left and centering the text
                       child: Text(
-                        'Convert Time',
+                        'Convert Fuel Consumption',
                         textAlign: TextAlign
                             .center, // This centers the text within the available space
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: isDarkMode
                               ? Colors.grey

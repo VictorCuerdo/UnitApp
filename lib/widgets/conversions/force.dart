@@ -2233,7 +2233,7 @@ class _ForceUnitConverterState extends State<ForceUnitConverter> {
         break;
 // ... after the last specific unit case ...
       default:
-        formula = 'Select both units to see the formula';
+        formula = 'Pick units to start';
         break;
     }
     return formula;
@@ -2286,7 +2286,7 @@ class _ForceUnitConverterState extends State<ForceUnitConverter> {
                     Expanded(
                       // This will take all available space, pushing the IconButton to the left and centering the text
                       child: Text(
-                        'Convert Volume',
+                        'Convert Force',
                         textAlign: TextAlign
                             .center, // This centers the text within the available space
                         style: TextStyle(

@@ -3489,7 +3489,7 @@ class _TorqueUnitConverterState extends State<TorqueUnitConverter> {
         break;
 
       default:
-        formula = 'No conversion formula available for the selected units';
+        formula = 'Pick units to start';
     }
     return formula;
   }

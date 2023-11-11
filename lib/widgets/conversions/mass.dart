@@ -2117,7 +2117,7 @@ class _MassUnitConverterState extends State<MassUnitConverter> {
         break;
 
       default:
-        formula = 'No conversion formula available for the selected units';
+        formula = 'Pick units to start';
     }
     return formula;
   }
@@ -2169,7 +2169,7 @@ class _MassUnitConverterState extends State<MassUnitConverter> {
                     Expanded(
                       // This will take all available space, pushing the IconButton to the left and centering the text
                       child: Text(
-                        'Convert Time',
+                        'Convert Mass',
                         textAlign: TextAlign
                             .center, // This centers the text within the available space
                         style: TextStyle(

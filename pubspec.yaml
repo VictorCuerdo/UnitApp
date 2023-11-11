@@ -44,7 +44,7 @@ flutter:
 flutter_icons:
   android: true 
   ios: true
-  image_path: "assets/icon/appLogo.webp"
+  image_path: "assets/icon/appLogo.png"
   adaptive_icon_background: "#FFFFFF"
 
 # To add fonts to your application, add a fonts section here, in this "flutter" section.

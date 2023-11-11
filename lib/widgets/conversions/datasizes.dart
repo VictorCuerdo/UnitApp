@@ -1642,7 +1642,7 @@ class _DatasUnitConverterState extends State<DatasUnitConverter> {
         break;
 
       default:
-        formula = 'No conversion formula available for the selected units';
+        formula = 'Pick units to start';
     }
     return formula;
   }
@@ -1694,7 +1694,7 @@ class _DatasUnitConverterState extends State<DatasUnitConverter> {
                     Expanded(
                       // This will take all available space, pushing the IconButton to the left and centering the text
                       child: Text(
-                        'Convert Volume',
+                        'Convert Data Sizes',
                         textAlign: TextAlign
                             .center, // This centers the text within the available space
                         style: TextStyle(

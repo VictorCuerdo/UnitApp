@@ -18,6 +18,7 @@ class VolumeUnitConverter extends StatefulWidget {
 }
 
 class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
+  bool get isDarkMode => Theme.of(context).brightness == Brightness.dark;
   String fromUnit = 'Cubic Metres';
   String toUnit = 'Cubic Inches';
   // Removed duplicate declarations of TextEditingController
@@ -3784,7 +3785,8 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
     return Screenshot(
       controller: screenshotController,
       child: Scaffold(
-        backgroundColor: const Color(0xFF464648),
+        backgroundColor:
+            isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFA1CCD1),
         resizeToAvoidBottomInset:
             true, // Adjust the body size when the keyboard is visible
         body: SingleChildScrollView(
@@ -3796,36 +3798,53 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
               children: [
                 const SizedBox(height: 20), // Adjust space as needed
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment
+                      .center, // This centers the children horizontally
+                  mainAxisSize: MainAxisSize
+                      .max, // This makes the row take up all available horizontal space
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.navigateTo(
-                            '/ '); // Assuming you have this route defined somewhere
+                        context.navigateTo('/');
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back,
                         size: 40,
-                        color: Colors.grey,
+                        color:
+                            isDarkMode ? Colors.grey : const Color(0xFF2C3A47),
                       ),
                     ),
-                    const SizedBox(
-                        width: 45), // Space between the icon and the text
-                    const Text(
-                      'Convert Volume',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    Expanded(
+                      // This will take all available space, pushing the IconButton to the left and centering the text
+                      child: Text(
+                        'Convert Volume',
+                        textAlign: TextAlign
+                            .center, // This centers the text within the available space
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: isDarkMode
+                              ? Colors.grey
+                              : const Color(0xFF2C3A47),
+                        ),
                       ),
                     ),
+                    const IconButton(
+                      onPressed: null,
+                      icon: Icon(Icons.arrow_back,
+                          size: 40, color: Colors.transparent),
+                    ), // You can place an invisible IconButton here to balance the row if necessary
                   ],
                 ),
+
                 const SizedBox(height: 150),
                 SwitchListTile(
-                  title: const Text(
+                  title: Text(
                     'See result in exponential format',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(
+                        color:
+                            isDarkMode ? Colors.grey : const Color(0xFF2C3A47),
+                        fontSize: 18),
                   ),
                   value: _isExponentialFormat,
                   onChanged: (bool value) {
@@ -3851,9 +3870,9 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
                       'From', fromController, fromUnit, fromPrefix, true),
                 ),
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.swap_vert,
-                    color: Color.fromARGB(255, 183, 218, 234),
+                    color: isDarkMode ? Colors.grey : const Color(0xFF374259),
                     size: 40,
                   ),
                   onPressed: swapUnits,
@@ -3869,18 +3888,20 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     children: [
-                      const TextSpan(
+                      TextSpan(
                         text: 'Formula:  ',
                         style: TextStyle(
-                          color: Colors.orange,
+                          color: isDarkMode ? Colors.orange : Colors.red,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       TextSpan(
                         text: _conversionFormula,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? Colors.grey
+                              : const Color(0xFF2C3A47),
                           fontSize: 18,
                           fontStyle: FontStyle.normal,
                         ),
@@ -3913,8 +3934,10 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
                 tooltip: 'Share a screenshot of your results!',
                 heroTag: 'shareButton',
                 onPressed: _takeScreenshotAndShare,
-                backgroundColor: Colors.white,
-                child: const Icon(Icons.share, size: 36, color: Colors.black),
+                backgroundColor:
+                    isDarkMode ? Colors.white : const Color(0xFF3876BF),
+                child: Icon(Icons.share,
+                    size: 36, color: isDarkMode ? Colors.black : Colors.white),
               ),
             ],
           ),
@@ -4128,8 +4151,8 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
         value: value,
         child: Text(
           '${_getPrefix(value)} - $value',
-          style: const TextStyle(
-            color: Color(0xFF9CC0C5),
+          style: TextStyle(
+            color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
             fontSize: 23,
           ),
           overflow: TextOverflow.visible,
@@ -4139,12 +4162,14 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
 
     items.insert(
       0,
-      const DropdownMenuItem<String>(
+      DropdownMenuItem<String>(
         value: '',
         enabled: false,
         child: Text(
           'Choose a conversion unit',
-          style: TextStyle(color: Colors.grey, fontSize: 23),
+          style: TextStyle(
+              color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
+              fontSize: 23),
         ),
       ),
     );
@@ -4158,12 +4183,15 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
           borderSide: const BorderSide(color: Colors.white),
         ),
         filled: true,
-        fillColor: const Color(0xFF303134),
+        fillColor:
+            isDarkMode ? const Color(0xFF303134) : const Color(0xFFADC4CE),
       ),
       value: currentValue.isNotEmpty ? currentValue : null,
-      hint: const Text(
+      hint: Text(
         'Choose a conversion unit',
-        style: TextStyle(color: Colors.grey, fontSize: 23),
+        style: TextStyle(
+            color: isDarkMode ? Colors.grey : const Color(0xFF374259),
+            fontSize: 23),
         textAlign: TextAlign.center,
       ),
       onChanged: (String? newValue) {
@@ -4182,18 +4210,20 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
           });
         }
       },
-      dropdownColor: const Color(0xFF303134),
+      dropdownColor:
+          isDarkMode ? const Color(0xFF303134) : const Color(0xFFADC4CE),
       items: items,
       isExpanded: true,
-      icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-      iconSize: 24,
+      icon: Icon(Icons.arrow_drop_down,
+          color: isDarkMode ? Colors.white : Colors.black),
+      iconSize: 26,
       selectedItemBuilder: (BuildContext context) {
         return items.map<Widget>((DropdownMenuItem<String> item) {
           return Center(
             child: Text(
               item.value == '' ? 'Choose a conversion unit' : item.value!,
-              style: const TextStyle(
-                color: Color(0xFF9CC0C5),
+              style: TextStyle(
+                color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
                 fontSize: 23,
               ),
             ),

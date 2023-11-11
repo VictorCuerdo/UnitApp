@@ -18,6 +18,7 @@ class MassUnitConverter extends StatefulWidget {
 }
 
 class _MassUnitConverterState extends State<MassUnitConverter> {
+  bool get isDarkMode => Theme.of(context).brightness == Brightness.dark;
   String fromUnit = 'Micrograms';
   String toUnit = 'Milligrams';
   // Removed duplicate declarations of TextEditingController
@@ -2136,140 +2137,159 @@ class _MassUnitConverterState extends State<MassUnitConverter> {
     return Screenshot(
       controller: screenshotController,
       child: Scaffold(
-        backgroundColor: const Color(0xFF464648),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 20), // Adjust space as needed
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      context.navigateTo(
-                          '/ '); // Assuming you have this route defined somewhere
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      size: 40,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(
-                      width: 50), // Space between the icon and the text
-                  const Text(
-                    'Convert Mass',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 150),
-              // Inserted just before the 'From' input field
-              SwitchListTile(
-                title: const Text(
-                  'See result in exponential format',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-                value: _isExponentialFormat,
-                onChanged: (bool value) {
-                  setState(() {
-                    _isExponentialFormat = value;
-                    // Force the text to update with the new formatting.
-                    double? lastValue = double.tryParse(
-                        fromController.text.replaceAll(',', ''));
-                    if (lastValue != null) {
-                      fromController.text =
-                          _formatNumber(lastValue, forDisplay: true);
-                    }
-                    // Re-trigger conversion to update the toController with formatted text.
-                    convert(fromController.text);
-                  });
-                },
-                activeColor: Colors.lightBlue,
-                activeTrackColor: Colors.lightBlue.shade200,
-              ),
-
-              const SizedBox(height: 10),
-              // Adjusted layout for 'From' input and dropdown
-              Container(
-                padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                width: double.infinity,
-                child: _buildUnitColumn(
-                    'From', fromController, fromUnit, fromPrefix, true),
-              ),
-              // Switch icon in vertical orientation
-              IconButton(
-                icon: const Icon(
-                  Icons.swap_vert,
-                  color: Color.fromARGB(255, 183, 218, 234),
-                  size: 40,
-                ),
-                onPressed: swapUnits,
-              ),
-              // Adjusted layout for 'To' input and dropdown
-              Container(
-                padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                width: double.infinity,
-                child: _buildUnitColumn(
-                    'To', toController, toUnit, toPrefix, false),
-              ),
-              const SizedBox(height: 30),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
+        backgroundColor:
+            isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFA1CCD1),
+        resizeToAvoidBottomInset:
+            true, // Adjust the body size when the keyboard is visible
+        body: SingleChildScrollView(
+          // Allow the body to be scrollable
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 20), // Adjust space as needed
+                Row(
+                  mainAxisAlignment: MainAxisAlignment
+                      .center, // This centers the children horizontally
+                  mainAxisSize: MainAxisSize
+                      .max, // This makes the row take up all available horizontal space
                   children: [
-                    const TextSpan(
-                      text: 'Formula:  ',
-                      style: TextStyle(
+                    IconButton(
+                      onPressed: () {
+                        context.navigateTo('/');
+                      },
+                      icon: Icon(
+                        Icons.arrow_back,
+                        size: 40,
                         color:
-                            Colors.orange, // Set the color for 'Hola' to white
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                            isDarkMode ? Colors.grey : const Color(0xFF2C3A47),
                       ),
                     ),
-                    TextSpan(
-                      text:
-                          _conversionFormula, // Keep the original formula style
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontStyle: FontStyle.normal,
+                    Expanded(
+                      // This will take all available space, pushing the IconButton to the left and centering the text
+                      child: Text(
+                        'Convert Time',
+                        textAlign: TextAlign
+                            .center, // This centers the text within the available space
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: isDarkMode
+                              ? Colors.grey
+                              : const Color(0xFF2C3A47),
+                        ),
                       ),
                     ),
+                    const IconButton(
+                      onPressed: null,
+                      icon: Icon(Icons.arrow_back,
+                          size: 40, color: Colors.transparent),
+                    ), // You can place an invisible IconButton here to balance the row if necessary
                   ],
                 ),
-              ),
-            ],
-            // Add this IconButton where you want the reset button to appear
+
+                const SizedBox(height: 150),
+                SwitchListTile(
+                  title: Text(
+                    'See result in exponential format',
+                    style: TextStyle(
+                        color:
+                            isDarkMode ? Colors.grey : const Color(0xFF2C3A47),
+                        fontSize: 18),
+                  ),
+                  value: _isExponentialFormat,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _isExponentialFormat = value;
+                      double? lastValue = double.tryParse(
+                          fromController.text.replaceAll(',', ''));
+                      if (lastValue != null) {
+                        fromController.text =
+                            _formatNumber(lastValue, forDisplay: true);
+                      }
+                      convert(fromController.text);
+                    });
+                  },
+                  activeColor: Colors.lightBlue,
+                  activeTrackColor: Colors.lightBlue.shade200,
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  padding: const EdgeInsets.only(left: 0.125, right: 0.125),
+                  width: double.infinity,
+                  child: _buildUnitColumn(
+                      'From', fromController, fromUnit, fromPrefix, true),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.swap_vert,
+                    color: isDarkMode ? Colors.grey : const Color(0xFF374259),
+                    size: 40,
+                  ),
+                  onPressed: swapUnits,
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 0.125, right: 0.125),
+                  width: double.infinity,
+                  child: _buildUnitColumn(
+                      'To', toController, toUnit, toPrefix, false),
+                ),
+                const SizedBox(height: 30),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Formula:  ',
+                        style: TextStyle(
+                          color: isDarkMode ? Colors.orange : Colors.red,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: _conversionFormula,
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? Colors.grey
+                              : const Color(0xFF2C3A47),
+                          fontSize: 18,
+                          fontStyle: FontStyle.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         floatingActionButton: Container(
-          margin:
-              const EdgeInsets.only(bottom: 50), // Adjust the margin as needed
+          margin: const EdgeInsets.only(bottom: 50),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // Reset button - this can be styled as needed
               FloatingActionButton(
-                heroTag: 'resetButton', // Unique tag for this FAB
+                highlightElevation:
+                    BouncingScrollSimulation.maxSpringTransferVelocity,
+                enableFeedback: true,
+                splashColor: Colors.lightGreen,
+                tooltip: 'Reset default settings',
+                heroTag: 'resetButton',
                 onPressed: _resetToDefault,
                 backgroundColor: Colors.red,
                 child: const Icon(Icons.restart_alt,
                     size: 36, color: Colors.white),
               ),
-              // Share button
               FloatingActionButton(
-                heroTag: 'shareButton', // Unique tag for this FAB
+                tooltip: 'Share a screenshot of your results!',
+                heroTag: 'shareButton',
                 onPressed: _takeScreenshotAndShare,
-                backgroundColor: Colors.white,
-                child: const Icon(Icons.share, size: 36, color: Colors.black),
+                backgroundColor:
+                    isDarkMode ? Colors.white : const Color(0xFF3876BF),
+                child: Icon(Icons.share,
+                    size: 36, color: isDarkMode ? Colors.black : Colors.white),
               ),
             ],
           ),
@@ -2413,8 +2433,8 @@ class _MassUnitConverterState extends State<MassUnitConverter> {
         value: value,
         child: Text(
           '${_getPrefix(value)} - $value',
-          style: const TextStyle(
-            color: Color(0xFF9CC0C5),
+          style: TextStyle(
+            color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
             fontSize: 23,
           ),
           overflow: TextOverflow.visible,
@@ -2424,12 +2444,14 @@ class _MassUnitConverterState extends State<MassUnitConverter> {
 
     items.insert(
       0,
-      const DropdownMenuItem<String>(
+      DropdownMenuItem<String>(
         value: '',
         enabled: false,
         child: Text(
           'Choose a conversion unit',
-          style: TextStyle(color: Colors.grey, fontSize: 23),
+          style: TextStyle(
+              color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
+              fontSize: 23),
         ),
       ),
     );
@@ -2443,12 +2465,15 @@ class _MassUnitConverterState extends State<MassUnitConverter> {
           borderSide: const BorderSide(color: Colors.white),
         ),
         filled: true,
-        fillColor: const Color(0xFF303134),
+        fillColor:
+            isDarkMode ? const Color(0xFF303134) : const Color(0xFFADC4CE),
       ),
       value: currentValue.isNotEmpty ? currentValue : null,
-      hint: const Text(
+      hint: Text(
         'Choose a conversion unit',
-        style: TextStyle(color: Colors.grey, fontSize: 23),
+        style: TextStyle(
+            color: isDarkMode ? Colors.grey : const Color(0xFF374259),
+            fontSize: 23),
         textAlign: TextAlign.center,
       ),
       onChanged: (String? newValue) {
@@ -2467,18 +2492,20 @@ class _MassUnitConverterState extends State<MassUnitConverter> {
           });
         }
       },
-      dropdownColor: const Color(0xFF303134),
+      dropdownColor:
+          isDarkMode ? const Color(0xFF303134) : const Color(0xFFADC4CE),
       items: items,
       isExpanded: true,
-      icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-      iconSize: 24,
+      icon: Icon(Icons.arrow_drop_down,
+          color: isDarkMode ? Colors.white : Colors.black),
+      iconSize: 26,
       selectedItemBuilder: (BuildContext context) {
         return items.map<Widget>((DropdownMenuItem<String> item) {
           return Center(
             child: Text(
               item.value == '' ? 'Choose a conversion unit' : item.value!,
-              style: const TextStyle(
-                color: Color(0xFF9CC0C5),
+              style: TextStyle(
+                color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
                 fontSize: 23,
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart'; // Import easy_locali
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unitapp/controllers/font_size_provider.dart';
+import 'package:unitapp/controllers/theme_provider.dart'; // Your ThemeProvider file
 import 'package:unitapp/widgets/conversions/angle.dart';
 import 'package:unitapp/widgets/conversions/area.dart';
 import 'package:unitapp/widgets/conversions/datasizes.dart';
@@ -22,11 +23,14 @@ import 'package:unitapp/widgets/settings.dart';
 import 'package:unitapp/widgets/unit_conversion.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure everything is initialized
-  await EasyLocalization.ensureInitialized(); // Initialize EasyLocalization
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
+  ThemeProvider themeProvider = ThemeProvider();
+  await themeProvider.loadThemePreference();
+
   runApp(
     EasyLocalization(
-      // Wrap your app with EasyLocalization
       supportedLocales: const [
         Locale('en', 'US'),
         Locale('es', 'ES'),
@@ -44,58 +48,54 @@ void main() async {
         Locale('tr', 'TR'),
         Locale('vi', 'VN')
       ],
-      path: 'assets/translations', // Path to your translations folder
-      fallbackLocale: const Locale('en',
-          'US'), // Fallback locale in case the system locale is not supported
-      child: const unitapp(),
+      path: 'assets/translations', // Path to translation files
+      fallbackLocale: const Locale('en', 'US'),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => FontSizeProvider()),
+
+          ChangeNotifierProvider(create: (context) => themeProvider),
+          // Include other providers as needed
+        ],
+        child: const UnitApp(),
+      ),
     ),
   );
 }
 
-class unitapp extends StatelessWidget {
-  const unitapp({super.key});
+class UnitApp extends StatelessWidget {
+  const UnitApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) {
-        final provider = FontSizeProvider();
-        // Adding a listener to print the font size whenever it changes
-        provider.addListener(() {
-          print('Font Size Updated: ${provider.fontSize}');
-        });
-        return provider;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return MaterialApp(
+      title: 'UnitApp'.tr(),
+      theme: themeProvider.currentTheme,
+      home: const UnitConversion(),
+      routes: {
+        '/settings': (context) => const SettingsScreen(),
+        '/distance': (context) => const DistanceUnitConverter(),
+        '/area': (context) => const AreaUnitConverter(),
+        '/volume': (context) => const VolumeUnitConverter(),
+        '/mass': (context) => const MassUnitConverter(),
+        '/time': (context) => const TimeUnitConverter(),
+        '/speed': (context) => const SpeedUnitConverter(),
+        '/frequency': (context) => const FrequencyUnitConverter(),
+        '/force': (context) => const ForceUnitConverter(),
+        '/torque': (context) => const TorqueUnitConverter(),
+        '/pressure': (context) => const PressureUnitConverter(),
+        '/energy': (context) => const EnergyUnitConverter(),
+        '/power': (context) => const PowerUnitConverter(),
+        '/temperature': (context) => const TemperatureUnitConverter(),
+        '/angle': (context) => const AngleUnitConverter(),
+        '/fuel': (context) => const FuelUnitConverter(),
+        '/datas': (context) => const DatasUnitConverter(),
       },
-      child: MaterialApp(
-        title: 'unitapp'.tr(), // Use .tr() to translate the app title
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const UnitConversion(),
-        routes: {
-          '/settings': (context) => const SettingsScreen(),
-          '/distance': (context) => const DistanceUnitConverter(),
-          '/area': (context) => const AreaUnitConverter(),
-          '/volume': (context) => const VolumeUnitConverter(),
-          '/mass': (context) => const MassUnitConverter(),
-          '/time': (context) => const TimeUnitConverter(),
-          '/speed': (context) => const SpeedUnitConverter(),
-          '/frequency': (context) => const FrequencyUnitConverter(),
-          '/force': (context) => const ForceUnitConverter(),
-          '/torque': (context) => const TorqueUnitConverter(),
-          '/pressure': (context) => const PressureUnitConverter(),
-          '/energy': (context) => const EnergyUnitConverter(),
-          '/power': (context) => const PowerUnitConverter(),
-          '/temperature': (context) => const TemperatureUnitConverter(),
-          '/angle': (context) => const AngleUnitConverter(),
-          '/fuel': (context) => const FuelUnitConverter(),
-          '/datas': (context) => const DatasUnitConverter(),
-        },
-        localizationsDelegates:
-            context.localizationDelegates, // Add localization delegates
-        supportedLocales: context.supportedLocales, // Add supported locales
-        locale: context.locale, // Add locale
-      ),
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale, // Add locale
     );
   }
 }

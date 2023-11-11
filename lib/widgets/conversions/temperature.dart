@@ -754,7 +754,9 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
     return Screenshot(
       controller: screenshotController,
       child: Scaffold(
-        backgroundColor: const Color(0xFF464648),
+        // backgroundColor: const Color(0xFF1B2B34),
+        //backgroundColor: const Color(0xFF38434E),
+        backgroundColor: const Color(0xFF2C3A47),
         resizeToAvoidBottomInset:
             true, // Adjust the body size when the keyboard is visible
         body: SingleChildScrollView(
@@ -771,7 +773,7 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
                     IconButton(
                       onPressed: () {
                         context.navigateTo(
-                            ''); // Assuming you have this route defined somewhere
+                            '/'); // Assuming you have this route defined somewhere
                       },
                       icon: const Icon(
                         Icons.arrow_back,

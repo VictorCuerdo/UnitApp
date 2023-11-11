@@ -1,0 +1,28 @@
+{
+  "language": "Language",
+  "Pick Font Size": "Pick Font Size",
+  "Pick decimal separator:": "Pick decimal separator:",
+  "Point": "Point",
+  "As the decimal separator                        For example 3.1416": "As the decimal separator                        For example 3.1416",
+  "Comma": "Comma",
+  "As the decimal separator                        For example 3,1416": "As the decimal separator                        For example 3,1416",
+  "Status bar": "Status bar",
+  "Enable or disable visibility of status bar": "Enable or disable visibility of status bar",
+  "Button Haptic Feedback": "Button Haptic Feedback",
+  "Enable or disable haptic feedback for the buttons": "Enable or disable haptic feedback for the buttons",
+  "S": "Small",
+  "M": "Medium",
+  "L": "Large",
+  "Theme Color": "Theme Color",
+  "Settings": "Settings",
+  "History": "History",
+  "Help": "Help",
+  "Share the App": "Share the App",
+  "Scroll and pick a color!": "Scroll and pick a color!",
+  "Cancel": "Cancel",
+  "Select": "Select",
+  "Copy Link": "Copy Link",
+  "Close": "Close",
+  "Link copied to clipboard": "Link copied to clipboard"
+
+}

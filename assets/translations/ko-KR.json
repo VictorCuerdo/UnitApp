@@ -1,0 +1,29 @@
+{
+    "language": "언어",
+    "Pick Font Size": "글꼴 크기 선택",
+    "Pick decimal separator:": "소수점 구분자 선택:",
+    "Point": "점",
+    "As the decimal separator                        For example 3.1416": "소수점 구분자로 사용                        예: 3.1416",
+    "Comma": "쉼표",
+    "As the decimal separator                        For example 3,1416": "소수점 구분자로 사용                        예: 3,1416",
+    "Status bar": "상태 표시 줄",
+    "Enable or disable visibility of status bar": "상태 표시 줄의 가시성 활성화 또는 비활성화",
+    "Button Haptic Feedback": "버튼 촉각 피드백",
+    "Enable or disable haptic feedback for the buttons": "버튼에 대한 촉각 피드백 활성화 또는 비활성화",
+    "S": "작음",
+    "M": "중간",
+    "L": "큼",
+    "Theme Color": "테마 색상",
+    "Settings": "설정",
+    "History": "기록",
+    "Help": "도움말",
+    "Share the App": "앱 공유",
+    "Scroll and pick a color!": "스크롤하고 색상을 선택하세요!",
+    "Cancel": "취소",
+    "Select": "선택",
+    "Copy Link": "링크 복사",
+  "Close": "닫기",
+  "Link copied to clipboard": "링크가 클립보드에 복사되었습니다"
+  
+  }
+  

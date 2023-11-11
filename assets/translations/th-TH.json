@@ -1,0 +1,28 @@
+{
+    "language": "ภาษา",
+    "Pick Font Size": "เลือกขนาดตัวอักษร",
+    "Pick decimal separator:": "เลือกตัวคั่นทศนิยม:",
+    "Point": "จุด",
+    "As the decimal separator                        For example 3.1416": "ใช้เป็นตัวคั่นทศนิยม                        ตัวอย่างเช่น 3.1416",
+    "Comma": "จุลภาค",
+    "As the decimal separator                        For example 3,1416": "ใช้เป็นตัวคั่นทศนิยม                        ตัวอย่างเช่น 3,1416",
+    "Status bar": "แถบสถานะ",
+    "Enable or disable visibility of status bar": "เปิดหรือปิดการมองเห็นแถบสถานะ",
+    "Button Haptic Feedback": "คำติชมการสัมผัสปุ่ม",
+    "Enable or disable haptic feedback for the buttons": "เปิดหรือปิดคำติชมการสัมผัสสำหรับปุ่ม",
+    "S": "เล็ก",
+    "M": "กลาง",
+    "L": "ใหญ่",
+    "Theme Color": "สีธีม",
+    "Settings": "การตั้งค่า",
+    "History": "ประวัติ",
+    "Help": "ช่วยเหลือ",
+    "Share the App": "แชร์แอป",
+    "Scroll and pick a color!": "เลื่อนและเลือกสี!",
+    "Cancel": "ยกเลิก",
+    "Select": "เลือก",
+    "Copy Link": "คัดลอกลิงก์",
+  "Close": "ปิด",
+  "Link copied to clipboard": "คัดลอกลิงก์ไปยังคลิปบอร์ดแล้ว"
+  }
+  

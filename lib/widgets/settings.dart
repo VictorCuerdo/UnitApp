@@ -42,6 +42,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _loadThemePreference();
     _loadSettings();
+    _loadHapticPreference(); // Load haptic feedback setting
+  }
+
+  Future<void> _loadHapticPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      hapticFeedback = prefs.getBool('hapticFeedback') ?? false;
+    });
+  }
+
+  Future<void> _saveHapticPreference(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hapticFeedback', value);
   }
 
   Future<void> _loadSettings() async {
@@ -66,7 +79,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       backgroundColor: isDarkMode
           ? Colors.black
-          : const Color(0xFFC0D9E5), // Theme-aware background
+          : const Color(0xFFFAE0E0), // Theme-aware background
       body: ListView(
         children: <Widget>[
           const SizedBox(height: 30),
@@ -178,9 +191,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             autofocus: false,
             visualDensity: VisualDensity.comfortable,
             title: Text('Dark Mode',
-                style: TextStyle(
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    fontSize: fontSize)),
+                    style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.black,
+                        fontSize: fontSize))
+                .tr(),
             value: isDarkMode,
             onChanged: (bool value) {
               setState(() {
@@ -376,7 +390,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: Colors.white.withOpacity(0.5),
             activeTrackColor: Colors.lightBlue.withOpacity(0.5),
-            tileColor: isDarkMode ? Colors.grey[800] : const Color(0xFF6E85B7),
+            tileColor: isDarkMode
+                ? Colors.grey[800]
+                : const Color.fromARGB(255, 152, 151, 151),
             selected: statusBarVisible,
             selectedTileColor: Colors.transparent,
             shape: RoundedRectangleBorder(
@@ -410,6 +426,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() {
                 hapticFeedback = value;
               });
+              _saveHapticPreference(value); // Save haptic feedback setting
             },
             secondary: const Icon(Icons.touch_app, size: 38),
             subtitle: Consumer<FontSizeProvider>(
@@ -429,7 +446,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: Colors.white.withOpacity(0.5),
             activeTrackColor: Colors.lightBlue.withOpacity(0.5),
-            tileColor: isDarkMode ? Colors.grey[800] : const Color(0xFF6E85B7),
+            tileColor: isDarkMode
+                ? Colors.grey[800]
+                : const Color.fromARGB(255, 152, 151, 151),
             selected: hapticFeedback,
             selectedTileColor: Colors.transparent,
             shape: RoundedRectangleBorder(

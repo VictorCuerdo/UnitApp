@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unitapp/controllers/font_size_provider.dart';
 import 'package:unitapp/controllers/theme_provider.dart'; // Your ThemeProvider file
 import 'package:unitapp/widgets/conversions/angle.dart';
@@ -29,6 +30,8 @@ void main() async {
   ThemeProvider themeProvider = ThemeProvider();
   await themeProvider.loadThemePreference();
 
+  bool hapticFeedback = await loadHapticPreference();
+
   runApp(
     EasyLocalization(
       supportedLocales: const [
@@ -53,14 +56,18 @@ void main() async {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => FontSizeProvider()),
-
           ChangeNotifierProvider(create: (context) => themeProvider),
-          // Include other providers as needed
-        ],
+          Provider<bool>.value(value: hapticFeedback),
+        ], // Provide the haptic feedback value
         child: const UnitApp(),
       ),
     ),
   );
+}
+
+Future<bool> loadHapticPreference() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('hapticFeedback') ?? false;
 }
 
 class UnitApp extends StatelessWidget {

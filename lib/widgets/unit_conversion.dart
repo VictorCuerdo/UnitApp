@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,8 +22,8 @@ class _UnitConversionState extends State<UnitConversion> {
   Locale _selectedLocale =
       const Locale('en', 'US'); // Set default selected locale
   double fontSize = mediumFontSize;
-  double gridImageSize = 90.0; // Default image size
-  double gridLabelFontSize = 18.0; // Default label font size
+  double gridImageSize = 80.0; // Default image size
+  double gridLabelFontSize = 16.0; // Default label font size
   int?
       _tappedIndex; // Variable to keep track of the tapped grid item for the animation effect
 // Add a method to determine if dark mode is enabled
@@ -47,9 +47,9 @@ class _UnitConversionState extends State<UnitConversion> {
               width: 5.0,
             ),
           ),
-          title: const Text(
-            'Share the App',
-            style: TextStyle(
+          title: Text(
+            "Share the App".tr(),
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
             ),
@@ -80,9 +80,9 @@ class _UnitConversionState extends State<UnitConversion> {
                     Clipboard.setData(ClipboardData(text: appLink)).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: const Text(
-                            'Link copied to clipboard',
-                            style: TextStyle(
+                          content: Text(
+                            'Link copied to clipboard'.tr(),
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                               color: Colors.white,
@@ -113,9 +113,9 @@ class _UnitConversionState extends State<UnitConversion> {
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     ),
                   ),
-                  child: const Text(
-                    'Copy Link',
-                    style: TextStyle(
+                  child: Text(
+                    'Copy Link'.tr(),
+                    style: const TextStyle(
                       fontSize: 20,
                       color: Colors.white,
                     ),
@@ -127,9 +127,9 @@ class _UnitConversionState extends State<UnitConversion> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text(
-                'Close',
-                style: TextStyle(fontSize: 18),
+              child: Text(
+                'Close'.tr(),
+                style: const TextStyle(fontSize: 18),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -156,27 +156,29 @@ class _UnitConversionState extends State<UnitConversion> {
       'label': 'Distance'
     },
     {
-      'imageDark': 'assets/images/area.png',
-      'imageLight': 'assets/images/areaL.png',
-      'label': 'Area'
-    },
-    {
       'image': 'assets/images/volumen.png',
       'label': 'Volume'
     }, // IMAGE IS BOTH DARK AND LIGHT
     {
+      'imageDark': 'assets/images/area.png',
+      'imageLight': 'assets/images/areaL.png',
+      'label': 'Area'
+    },
+
+    {
       'image': 'assets/images/power.png',
       'label': 'Power'
-    }, // IMAGE IS BOTH DARK AND LIGHT
-    {
-      'image': 'assets/images/time.png',
-      'label': 'Time'
     }, // IMAGE IS BOTH DARK AND LIGHT
     {
       'imageDark': 'assets/images/speed.png',
       'imageLight': 'assets/images/speedL.png',
       'label': 'Speed'
     },
+    {
+      'image': 'assets/images/time.png',
+      'label': 'Time'
+    }, // IMAGE IS BOTH DARK AND LIGHT
+
     {
       'image': 'assets/images/masa.png',
       'label': 'Mass'
@@ -272,7 +274,7 @@ class _UnitConversionState extends State<UnitConversion> {
     }
     Color tileColor = isDarkMode
         ? Colors.black
-        : (index % 2 == 0 ? const Color(0xFFB4E4FF) : const Color(0xFFF7F5EB));
+        : (index % 2 == 0 ? const Color(0xFFF2F2F2) : const Color(0xFFFAE0E0));
     Color textColor = isDarkMode ? Colors.white : const Color(0xFF101820);
 
     return Material(
@@ -280,13 +282,24 @@ class _UnitConversionState extends State<UnitConversion> {
       child: InkWell(
         onTapDown: (_) => setState(() => _tappedIndex = index),
         onTapCancel: () => setState(() => _tappedIndex = null),
-        onTap: () {
+        onTap: () async {
+          // Retrieve the haptic feedback preference.
+          final prefs = await SharedPreferences.getInstance();
+          final hapticFeedbackEnabled =
+              prefs.getBool('hapticFeedback') ?? false;
+
+          // Trigger haptic feedback if enabled.
+          if (hapticFeedbackEnabled) {
+            HapticFeedback.mediumImpact();
+          }
+
           setState(() => _tappedIndex = null);
-          // Check if the tapped label is 'Share'
+
+          // Check if the tapped label is 'Share'.
           if (label == 'Share') {
             _shareApp(context);
           } else {
-            // For other labels, use a delayed navigation to allow the tap animation to be seen
+            // For other labels, use a delayed navigation to allow the tap animation to be seen.
             Future.delayed(const Duration(milliseconds: 100), () {
               switch (label) {
                 case 'Distance':
@@ -355,7 +368,20 @@ class _UnitConversionState extends State<UnitConversion> {
           duration: const Duration(milliseconds: 100),
           curve: Curves.easeOut,
           transform: isTapped ? scaledMatrix : Matrix4.identity(),
-          decoration: BoxDecoration(color: tileColor),
+          decoration: BoxDecoration(
+            color: tileColor,
+            borderRadius:
+                BorderRadius.circular(10), // Keep your existing border radius
+            boxShadow: [
+              // Add your boxShadow here
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1), // Shadow color
+                spreadRadius: 0, // Spread radius
+                blurRadius: 10, // Blur radius
+                offset: const Offset(0, 5), // Horizontal and vertical offset
+              ),
+            ],
+          ), // Set the borderRadius here for the container),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -363,9 +389,14 @@ class _UnitConversionState extends State<UnitConversion> {
                 child: Image.asset(imagePath, width: gridImageSize),
               ),
               Text(label,
-                  style:
-                      TextStyle(fontSize: gridLabelFontSize, color: textColor),
-                  textAlign: TextAlign.center),
+                      style: TextStyle(
+                        fontFamily: 'Work Sans',
+                        fontWeight: FontWeight.w500, // Medium weight
+                        fontSize: gridLabelFontSize,
+                        color: textColor,
+                      ),
+                      textAlign: TextAlign.center)
+                  .tr(),
             ],
           ),
         ),
@@ -377,7 +408,7 @@ class _UnitConversionState extends State<UnitConversion> {
   Widget build(BuildContext context) {
     // Use Theme.of(context) to determine the current theme's background color
     var backgroundColor = Theme.of(context).brightness == Brightness.light
-        ? const Color(0xFFD2E0FB)
+        ? const Color(0xFFFF4940)
         : Colors.black;
     return GestureDetector(
         onTap: _handleOutsideTap,
@@ -391,12 +422,18 @@ class _UnitConversionState extends State<UnitConversion> {
                 height: MediaQuery.of(context).size.height * 0.10,
                 // Ad content goes here
               ),
+              const Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.black,
+              ),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 height: _isSearchBarVisible
                     ? 0
                     : MediaQuery.of(context).size.height * 0.07,
-                color: const Color(0xFF00539C),
+                // color: const Color(0xFF28D885),
+                color: Colors.black,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: _isSearchBarVisible
                     ? null
@@ -405,14 +442,15 @@ class _UnitConversionState extends State<UnitConversion> {
                         children: [
                           const SizedBox(width: 23), // Placeholder
                           const Text(
-                            'Pick an option',
+                            'Tap an option',
                             style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w700, // Medium weight
+                              fontSize: 25,
                               color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center,
-                          ),
+                          ).tr(),
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -441,7 +479,8 @@ class _UnitConversionState extends State<UnitConversion> {
               const SizedBox(height: 5),
               Expanded(
                 child: GridView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.only(
+                      top: 20.0, left: 8.0, right: 8.0), // Added top padding
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     childAspectRatio: 1,

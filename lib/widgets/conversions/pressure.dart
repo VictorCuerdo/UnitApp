@@ -2,9 +2,9 @@
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -18,6 +18,11 @@ class PressureUnitConverter extends StatefulWidget {
 }
 
 class _PressureUnitConverterState extends State<PressureUnitConverter> {
+  static const double smallFontSize = 14.0;
+  static const double mediumFontSize = 17.0;
+  static const double largeFontSize = 20.0;
+  Locale _selectedLocale = const Locale('en', 'US');
+  double fontSize = mediumFontSize;
   bool get isDarkMode => Theme.of(context).brightness == Brightness.dark;
   String fromUnit = 'Micropascals';
   String toUnit = 'Millipascals';
@@ -78,7 +83,7 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
       await imagePath.writeAsBytes(imageBytes);
       // Using shareXFiles
       await Share.shareXFiles([XFile(imagePath.path)],
-          text: 'Check out my pressure result!');
+          text: 'Check out my pressure result!'.tr());
     }
   }
 
@@ -6103,9 +6108,9 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
   void copyToClipboard(String text, BuildContext context) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Conversion result copied to clipboard!"),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: const Text("Conversion result copied to clipboard!").tr(),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -6116,7 +6121,8 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
       controller: screenshotController,
       child: Scaffold(
         backgroundColor:
-            isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFA1CCD1),
+            // isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFF9A3B3B),
+            isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFF0F0F0),
         resizeToAvoidBottomInset:
             true, // Adjust the body size when the keyboard is visible
         body: SingleChildScrollView(
@@ -6141,7 +6147,7 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                         Icons.arrow_back,
                         size: 40,
                         color:
-                            isDarkMode ? Colors.grey : const Color(0xFF2C3A47),
+                            isDarkMode ? Colors.white : const Color(0xFF2C3A47),
                       ),
                     ),
                     Expanded(
@@ -6151,13 +6157,22 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                         textAlign: TextAlign
                             .center, // This centers the text within the available space
                         style: TextStyle(
-                          fontSize: 24,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w700, // Medium weight
+                          fontSize: 28,
+                          color: isDarkMode
+                              ? Colors.white
+                              : const Color(0xFF2C3A47),
+                        ),
+
+                        /*TextStyle(
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: isDarkMode
                               ? Colors.grey
                               : const Color(0xFF2C3A47),
-                        ),
-                      ),
+                        ), */
+                      ).tr(),
                     ),
                     const IconButton(
                       onPressed: null,
@@ -6170,12 +6185,12 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                 const SizedBox(height: 150),
                 SwitchListTile(
                   title: Text(
-                    'See result in exponential format',
+                    'Exponential Format',
                     style: TextStyle(
                         color:
-                            isDarkMode ? Colors.grey : const Color(0xFF2C3A47),
+                            isDarkMode ? Colors.white : const Color(0xFF2C3A47),
                         fontSize: 18),
-                  ),
+                  ).tr(),
                   value: _isExponentialFormat,
                   onChanged: (bool value) {
                     setState(() {
@@ -6197,7 +6212,7 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                   padding: const EdgeInsets.only(left: 0.125, right: 0.125),
                   width: double.infinity,
                   child: _buildUnitColumn(
-                      'From', fromController, fromUnit, fromPrefix, true),
+                      'From'.tr(), fromController, fromUnit, fromPrefix, true),
                 ),
                 IconButton(
                   icon: Icon(
@@ -6211,7 +6226,7 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                   padding: const EdgeInsets.only(left: 0.125, right: 0.125),
                   width: double.infinity,
                   child: _buildUnitColumn(
-                      'To', toController, toUnit, toPrefix, false),
+                      'To'.tr(), toController, toUnit, toPrefix, false),
                 ),
                 const SizedBox(height: 30),
                 RichText(
@@ -6219,7 +6234,7 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Formula:  ',
+                        text: 'Formula:'.tr(),
                         style: TextStyle(
                           color: isDarkMode ? Colors.orange : Colors.red,
                           fontSize: 20,
@@ -6227,10 +6242,10 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                         ),
                       ),
                       TextSpan(
-                        text: _conversionFormula,
+                        text: _conversionFormula.tr(),
                         style: TextStyle(
                           color: isDarkMode
-                              ? Colors.grey
+                              ? Colors.white
                               : const Color(0xFF2C3A47),
                           fontSize: 18,
                           fontStyle: FontStyle.normal,
@@ -6253,19 +6268,20 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                     BouncingScrollSimulation.maxSpringTransferVelocity,
                 enableFeedback: true,
                 splashColor: Colors.lightGreen,
-                tooltip: 'Reset default settings',
-                heroTag: 'resetButton',
+                tooltip: 'Reset default settings'.tr(),
+                heroTag: 'resetButton'.tr(),
                 onPressed: _resetToDefault,
-                backgroundColor: Colors.red,
-                child: const Icon(Icons.restart_alt,
-                    size: 36, color: Colors.white),
+                backgroundColor:
+                    isDarkMode ? Colors.white : const Color(0xFF2C3A47),
+                child: Icon(Icons.restart_alt,
+                    size: 36, color: isDarkMode ? Colors.black : Colors.white),
               ),
               FloatingActionButton(
-                tooltip: 'Share a screenshot of your results!',
-                heroTag: 'shareButton',
+                tooltip: 'Share a screenshot of your results!'.tr(),
+                heroTag: 'shareButton'.tr(),
                 onPressed: _takeScreenshotAndShare,
                 backgroundColor:
-                    isDarkMode ? Colors.white : const Color(0xFF3876BF),
+                    isDarkMode ? Colors.white : const Color(0xFF2C3A47),
                 child: Icon(Icons.share,
                     size: 36, color: isDarkMode ? Colors.black : Colors.white),
               ),
@@ -6340,7 +6356,6 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
     }
   }
 
-  // Update the _buildUnitColumn method to include padding and width requirements
   Widget _buildUnitColumn(String label, TextEditingController controller,
       String unit, String prefix, bool isFrom) {
     return Padding(
@@ -6349,60 +6364,109 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(
-            controller: controller,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            textAlign: TextAlign.center,
-            onChanged: (value) {
-              // Only invoke formatting when the user has stopped typing.
-              // Remove the auto-formatting logic from here.
-              _isUserInput =
-                  true; // Set this flag to true to indicate user input.
-              convert(
-                  value); // Call convert directly with the current input value.
-            },
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-            decoration: InputDecoration(
-              labelText: label, // Keep the label
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue, width: 3.0),
-              ),
-              //floatingLabelBehavior: FloatingLabelBehavior.always,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-              isDense: true,
-              prefix: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AutoSizeText(
-                    '$prefix ',
-                    style: const TextStyle(
-                      color: Colors.lightBlue,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                    ),
-                    maxLines: 1,
+          isFrom
+              ? TextField(
+                  // If it's the 'From' field, allow input
+                  controller: controller,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    _isUserInput =
+                        true; // Set this flag to true to indicate user input.
+                    convert(
+                        value); // Call convert directly with the current input value.
+                  },
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                  // You can add more Widgets here if you need to
-                ],
-              ),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.content_copy),
-                onPressed: () => copyToClipboard(controller.text, context),
-              ),
-            ),
-          ),
-
+                  decoration: InputDecoration(
+                    labelText: label,
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 3.0),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 10.0),
+                    isDense: true,
+                    prefix: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AutoSizeText(
+                          '$prefix ',
+                          style: const TextStyle(
+                            color: Colors.lightBlue,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.content_copy,
+                          color: Colors.grey, size: 23),
+                      onPressed: () =>
+                          copyToClipboard(controller.text, context),
+                    ),
+                  ),
+                )
+              : TextFormField(
+                  // If it's the 'To' field, make it read-only
+                  controller: controller,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  textAlign: TextAlign.center,
+                  enabled: true, // This disables the field
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: label.tr(),
+                    filled: true,
+                    fillColor: Colors
+                        .grey[300], // A lighter color to indicate it's disabled
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    disabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 3.0),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 10.0),
+                    isDense: true,
+                    prefix: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AutoSizeText(
+                          '$prefix ',
+                          style: const TextStyle(
+                            color: Colors.lightBlue,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.content_copy,
+                          color: Colors.grey, size: 23),
+                      onPressed: () =>
+                          copyToClipboard(controller.text, context),
+                    ),
+                  ),
+                ),
           const SizedBox(
               height: 10), // Space between the TextField and dropdown
           _buildDropdownButton(label.toLowerCase(), unit, isFrom),
@@ -6443,17 +6507,32 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
       'Millimetres of water column',
       'Inches of water column',
     ].map<DropdownMenuItem<String>>((String value) {
+      String translatedValue = value.tr();
       return DropdownMenuItem<String>(
-        value: value,
-        child: Text(
-          '${_getPrefix(value)} - $value',
-          style: TextStyle(
-            color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
-            fontSize: 23,
-          ),
-          overflow: TextOverflow.visible,
-        ),
-      );
+          value: value,
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: '${_getPrefix(value)}', // Prefix part
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold, // Make prefix bold
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    fontSize: 23,
+                  ),
+                ),
+                TextSpan(
+                  text: ' - $translatedValue', // The rest of the text
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal, // Normal weight for the rest
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    fontSize: 23,
+                  ),
+                ),
+              ],
+            ),
+            overflow: TextOverflow.visible,
+          ));
     }).toList();
 
     items.insert(
@@ -6462,10 +6541,9 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
         value: '',
         enabled: false,
         child: Text(
-          'Choose a conversion unit',
+          'Choose a conversion unit'.tr(),
           style: TextStyle(
-              color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
-              fontSize: 23),
+              color: isDarkMode ? Colors.white : Colors.black, fontSize: 23),
         ),
       ),
     );
@@ -6480,13 +6558,16 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
         ),
         filled: true,
         fillColor:
-            isDarkMode ? const Color(0xFF303134) : const Color(0xFFADC4CE),
+            //isDarkMode ? const Color(0xFF303134) : const Color(0xFFADC4CE),
+            //DBE6FD
+            //isDarkMode ? const Color(0xFF303134) : const Color(0xFFF5F5F5),
+            isDarkMode ? const Color(0xFF303134) : const Color(0xFFDBE6FD),
       ),
       value: currentValue.isNotEmpty ? currentValue : null,
       hint: Text(
-        'Choose a conversion unit',
+        'Choose a conversion unit'.tr(),
         style: TextStyle(
-            color: isDarkMode ? Colors.grey : const Color(0xFF374259),
+            color: isDarkMode ? Colors.white : const Color(0xFF374259),
             fontSize: 23),
         textAlign: TextAlign.center,
       ),
@@ -6507,7 +6588,7 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
         }
       },
       dropdownColor:
-          isDarkMode ? const Color(0xFF303134) : const Color(0xFFADC4CE),
+          isDarkMode ? const Color(0xFF303134) : const Color(0xFFDBE6FD),
       items: items,
       isExpanded: true,
       icon: Icon(Icons.arrow_drop_down,
@@ -6522,7 +6603,7 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                 color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
                 fontSize: 23,
               ),
-            ),
+            ).tr(),
           );
         }).toList();
       },

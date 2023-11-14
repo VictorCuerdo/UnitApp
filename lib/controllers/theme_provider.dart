@@ -32,7 +32,8 @@ class ThemeProvider extends ChangeNotifier {
       primary: Colors.blue,
       secondary: Colors.blueAccent,
       // Add other custom colors if needed
-      background: Color(0xFFD2E0FB),
+      background: Color(
+          0xFFD2E0FB), //isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFF9A3B3B),
       // ... other colors
     ),
     // Additional ThemeData properties specific to light theme
@@ -41,8 +42,8 @@ class ThemeProvider extends ChangeNotifier {
   static final ThemeData darkTheme = ThemeData(
     // Define dark theme properties
     colorScheme: const ColorScheme.dark(
-      primary: Colors.grey,
-      secondary: Colors.grey,
+      primary: Colors.blue,
+      secondary: Colors.blueAccent,
       // Add other custom colors if needed
       background: Colors.black,
       // ... other colors

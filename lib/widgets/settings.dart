@@ -76,6 +76,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth =
+        MediaQuery.of(context).size.width; // Get the screen width
     return Scaffold(
       backgroundColor: isDarkMode
           ? Colors.black
@@ -98,77 +100,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 30),
-
-          ListTile(
-            title: Text(
-              "language".tr(),
-              style: TextStyle(
-                  color: isDarkMode ? Colors.white : Colors.black,
-                  fontSize: fontSize),
-            ),
-            subtitle: Column(
-              children: [
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    languageButton(const Locale('en', 'US'), 'EN',
-                        'assets/images/usa_flag.png'),
-                    languageButton(const Locale('es', 'ES'), 'ES',
-                        'assets/images/spain_flag.png'),
-                    languageButton(const Locale('fr', 'FR'), 'FR',
-                        'assets/images/france_flag.png'),
-                    languageButton(const Locale('pt', 'BR'), 'PT',
-                        'assets/images/portugal_flag.png'),
-                    languageButton(const Locale('de', 'DE'), 'DE',
-                        'assets/images/germany_flag.png'),
-                    // ... other language buttons for the first row
-                  ],
-                ),
-                const SizedBox(height: 5), // Space between the rows
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    languageButton(const Locale('ru', 'RU'), 'RU',
-                        'assets/images/russia_flag.png'),
-                    languageButton(const Locale('ar', 'SA'), 'AR',
-                        'assets/images/arab_flag.png'),
-                    languageButton(const Locale('hi', 'IN'), 'HI',
-                        'assets/images/india_flag.png'),
-                    languageButton(const Locale('ja', 'JP'), 'JA',
-                        'assets/images/japon_flag.png'),
-                    languageButton(const Locale('zh', 'CN'), 'ZH',
-                        'assets/images/china_flag.png'),
-                    // ... other language buttons for the second row
-                  ],
-                ),
-                const SizedBox(height: 5), // Space between the rows
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    languageButton(const Locale('it', 'IT'), 'IT',
-                        'assets/images/italia_flag.png'),
-                    languageButton(const Locale('vi', 'VN'), 'VI',
-                        'assets/images/vietnam_flag.png'),
-                    languageButton(const Locale('tr', 'TR'), 'TR',
-                        'assets/images/turquia_flag.png'),
-                    languageButton(const Locale('th', 'TH'), 'TH',
-                        'assets/images/thailandia_flag.png'),
-                    languageButton(const Locale('ko', 'KR'), 'KR',
-                        'assets/images/corea_flag.png'),
-                    // ... other language buttons for the second row
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 5),
-          Divider(
-            color: isDarkMode ? Colors.white : Colors.grey[800],
-            thickness: 2,
-          ),
-          const SizedBox(height: 5),
           SwitchListTile(
             secondary: Icon(Icons.brightness_6,
                 size: 30,
@@ -176,7 +107,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             //color: isDarkMode ? const Color(0xFF6E85B7) : Colors.grey[800]),
             isThreeLine: false,
             dense: false,
-            contentPadding: const EdgeInsets.all(8),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 8.0,
+              horizontal: screenWidth * 0.05,
+            ),
             activeColor: Colors.lightBlue,
             inactiveThumbColor: Colors.grey[800],
             inactiveTrackColor: Colors.grey.withOpacity(0.5),
@@ -204,6 +138,147 @@ class _SettingsScreenState extends State<SettingsScreen> {
               });
             },
           ),
+          const SizedBox(height: 5),
+          Divider(
+            color: isDarkMode ? Colors.white : Colors.grey[800],
+            thickness: 2,
+          ),
+          const SizedBox(height: 5),
+          ListTile(
+            title: Text(
+              "language".tr(),
+              style: TextStyle(
+                  color: isDarkMode ? Colors.white : Colors.black,
+                  fontSize: fontSize),
+            ),
+            subtitle: Column(
+              children: [
+                const SizedBox(height: 15),
+                //ROW 1
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    languageButton(const Locale('en', 'US'), 'EN',
+                        'assets/images/usa_flag.png'),
+                    languageButton(const Locale('es', 'ES'), 'ES',
+                        'assets/images/spain_flag.png'),
+                    languageButton(const Locale('fr', 'FR'), 'FR',
+                        'assets/images/france_flag.png'),
+                    languageButton(const Locale('pt', 'BR'), 'PT',
+                        'assets/images/portugal_flag.png'),
+                    languageButton(const Locale('de', 'DE'), 'DE',
+                        'assets/images/germany_flag.png'),
+                    // ... other language buttons for the first row
+                  ],
+                ),
+                const SizedBox(height: 5),
+                //ROW 2// Space between the rows
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    languageButton(const Locale('ru', 'RU'), 'RU',
+                        'assets/images/russia_flag.png'),
+                    languageButton(const Locale('ar', 'SA'), 'AR',
+                        'assets/images/arab_flag.png'),
+                    languageButton(const Locale('hi', 'IN'), 'HI',
+                        'assets/images/india_flag.png'),
+                    languageButton(const Locale('ja', 'JP'), 'JA',
+                        'assets/images/japon_flag.png'),
+                    languageButton(const Locale('zh', 'CN'), 'ZH',
+                        'assets/images/china_flag.png'),
+                  ],
+                ),
+                const SizedBox(height: 5), // Space between the rows
+                //ROW 3
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    languageButton(const Locale('it', 'IT'), 'IT',
+                        'assets/images/italia_flag.png'),
+                    languageButton(const Locale('vi', 'VN'), 'VI',
+                        'assets/images/vietnam_flag.png'),
+                    languageButton(const Locale('tr', 'TR'), 'TR',
+                        'assets/images/turquia_flag.png'),
+                    languageButton(const Locale('th', 'TH'), 'TH',
+                        'assets/images/thailandia_flag.png'),
+                    languageButton(const Locale('ko', 'KR'), 'KR',
+                        'assets/images/corea_flag.png'),
+                  ],
+                ),
+                // NEW LANGUAGES
+                const SizedBox(height: 5), // Space between the rows
+                //ROW 4
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    languageButton(const Locale('bg', 'BG'), 'BG',
+                        'assets/images/bulgarian_flag.png'),
+                    languageButton(const Locale('cs', 'CZ'), 'CZ',
+                        'assets/images/checa_flag.png'),
+                    languageButton(const Locale('da', 'DK'), 'DK',
+                        'assets/images/dinamarca_flag.png'),
+                    languageButton(const Locale('el', 'GR'), 'GR',
+                        'assets/images/grecia_flag.png'),
+                    languageButton(const Locale('fi', 'FI'), 'FI',
+                        'assets/images/finlandia_flag.png'),
+                  ],
+                ),
+                const SizedBox(height: 5), // Space between the rows
+                //ROW 5
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    languageButton(const Locale('he', 'IL'), 'IL',
+                        'assets/images/israel_flag.png'),
+                    languageButton(const Locale('hu', 'HU'), 'HU',
+                        'assets/images/hungria_flag.png'),
+                    languageButton(const Locale('id', 'ID'), 'ID',
+                        'assets/images/indonesia_flag.png'),
+                    languageButton(const Locale('lt', 'LT'), 'LT',
+                        'assets/images/lithuania_flag.png'),
+                    languageButton(const Locale('lv', 'LV'), 'LV',
+                        'assets/images/latvia_flag.png'),
+                  ],
+                ),
+                const SizedBox(height: 5), // Space between the rows
+                //ROW 6
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    languageButton(const Locale('nb', 'NO'), 'NO',
+                        'assets/images/noruega_flag.png'),
+                    languageButton(const Locale('nl', 'NL'), 'NL',
+                        'assets/images/holanda_flag.png'),
+                    languageButton(const Locale('pl', 'PL'), 'PL',
+                        'assets/images/polonia_flag.png'),
+                    languageButton(const Locale('ro', 'RO'), 'RO',
+                        'assets/images/romania_flag.png'),
+                    languageButton(const Locale('sk', 'SK'), 'SK',
+                        'assets/images/slovakia_flag.png'),
+                  ],
+                ),
+                // NEW LANGUAGES
+                const SizedBox(height: 5), // Space between the rows
+                //ROW 7
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    languageButton(const Locale('sl', 'SL'), 'SL',
+                        'assets/images/slovenia_flag.png'),
+                    languageButton(const Locale('sr', 'RS'), 'RS',
+                        'assets/images/serbia_flag.png'),
+                    languageButton(const Locale('sv', 'SE'), 'SE',
+                        'assets/images/suecia_flag.png'),
+                    languageButton(const Locale('sw', 'SW'), 'SW',
+                        'assets/images/swahili_flag.png'),
+                    languageButton(const Locale('tl', 'PH'), 'PH',
+                        'assets/images/filipinas_flag.png'),
+                  ],
+                ), // Space between the rows
+              ],
+            ),
+          ),
+
           const SizedBox(height: 5),
           Divider(
             color: isDarkMode ? Colors.white : Colors.grey[800],

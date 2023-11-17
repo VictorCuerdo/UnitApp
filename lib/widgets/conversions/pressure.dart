@@ -6141,7 +6141,7 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.navigateTo('/');
+                        context.navigateTo('/unit');
                       },
                       icon: Icon(
                         Icons.arrow_back,

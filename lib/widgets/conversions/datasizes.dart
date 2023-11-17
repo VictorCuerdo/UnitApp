@@ -1689,7 +1689,7 @@ class _DatasUnitConverterState extends State<DatasUnitConverter> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.navigateTo('/');
+                        context.navigateTo('/unit');
                       },
                       icon: Icon(
                         Icons.arrow_back,

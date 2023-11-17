@@ -3632,7 +3632,7 @@ class _DistanceUnitConverterState extends State<DistanceUnitConverter> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.navigateTo('/');
+                        context.navigateTo('/unit');
                       },
                       icon: Icon(
                         Icons.arrow_back,

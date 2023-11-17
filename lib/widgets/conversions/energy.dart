@@ -5435,7 +5435,7 @@ class _EnergyUnitConverterState extends State<EnergyUnitConverter> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.navigateTo('/');
+                        context.navigateTo('/unit');
                       },
                       icon: Icon(
                         Icons.arrow_back,

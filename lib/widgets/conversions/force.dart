@@ -5,7 +5,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -2282,7 +2281,7 @@ class _ForceUnitConverterState extends State<ForceUnitConverter> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.navigateTo('/');
+                        context.navigateTo('/unit');
                       },
                       icon: Icon(
                         Icons.arrow_back,

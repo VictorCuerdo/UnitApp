@@ -1315,7 +1315,7 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.navigateTo('/');
+                        context.navigateTo('/unit');
                       },
                       icon: Icon(
                         Icons.arrow_back,

@@ -782,7 +782,7 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.navigateTo('/');
+                        context.navigateTo('/unit');
                       },
                       icon: Icon(
                         Icons.arrow_back,

@@ -32,17 +32,26 @@ class _UnitConversionState extends State<UnitConversion> {
   // Method to handle outside tap to close the search bar
 
   void _shareApp(BuildContext context) {
-    String appLink =
+    String androidAppLink =
         "https://play.google.com/store/apps/details?id=com.yourapp";
+    String iosAppLink = "https://apps.apple.com/app/idyourappid";
+
+    // Get the current MediaQuery data
+    var mediaQuery = MediaQuery.of(context);
+
+    // Calculate 30% of the available height
+    double dialogHeight = mediaQuery.size.height * 0.3;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
           backgroundColor: Colors.white,
-          shape: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(15.0), // Increased rounding here
+            side: const BorderSide(
               color: Color(0xFF1B3A4B),
               width: 5.0,
             ),
@@ -54,75 +63,87 @@ class _UnitConversionState extends State<UnitConversion> {
               fontSize: 20,
             ),
           ),
-          content: SingleChildScrollView(
-            // Wrap the content with SingleChildScrollView
-            child: ListBody(
-              // Use ListBody for better performance
-              children: [
-                const SizedBox(height: 25),
-                Image.asset(
-                  'assets/images/qrcode.png', // Update the path with forward slashes
-                  height: 200,
-                  width: 200,
-                ),
-                const SizedBox(height: 25),
-                SelectableText(
-                  appLink,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 25),
-                ElevatedButton(
-                  onPressed: () {
-                    Clipboard.setData(ClipboardData(text: appLink)).then((_) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Link copied to clipboard'.tr(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
+          content: SizedBox(
+            width: double.maxFinite,
+            // Set the height to be 30% larger than the calculated height
+            height: dialogHeight * 1.6,
+            child: DefaultTabController(
+              length: 3,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TabBar(
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.black,
+                    indicator: const BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(15)), // Rounded indicator
+                    ),
+                    tabs: [
+                      Tab(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15,
+                              horizontal: 16), // Adjust padding as needed
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(
+                                0.1), // Slight background color for tabs
+                            borderRadius: BorderRadius.circular(
+                                15), // Round the corners of the tabs
                           ),
-                          backgroundColor: const Color(0xFF1B3A4B),
-                          duration: const Duration(seconds: 3),
-                          margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .center, // Center row contents horizontally
+                            children: <Widget>[
+                              Image.asset('assets/images/android.png',
+                                  height: 18), // Android icon
+                              const SizedBox(
+                                  width: 8), // Space between icon and text
+                              const Text("Android",
+                                  style: TextStyle(fontSize: 15)), // Text label
+                            ],
                           ),
-                          elevation: 6.0,
                         ),
-                      );
-                    });
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
                       ),
-                    ),
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      Tab(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 16), // Adjust padding as needed
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(
+                                0.1), // Slight background color for tabs
+                            borderRadius: BorderRadius.circular(
+                                15), // Round the corners of the tabs
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .center, // Center row contents horizontally
+                            children: <Widget>[
+                              Image.asset('assets/images/apple.png',
+                                  height: 18), // iOS icon
+                              const SizedBox(
+                                  width: 8), // Space between icon and text
+                              const Text("iOS",
+                                  style: TextStyle(fontSize: 15)), // Text label
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    // Use Expanded to fill the available space
+                    child: TabBarView(
+                      children: [
+                        _tabContent(androidAppLink), // Android tab content
+                        _tabContent(iosAppLink), // iOS tab content
+                      ],
                     ),
                   ),
-                  child: Text(
-                    'Copy Link'.tr(),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
+                ],
+              ),
             ),
           ),
           actions: <Widget>[
@@ -138,6 +159,78 @@ class _UnitConversionState extends State<UnitConversion> {
           ],
         );
       },
+    );
+  }
+
+  Widget _tabContent(String appLink) {
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        const SizedBox(height: 25),
+        Image.asset(
+          'assets/images/qrcode.png', // Replace with your actual QR code asset path
+          height: 200,
+          width: 200,
+        ),
+        const SizedBox(height: 25),
+        SelectableText(
+          appLink,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            decoration: TextDecoration.underline,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 25),
+        ElevatedButton(
+          onPressed: () {
+            Clipboard.setData(ClipboardData(text: appLink)).then((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Link copied to clipboard'.tr(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  backgroundColor: const Color(0xFF1B3A4B),
+                  duration: const Duration(seconds: 3),
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(25), // Increased rounding here
+                  ),
+                  elevation: 6.0,
+                ),
+              );
+            });
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(35.0), // Increased rounding here
+              ),
+            ),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            ),
+          ),
+          child: Text(
+            'Copy Link'.tr(),
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 

@@ -3536,7 +3536,7 @@ class _TorqueUnitConverterState extends State<TorqueUnitConverter> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.navigateTo('/');
+                        context.navigateTo('/unit');
                       },
                       icon: Icon(
                         Icons.arrow_back,

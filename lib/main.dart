@@ -20,6 +20,7 @@ import 'package:unitapp/widgets/conversions/temperature.dart';
 import 'package:unitapp/widgets/conversions/time.dart';
 import 'package:unitapp/widgets/conversions/torque.dart';
 import 'package:unitapp/widgets/conversions/volume.dart';
+import 'package:unitapp/widgets/loading_screen.dart';
 import 'package:unitapp/widgets/settings.dart';
 import 'package:unitapp/widgets/unit_conversion.dart';
 
@@ -103,8 +104,9 @@ class UnitApp extends StatelessWidget {
     return MaterialApp(
       title: 'UnitApp'.tr(),
       theme: themeProvider.currentTheme,
-      home: const UnitConversion(),
+      home: const LoadingScreen(),
       routes: {
+        '/unit': (context) => const UnitConversion(),
         '/settings': (context) => const SettingsScreen(),
         '/distance': (context) => const DistanceUnitConverter(),
         '/area': (context) => const AreaUnitConverter(),

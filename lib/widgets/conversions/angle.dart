@@ -1941,7 +1941,6 @@ class _AngleUnitConverterState extends State<AngleUnitConverter> {
     switch (unit) {
       case 'Degrees':
         return '°';
-
       case 'Radians':
         return 'rad';
       case 'Gradians':

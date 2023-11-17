@@ -50,8 +50,7 @@ void main() async {
         Locale('th', 'TH'),
         Locale('tr', 'TR'),
         Locale('vi', 'VN'),
-        // Additional locale-language pairs:
-        Locale('ar', 'SA'),
+        // Additional locale-language pairs (make sure there are no duplicates):
         Locale('bg', 'BG'),
         Locale('cs', 'CZ'),
         Locale('da', 'DK'),
@@ -71,12 +70,8 @@ void main() async {
         Locale('sr', 'RS'),
         Locale('sv', 'SE'),
         Locale('sw', 'SW'),
-        Locale('th', 'TH'),
         Locale('tl', 'PH'),
-        Locale('tr', 'TR'),
         Locale('uk', 'UA'),
-        Locale('vi', 'VN'),
-        Locale('zh', 'CN'),
       ],
 
       path: 'assets/translations', // Path to translation files

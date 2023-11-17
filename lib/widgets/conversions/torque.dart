@@ -3885,7 +3885,7 @@ class _TorqueUnitConverterState extends State<TorqueUnitConverter> {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: '${_getPrefix(value)}', // Prefix part
+                  text: _getPrefix(value), // Prefix part
                   style: TextStyle(
                     fontWeight: FontWeight.bold, // Make prefix bold
                     color: isDarkMode ? Colors.white : Colors.black,
@@ -3914,7 +3914,7 @@ class _TorqueUnitConverterState extends State<TorqueUnitConverter> {
         child: Text(
           'Choose a conversion unit'.tr(),
           style: TextStyle(
-              color: isDarkMode ? Colors.white : Colors.black, fontSize: 23),
+              color: isDarkMode ? Colors.white : Colors.black, fontSize: 20),
         ),
       ),
     );
@@ -3939,7 +3939,7 @@ class _TorqueUnitConverterState extends State<TorqueUnitConverter> {
         'Choose a conversion unit'.tr(),
         style: TextStyle(
             color: isDarkMode ? Colors.white : const Color(0xFF374259),
-            fontSize: 23),
+            fontSize: 20),
         textAlign: TextAlign.center,
       ),
       onChanged: (String? newValue) {
@@ -3972,7 +3972,7 @@ class _TorqueUnitConverterState extends State<TorqueUnitConverter> {
               item.value == '' ? 'Choose a conversion unit' : item.value!,
               style: TextStyle(
                 color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
-                fontSize: 23,
+                fontSize: 20,
               ),
             ).tr(),
           );

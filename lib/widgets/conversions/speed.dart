@@ -1196,7 +1196,7 @@ class _SpeedUnitConverterState extends State<SpeedUnitConverter> {
         child: Text(
           'Choose a conversion unit'.tr(),
           style: TextStyle(
-              color: isDarkMode ? Colors.white : Colors.black, fontSize: 23),
+              color: isDarkMode ? Colors.white : Colors.black, fontSize: 20),
         ),
       ),
     );
@@ -1221,7 +1221,7 @@ class _SpeedUnitConverterState extends State<SpeedUnitConverter> {
         'Choose a conversion unit'.tr(),
         style: TextStyle(
             color: isDarkMode ? Colors.white : const Color(0xFF374259),
-            fontSize: 23),
+            fontSize: 20),
         textAlign: TextAlign.center,
       ),
       onChanged: (String? newValue) {
@@ -1254,7 +1254,7 @@ class _SpeedUnitConverterState extends State<SpeedUnitConverter> {
               item.value == '' ? 'Choose a conversion unit' : item.value!,
               style: TextStyle(
                 color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
-                fontSize: 23,
+                fontSize: 20,
               ),
             ).tr(),
           );

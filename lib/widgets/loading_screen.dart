@@ -29,7 +29,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAE0E0),
+      backgroundColor: const Color(0xFF015480),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -47,7 +47,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
             const Text(
               'UnitApp',
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.lightBlue,
                 fontWeight: FontWeight.bold,
                 fontSize: 38, // Adjust the font size as per your requirements
               ),

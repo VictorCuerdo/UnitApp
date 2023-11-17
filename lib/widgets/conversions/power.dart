@@ -1598,6 +1598,7 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
       controller: screenshotController,
       child: Scaffold(
         backgroundColor:
+            // isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFF9A3B3B),
             isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFF0F0F0),
         resizeToAvoidBottomInset:
             true, // Adjust the body size when the keyboard is visible
@@ -1623,7 +1624,7 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
                         Icons.arrow_back,
                         size: 40,
                         color:
-                            isDarkMode ? Colors.grey : const Color(0xFF2C3A47),
+                            isDarkMode ? Colors.white : const Color(0xFF2C3A47),
                       ),
                     ),
                     Expanded(
@@ -1633,10 +1634,11 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
                         textAlign: TextAlign
                             .center, // This centers the text within the available space
                         style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w700, // Medium weight
+                          fontSize: 28,
                           color: isDarkMode
-                              ? Colors.grey
+                              ? Colors.white
                               : const Color(0xFF2C3A47),
                         ),
                       ).tr(),
@@ -1652,10 +1654,10 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
                 const SizedBox(height: 150),
                 SwitchListTile(
                   title: Text(
-                    'See result in exponential format',
+                    'Exponential Format',
                     style: TextStyle(
                         color:
-                            isDarkMode ? Colors.grey : const Color(0xFF2C3A47),
+                            isDarkMode ? Colors.white : const Color(0xFF2C3A47),
                         fontSize: 18),
                   ).tr(),
                   value: _isExponentialFormat,
@@ -1701,7 +1703,7 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Formula:'.tr(),
+                        text: 'Formula:  '.tr(),
                         style: TextStyle(
                           color: isDarkMode ? Colors.orange : Colors.red,
                           fontSize: 20,
@@ -1712,7 +1714,7 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
                         text: _conversionFormula.tr(),
                         style: TextStyle(
                           color: isDarkMode
-                              ? Colors.grey
+                              ? Colors.white
                               : const Color(0xFF2C3A47),
                           fontSize: 18,
                           fontStyle: FontStyle.normal,
@@ -1738,16 +1740,17 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
                 tooltip: 'Reset default settings'.tr(),
                 heroTag: 'resetButton'.tr(),
                 onPressed: _resetToDefault,
-                backgroundColor: Colors.red,
-                child: const Icon(Icons.restart_alt,
-                    size: 36, color: Colors.white),
+                backgroundColor:
+                    isDarkMode ? Colors.white : const Color(0xFF2C3A47),
+                child: Icon(Icons.restart_alt,
+                    size: 36, color: isDarkMode ? Colors.black : Colors.white),
               ),
               FloatingActionButton(
                 tooltip: 'Share a screenshot of your results!'.tr(),
                 heroTag: 'shareButton'.tr(),
                 onPressed: _takeScreenshotAndShare,
                 backgroundColor:
-                    isDarkMode ? Colors.white : const Color(0xFF3876BF),
+                    isDarkMode ? Colors.white : const Color(0xFF2C3A47),
                 child: Icon(Icons.share,
                     size: 36, color: isDarkMode ? Colors.black : Colors.white),
               ),
@@ -1796,115 +1799,118 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
 
   Widget _buildUnitColumn(String label, TextEditingController controller,
       String unit, String prefix, bool isFrom) {
+    // Define text color based on the theme.
+    Color inputTextColor = isDarkMode ? Colors.white : Colors.black;
+    Color inputFillColor = isDarkMode
+        ? const Color(0xFF2C3A47)
+        : Colors.white; // This should be light in both themes
+
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 0.125), // 12.5% padding from each side
+      padding: const EdgeInsets.symmetric(horizontal: 0.125),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          isFrom
-              ? TextField(
-                  // If it's the 'From' field, allow input
-                  controller: controller,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  textAlign: TextAlign.center,
-                  onChanged: (value) {
-                    _isUserInput =
-                        true; // Set this flag to true to indicate user input.
-                    convert(
-                        value); // Call convert directly with the current input value.
-                  },
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: label.tr(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 3.0),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 10.0),
-                    isDense: true,
-                    prefix: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AutoSizeText(
-                          '$prefix ',
-                          style: const TextStyle(
-                            color: Colors.lightBlue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.content_copy,
-                          color: Colors.grey, size: 23),
-                      onPressed: () =>
-                          copyToClipboard(controller.text, context),
-                    ),
-                  ),
-                )
-              : TextFormField(
-                  // If it's the 'To' field, make it read-only
-                  controller: controller,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  textAlign: TextAlign.center,
-                  enabled: true, // This disables the field
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: label,
-                    filled: true,
-                    fillColor: Colors
-                        .grey[300], // A lighter color to indicate it's disabled
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    disabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 3.0),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 10.0),
-                    isDense: true,
-                    prefix: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AutoSizeText(
-                          '$prefix ',
-                          style: const TextStyle(
-                            color: Colors.lightBlue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.content_copy,
-                          color: Colors.grey, size: 23),
-                      onPressed: () =>
-                          copyToClipboard(controller.text, context),
-                    ),
-                  ),
+          if (isFrom)
+            TextField(
+              controller: controller,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              textAlign: TextAlign.center,
+              onChanged: (value) {
+                _isUserInput =
+                    true; // Set this flag to true to indicate user input.
+                convert(
+                    value); // Call convert directly with the current input value.
+              },
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: inputTextColor, // Adjust text color based on the theme
+              ),
+              decoration: InputDecoration(
+                labelText: label,
+                filled: true,
+                fillColor:
+                    inputFillColor, // Use a fill color that contrasts with the text color
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                enabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue, width: 3.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 10.0),
+                isDense: true,
+                prefix: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AutoSizeText(
+                      '$prefix ',
+                      style: const TextStyle(
+                        color: Colors.lightBlue,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.content_copy,
+                      color: Colors.grey, size: 23),
+                  onPressed: () => copyToClipboard(controller.text, context),
+                ),
+              ),
+            )
+          else
+            TextFormField(
+              controller: controller,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              textAlign: TextAlign.center,
+              enabled: false, // This disables the field
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: inputTextColor, // Adjust text color based on the theme
+              ),
+              decoration: InputDecoration(
+                labelText: label.tr(),
+                filled: true,
+                fillColor:
+                    inputFillColor, // Use a fill color that contrasts with the text color
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue, width: 3.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 10.0),
+                isDense: true,
+                prefix: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AutoSizeText(
+                      '$prefix ',
+                      style: const TextStyle(
+                        color: Colors.lightBlue,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.content_copy,
+                      color: Colors.grey, size: 23),
+                  onPressed: () => copyToClipboard(controller.text, context),
+                ),
+              ),
+            ),
           const SizedBox(
               height: 10), // Space between the TextField and dropdown
           _buildDropdownButton(label.toLowerCase(), unit, isFrom),

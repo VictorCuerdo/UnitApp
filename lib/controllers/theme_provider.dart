@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  ThemeData _currentTheme = lightTheme; // Default to light theme
+  ThemeData _currentTheme = darkTheme; // Default to light theme
 
   ThemeData get currentTheme => _currentTheme;
 

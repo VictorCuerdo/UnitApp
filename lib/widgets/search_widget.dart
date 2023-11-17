@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -16,9 +14,10 @@ class _SearchWidgetState extends State<SearchWidget> {
   static const double smallFontSize = 14.0;
   static const double mediumFontSize = 17.0;
   static const double largeFontSize = 20.0;
+  static Color greyTextColor =
+      Colors.black54; // Define a constant for the grey text color
   Locale _selectedLocale = const Locale('en', 'US');
   double fontSize = mediumFontSize;
-  bool get isDarkMode => Theme.of(context).brightness == Brightness.dark;
   String _searchQuery = "";
   final Map<String, String> _navigationMap = {
     'Settings': '/settings',
@@ -193,37 +192,37 @@ class _SearchWidgetState extends State<SearchWidget> {
     'mrad': '/angle',
     'Mils (NATO)': '/angle',
     'mil': '/angle',
-    'Data Sizes': '/data',
-    'Bytes': '/data',
-    'B': '/data',
-    'Kibibytes': '/data',
-    'KiB': '/data',
-    'Mebibytes': '/data',
-    'MiB': '/data',
-    'Gigibytes': '/data',
-    'GiB': '/data',
-    'Tebibytes': '/data',
-    'TiB': '/data',
-    'Pebibytes': '/data',
-    'PiB': '/data',
-    'Kilobytes': '/data',
-    'KB': '/data',
-    'Megabytes': '/data',
-    'MB': '/data',
-    'Gigabytes': '/data',
-    'GB': '/data',
-    'Terabytes': '/data',
-    'TB': '/data',
-    'Petabytes': '/data',
-    'PB': '/data',
-    'Bits': '/data',
-    'b': '/data',
-    'Kibibits': '/data',
-    'Kib': '/data',
-    'Mebibits': '/data',
-    'Mib': '/data',
-    'Gigibits': '/data',
-    'Gib': '/data',
+    'Data Sizes': '/datas',
+    'Bytes': '/datas',
+    'B': '/datas',
+    'Kibibytes': '/datas',
+    'KiB': '/datas',
+    'Mebibytes': '/datas',
+    'MiB': '/datas',
+    'Gigibytes': '/datas',
+    'GiB': '/datas',
+    'Tebibytes': '/datas',
+    'TiB': '/datas',
+    'Pebibytes': '/datas',
+    'PiB': '/datas',
+    'Kilobytes': '/datas',
+    'KB': '/datas',
+    'Megabytes': '/datas',
+    'MB': '/datas',
+    'Gigabytes': '/datas',
+    'GB': '/datas',
+    'Terabytes': '/datas',
+    'TB': '/datas',
+    'Petabytes': '/datas',
+    'PB': '/datas',
+    'Bits': '/datas',
+    'b': '/datas',
+    'Kibibits': '/datas',
+    'Kib': '/datas',
+    'Mebibits': '/datas',
+    'Mib': '/datas',
+    'Gigibits': '/datas',
+    'Gib': '/datas',
     'Energy': '/energy',
     'Nanojoules': '/energy',
     'nJ': '/energy',
@@ -555,16 +554,23 @@ class _SearchWidgetState extends State<SearchWidget> {
                         borderRadius: BorderRadius.all(Radius.circular(4.0))),
                     alignLabelWithHint: true,
                     hintText: 'Type Magnitude/Unit/Symbol'.tr(),
+                    hintStyle: TextStyle(
+                      color:
+                          greyTextColor, // Use the defined grey text color for hint text
+                    ),
                     border: const OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.search),
+                    prefixIcon: const Icon(Icons.search, color: Colors.black54),
                   ),
                 ),
               ),
               IconButton(
                 icon: Icon(Icons.close,
-                    color: isDarkMode ? Colors.red : Colors.black, size: 23),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                    size: 23),
                 onPressed: widget.onClose, // Call the onClose callback
               ),
             ],

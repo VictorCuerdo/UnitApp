@@ -61,6 +61,7 @@ class _UnitConversionState extends State<UnitConversion> {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
+              color: Colors.black,
             ),
           ),
           content: SizedBox(
@@ -68,7 +69,7 @@ class _UnitConversionState extends State<UnitConversion> {
             // Set the height to be 30% larger than the calculated height
             height: dialogHeight * 1.6,
             child: DefaultTabController(
-              length: 3,
+              length: 2,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -169,19 +170,20 @@ class _UnitConversionState extends State<UnitConversion> {
         const SizedBox(height: 25),
         Image.asset(
           'assets/images/qrcode.png', // Replace with your actual QR code asset path
-          height: 200,
-          width: 200,
+          height: 170,
+          width: 170,
         ),
-        const SizedBox(height: 25),
+        const SizedBox(height: 20),
         SelectableText(
           appLink,
           style: const TextStyle(
+            color: Colors.black,
             fontWeight: FontWeight.bold,
             decoration: TextDecoration.underline,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 25),
+        const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
             Clipboard.setData(ClipboardData(text: appLink)).then((_) {
@@ -218,18 +220,18 @@ class _UnitConversionState extends State<UnitConversion> {
               ),
             ),
             padding: MaterialStateProperty.all<EdgeInsets>(
-              const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              const EdgeInsets.symmetric(horizontal: 25, vertical: 6),
             ),
           ),
           child: Text(
             'Copy Link'.tr(),
             style: const TextStyle(
-              fontSize: 20,
+              fontSize: 21,
               color: Colors.white,
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 8),
       ],
     );
   }
@@ -514,11 +516,6 @@ class _UnitConversionState extends State<UnitConversion> {
                 color: Colors.black,
                 height: MediaQuery.of(context).size.height * 0.10,
                 // Ad content goes here
-              ),
-              const Divider(
-                height: 1,
-                thickness: 1,
-                color: Colors.black,
               ),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),

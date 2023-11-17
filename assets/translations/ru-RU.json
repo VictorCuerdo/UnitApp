@@ -1,5 +1,8 @@
 {
   "UnitApp": "UnitApp",
+  "Choose a conversion unit":"Выберите единицу конверсии",
+  "Choose a conversion unit ":"Выберите единицу конверсии",
+  "Choose a conversion unit  ":"Выберите единицу конверсии",
   "Tap an option": "Выберите опцию",
 "Type Magnitude/Unit/Symbol": "Введите величину/единицу/символ",
 "Reset default settings": "Сбросить настройки по умолчанию",
@@ -8,6 +11,7 @@
 "Formula ": "Формула",
 "Formula  ": "Формула",
 "Formula   ": "Формула",
+"Language" : "Язык",
 "Angstrom": "Ангстрем",
 "Furlongs": "Фарлонги",
 "Fathoms": "Фатомы",

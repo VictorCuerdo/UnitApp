@@ -70,11 +70,12 @@ flutter:
         - asset: assets/fonts/Lato/Lato-BlackItalic.ttf
           weight: 900
 
-flutter_icons:
-  android: true 
+flutter_launcher_icons:
+  android: true # or specify your launcher icon
   ios: true
-  image_path: "assets/icon/appLogo.png"
+  image_path: "assets/icon/UnitApp.png"
   adaptive_icon_background: "#FFFFFF"
+  remove_alpha_ios: true
 
 # To add fonts to your application, add a fonts section here, in this "flutter" section.
 # For details regarding fonts from package dependencies, see https://flutter.dev/custom-fonts/#from-packages

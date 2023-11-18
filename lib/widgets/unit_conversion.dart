@@ -2,6 +2,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unitapp/controllers/font_size_provider.dart';
@@ -385,11 +386,14 @@ class _UnitConversionState extends State<UnitConversion> {
 
           // Trigger haptic feedback if enabled.
           if (hapticFeedbackEnabled) {
-            HapticFeedback.mediumImpact();
+            // Check if the device can vibrate
+            bool canVibrate = await Vibrate.canVibrate;
+            if (canVibrate) {
+              Vibrate.feedback(FeedbackType.medium);
+            }
           }
 
           setState(() => _tappedIndex = null);
-
           // Check if the tapped label is 'Share'.
           if (label == 'Share') {
             _shareApp(context);

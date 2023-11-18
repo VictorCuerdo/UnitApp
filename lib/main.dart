@@ -27,9 +27,8 @@ import 'package:unitapp/widgets/unit_conversion.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-
   ThemeProvider themeProvider = ThemeProvider();
-  await themeProvider.loadThemePreference();
+  await themeProvider.loadThemePreference(); // Make sure this is awaited
 
   bool hapticFeedback = await loadHapticPreference();
 
@@ -51,7 +50,6 @@ void main() async {
         Locale('th', 'TH'),
         Locale('tr', 'TR'),
         Locale('vi', 'VN'),
-        // Additional locale-language pairs (make sure there are no duplicates):
         Locale('bg', 'BG'),
         Locale('cs', 'CZ'),
         Locale('da', 'DK'),

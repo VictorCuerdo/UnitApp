@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  ThemeData _currentTheme = darkTheme; // Default to light theme
+  ThemeData _currentTheme = darkTheme; // Default to dark theme
 
   ThemeData get currentTheme => _currentTheme;
 
@@ -21,7 +21,7 @@ class ThemeProvider extends ChangeNotifier {
   Future<void> loadThemePreference() async {
     final prefs = await SharedPreferences.getInstance();
     bool isDarkMode =
-        prefs.getBool('isDarkMode') ?? false; // Default to light theme
+        prefs.getBool('isDarkMode') ?? true; // Default to dark theme
     _currentTheme = isDarkMode ? darkTheme : lightTheme;
     notifyListeners();
   }

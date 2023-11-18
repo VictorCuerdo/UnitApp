@@ -549,19 +549,23 @@ class _SearchWidgetState extends State<SearchWidget> {
                       _searchQuery = value;
                     });
                   },
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: fontSize), // Set text color to black
                   decoration: InputDecoration(
                     enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    ),
                     alignLabelWithHint: true,
                     hintText: 'Type Magnitude/Unit/Symbol'.tr(),
                     hintStyle: TextStyle(
-                      color:
-                          greyTextColor, // Use the defined grey text color for hint text
+                      color: Colors.grey
+                          .shade600, // Use a light grey that is visible on white
                     ),
                     border: const OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.search, color: Colors.black54),
+                    prefixIcon: Icon(Icons.search, color: Colors.grey[800]),
                   ),
                 ),
               ),

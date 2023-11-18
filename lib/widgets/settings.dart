@@ -3,6 +3,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unitapp/controllers/font_size_provider.dart';
@@ -27,13 +28,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Locale _selectedLocale = const Locale('en', 'US');
   double fontSize = mediumFontSize;
   bool isDarkMode = false; // Added to handle theme changes
+  static const double tileHeight = 120.0; // Example fixed height for each tile
+  Future<void> _loadStatusBarVisibility() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      statusBarVisible = prefs.getBool('statusBarVisible') ?? false;
+      // Update system UI mode based on the saved preference
+      SystemChrome.setEnabledSystemUIMode(
+        statusBarVisible ? SystemUiMode.immersiveSticky : SystemUiMode.manual,
+        overlays: statusBarVisible ? [] : SystemUiOverlay.values,
+      );
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _loadThemePreference();
     _loadSettings();
-    _loadHapticPreference(); // Load haptic feedback setting
+    _loadHapticPreference();
+    _loadStatusBarVisibility();
+    _loadPreferences(); // Load status bar visibility setting
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      statusBarVisible = prefs.getBool('statusBarVisible') ?? false;
+      hapticFeedback = prefs.getBool('hapticFeedback') ?? false;
+      fontSize = prefs.getDouble('fontSize') ?? mediumFontSize;
+      // ... other preferences ...
+    });
+    // Apply system UI mode based on the saved preference
+    SystemChrome.setEnabledSystemUIMode(
+      statusBarVisible ? SystemUiMode.immersiveSticky : SystemUiMode.manual,
+      overlays: statusBarVisible ? [] : SystemUiOverlay.values,
+    );
+    // Update providers or other state management solutions here if you decide to use them
+    Provider.of<FontSizeProvider>(context, listen: false).fontSize = fontSize;
+    // ... other provider updates ...
   }
 
   Future<void> _loadThemePreference() async {
@@ -41,6 +74,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       isDarkMode = prefs.getBool('isDarkMode') ?? false;
     });
+  }
+
+  Future<void> _saveThemePreference(bool isDarkMode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', isDarkMode);
   }
 
   Future<void> _loadSettings() async {
@@ -58,6 +96,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       hapticFeedback = prefs.getBool('hapticFeedback') ?? false;
     });
+  }
+
+  Future<void> _saveStatusBarVisibility(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('statusBarVisible', value);
   }
 
   Future<void> _saveHapticPreference(bool value) async {
@@ -486,43 +529,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 30),
-          SwitchListTile(
-            secondary: Icon(Icons.brightness_6,
-                size: 30,
-                color: isDarkMode ? Colors.lightBlue : Colors.grey[800]),
-            //color: isDarkMode ? const Color(0xFF6E85B7) : Colors.grey[800]),
-            isThreeLine: false,
-            dense: false,
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 8.0,
-              horizontal: screenWidth * 0.05,
-            ),
-            activeColor: Colors.lightBlue,
-            inactiveThumbColor: Colors.grey[800],
-            inactiveTrackColor: Colors.grey.withOpacity(0.5),
-            activeTrackColor: Colors.lightBlue.withOpacity(0.5),
-            tileColor: Colors.transparent,
+          SizedBox(
+            height: tileHeight, // Set the fixed height
+            child: Align(
+              alignment: Alignment.center,
+              child: SwitchListTile(
+                secondary: Icon(Icons.brightness_6,
+                    size: 30,
+                    color: isDarkMode ? Colors.lightBlue : Colors.grey[800]),
+                //color: isDarkMode ? const Color(0xFF6E85B7) : Colors.grey[800]),
+                isThreeLine: false,
+                dense: false,
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: screenWidth * 0.05,
+                ),
+                activeColor: Colors.lightBlue,
+                inactiveThumbColor: Colors.grey[800],
+                inactiveTrackColor: Colors.grey.withOpacity(0.5),
+                activeTrackColor: Colors.lightBlue.withOpacity(0.5),
+                tileColor: Colors.transparent,
 
-            selectedTileColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+                selectedTileColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                controlAffinity: ListTileControlAffinity.trailing,
+                autofocus: false,
+                visualDensity: VisualDensity.comfortable,
+                title: Text('Dark Mode',
+                        style: TextStyle(
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            fontSize: fontSize))
+                    .tr(),
+                value: isDarkMode,
+                onChanged: (bool value) {
+                  setState(() {
+                    isDarkMode = value;
+                    Provider.of<ThemeProvider>(context, listen: false)
+                        .toggleTheme(value);
+                  });
+                  // Save the preference
+                  _saveThemePreference(value);
+                },
+              ),
             ),
-            controlAffinity: ListTileControlAffinity.trailing,
-            autofocus: false,
-            visualDensity: VisualDensity.comfortable,
-            title: Text('Dark Mode',
-                    style: TextStyle(
-                        color: isDarkMode ? Colors.white : Colors.black,
-                        fontSize: fontSize))
-                .tr(),
-            value: isDarkMode,
-            onChanged: (bool value) {
-              setState(() {
-                isDarkMode = value;
-                Provider.of<ThemeProvider>(context, listen: false)
-                    .toggleTheme(value);
-              });
-            },
           ),
           const SizedBox(height: 5),
           Divider(
@@ -530,33 +581,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
             thickness: 2,
           ),
           const SizedBox(height: 5),
-          ListTile(
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 8.0,
-              horizontal: screenWidth * 0.05,
+          SizedBox(
+            height: tileHeight, // Set the fixed height
+            child: Align(
+              alignment: Alignment.center,
+              child: ListTile(
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: screenWidth * 0.05,
+                ),
+                leading: Image.asset(
+                  getFlagImagePath(
+                      _selectedLocale), // function to get the image path based on locale
+                  width: 30, // Adjust the size as needed
+                  height: 30, // Adjust the size as needed
+                  fit: BoxFit.cover,
+                ),
+                title: Text(
+                  "Language".tr(),
+                  style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      fontSize: fontSize),
+                ),
+                trailing: Text(
+                  getLanguageCode(
+                      _selectedLocale), // function to get the language code based on locale
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, // Make the text bold
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      fontSize: fontSize),
+                ),
+                onTap: _showLanguageDialog, // Open language selection dialog
+              ),
             ),
-            leading: Image.asset(
-              getFlagImagePath(
-                  _selectedLocale), // function to get the image path based on locale
-              width: 30, // Adjust the size as needed
-              height: 30, // Adjust the size as needed
-              fit: BoxFit.cover,
-            ),
-            title: Text(
-              "Language".tr(),
-              style: TextStyle(
-                  color: isDarkMode ? Colors.white : Colors.black,
-                  fontSize: fontSize),
-            ),
-            trailing: Text(
-              getLanguageCode(
-                  _selectedLocale), // function to get the language code based on locale
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, // Make the text bold
-                  color: isDarkMode ? Colors.white : Colors.black,
-                  fontSize: fontSize),
-            ),
-            onTap: _showLanguageDialog, // Open language selection dialog
           ),
 
           const SizedBox(height: 5),
@@ -567,134 +624,143 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 5),
 
           //FONT SIZE  ROW
-          ListTile(
-            title: Text(
-              'Pick Font Size',
-              style: TextStyle(
-                color: isDarkMode ? Colors.white : Colors.black,
-                fontSize: fontSize, // Use the dynamic font size here
-              ),
-            ).tr(),
-            subtitle: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 10),
-                Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min, // This centers the row
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0), // Added horizontal padding
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.text_fields, size: 23),
-                              color: fontSize == smallFontSize
-                                  ? Colors.lightBlue
-                                  : Colors.grey[850],
-                              onPressed: () {
-                                setState(() {
-                                  fontSize = smallFontSize;
-                                  _saveFontSize();
-                                });
-                                // Update the provider value
-                                Provider.of<FontSizeProvider>(context,
-                                        listen: false)
-                                    .fontSize = smallFontSize;
-                              },
-                            ),
-                            Text(
-                              'S',
-                              style: TextStyle(
-                                fontSize: fontSize, // Dynamic font size
-                                color: fontSize == smallFontSize
-                                    ? Colors.lightBlue
-                                    : Colors.grey[850],
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ).tr(),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0), // Added horizontal padding
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.text_fields, size: 33),
-                              color: fontSize == mediumFontSize
-                                  ? Colors.lightBlue
-                                  : Colors.grey[850],
-                              onPressed: () {
-                                setState(() {
-                                  fontSize = mediumFontSize;
-                                  _saveFontSize();
-                                });
-                                // Update the provider value
-                                Provider.of<FontSizeProvider>(context,
-                                        listen: false)
-                                    .fontSize = mediumFontSize;
-                              },
-                            ),
-                            Text(
-                              'M',
-                              style: TextStyle(
-                                fontSize: fontSize, // Dynamic font size
-                                color: fontSize == mediumFontSize
-                                    ? Colors.lightBlue
-                                    : Colors.grey[850],
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ).tr(),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0), // Added horizontal padding
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.text_fields, size: 43),
-                              color: fontSize == largeFontSize
-                                  ? Colors.lightBlue
-                                  : Colors.grey[850],
-                              onPressed: () {
-                                setState(() {
-                                  fontSize = largeFontSize;
-                                  _saveFontSize();
-                                });
-                                // Update the provider value
-                                Provider.of<FontSizeProvider>(context,
-                                        listen: false)
-                                    .fontSize = largeFontSize;
-                              },
-                            ),
-                            Text(
-                              'L',
-                              style: TextStyle(
-                                fontSize: fontSize, // Dynamic font size
-                                color: fontSize == largeFontSize
-                                    ? Colors.lightBlue
-                                    : Colors.grey[850],
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ).tr(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+          SizedBox(
+            height: tileHeight, // Set the fixed height
+            child: Align(
+              alignment: Alignment.center,
+              child: ListTile(
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: screenWidth * 0.05,
                 ),
-              ],
+                title: Text(
+                  'Pick Font Size',
+                  style: TextStyle(
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    fontSize: fontSize, // Use the dynamic font size here
+                  ),
+                ).tr(),
+                subtitle: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min, // This centers the row
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0), // Added horizontal padding
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.text_fields, size: 23),
+                                  color: fontSize == smallFontSize
+                                      ? Colors.lightBlue
+                                      : Colors.grey[850],
+                                  onPressed: () {
+                                    setState(() {
+                                      fontSize = smallFontSize;
+                                      _saveFontSize();
+                                    });
+                                    // Update the provider value
+                                    Provider.of<FontSizeProvider>(context,
+                                            listen: false)
+                                        .fontSize = smallFontSize;
+                                  },
+                                ),
+                                Text(
+                                  'S',
+                                  style: TextStyle(
+                                    fontSize: fontSize, // Dynamic font size
+                                    color: fontSize == smallFontSize
+                                        ? Colors.lightBlue
+                                        : Colors.grey[850],
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ).tr(),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0), // Added horizontal padding
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.text_fields, size: 33),
+                                  color: fontSize == mediumFontSize
+                                      ? Colors.lightBlue
+                                      : Colors.grey[850],
+                                  onPressed: () {
+                                    setState(() {
+                                      fontSize = mediumFontSize;
+                                      _saveFontSize();
+                                    });
+                                    // Update the provider value
+                                    Provider.of<FontSizeProvider>(context,
+                                            listen: false)
+                                        .fontSize = mediumFontSize;
+                                  },
+                                ),
+                                Text(
+                                  'M',
+                                  style: TextStyle(
+                                    fontSize: fontSize, // Dynamic font size
+                                    color: fontSize == mediumFontSize
+                                        ? Colors.lightBlue
+                                        : Colors.grey[850],
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ).tr(),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0), // Added horizontal padding
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.text_fields, size: 43),
+                                  color: fontSize == largeFontSize
+                                      ? Colors.lightBlue
+                                      : Colors.grey[850],
+                                  onPressed: () {
+                                    setState(() {
+                                      fontSize = largeFontSize;
+                                      _saveFontSize();
+                                    });
+                                    // Update the provider value
+                                    Provider.of<FontSizeProvider>(context,
+                                            listen: false)
+                                        .fontSize = largeFontSize;
+                                  },
+                                ),
+                                Text(
+                                  'L',
+                                  style: TextStyle(
+                                    fontSize: fontSize, // Dynamic font size
+                                    color: fontSize == largeFontSize
+                                        ? Colors.lightBlue
+                                        : Colors.grey[850],
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ).tr(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                tileColor: Colors.transparent,
+              ),
             ),
-            contentPadding: const EdgeInsets.all(8),
-            tileColor: Colors.transparent,
           ),
 
           const SizedBox(height: 5),
@@ -707,56 +773,67 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // Settings UI
           // STATUS BAR ROW
           // Status Bar SwitchListTile
-          SwitchListTile(
-            title: Consumer<FontSizeProvider>(
-              builder: (context, fontSizeProvider, child) {
-                return Text(
-                  'Status bar',
-                  style: TextStyle(
-                      color: isDarkMode ? Colors.white : Colors.black,
-                      fontSize: fontSizeProvider.fontSize),
-                ).tr();
-              },
+          SizedBox(
+            height: tileHeight, // Set the fixed height
+            child: Align(
+              alignment: Alignment.center,
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: screenWidth * 0.05,
+                ),
+                title: Consumer<FontSizeProvider>(
+                  builder: (context, fontSizeProvider, child) {
+                    return Text(
+                      'Status bar',
+                      style: TextStyle(
+                          color: isDarkMode ? Colors.white : Colors.black,
+                          fontSize: fontSizeProvider.fontSize),
+                    ).tr();
+                  },
+                ),
+                value: statusBarVisible,
+                onChanged: (bool value) {
+                  setState(() {
+                    statusBarVisible = value;
+                    SystemChrome.setEnabledSystemUIMode(
+                      value
+                          ? SystemUiMode.immersiveSticky
+                          : SystemUiMode.manual,
+                      overlays: value ? [] : SystemUiOverlay.values,
+                    );
+                  });
+                  _saveStatusBarVisibility(value); // Save the preference
+                },
+                secondary: const Icon(Icons.sim_card, size: 38),
+                subtitle: Consumer<FontSizeProvider>(
+                  builder: (context, fontSizeProvider, child) {
+                    return Text(
+                      'Enable or disable visibility of status bar',
+                      style: TextStyle(
+                          color: isDarkMode ? Colors.white : Colors.black,
+                          fontStyle: FontStyle.italic,
+                          fontSize: smallFontSize),
+                    ).tr();
+                  },
+                ),
+                isThreeLine: true,
+                dense: false,
+                activeColor: Colors.lightBlue,
+                inactiveThumbColor: Colors.white,
+                inactiveTrackColor: Colors.white.withOpacity(0.5),
+                activeTrackColor: Colors.lightBlue.withOpacity(0.5),
+                tileColor: Colors.transparent,
+                selected: statusBarVisible,
+                selectedTileColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                controlAffinity: ListTileControlAffinity.trailing,
+                autofocus: false,
+                visualDensity: VisualDensity.comfortable,
+              ),
             ),
-            value: statusBarVisible,
-            onChanged: (bool value) {
-              setState(() {
-                statusBarVisible = value;
-                SystemChrome.setEnabledSystemUIMode(
-                    value ? SystemUiMode.immersiveSticky : SystemUiMode.manual,
-                    overlays: value ? [] : SystemUiOverlay.values);
-              });
-            },
-            secondary: const Icon(Icons.sim_card, size: 38),
-            subtitle: Consumer<FontSizeProvider>(
-              builder: (context, fontSizeProvider, child) {
-                return Text(
-                  'Enable or disable visibility of status bar',
-                  style: TextStyle(
-                      color: isDarkMode ? Colors.white : Colors.black,
-                      fontStyle: FontStyle.italic,
-                      fontSize: smallFontSize),
-                ).tr();
-              },
-            ),
-            isThreeLine: true,
-            dense: false,
-            contentPadding: const EdgeInsets.all(8),
-            activeColor: Colors.lightBlue,
-            inactiveThumbColor: Colors.white,
-            inactiveTrackColor: Colors.white.withOpacity(0.5),
-            activeTrackColor: Colors.lightBlue.withOpacity(0.5),
-            tileColor: isDarkMode
-                ? Colors.grey[800]
-                : const Color.fromARGB(255, 152, 151, 151),
-            selected: statusBarVisible,
-            selectedTileColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            controlAffinity: ListTileControlAffinity.trailing,
-            autofocus: false,
-            visualDensity: VisualDensity.comfortable,
           ),
           const SizedBox(height: 5),
           Divider(
@@ -766,54 +843,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 5),
 
           // Haptic Button SwitchListTile
-          SwitchListTile(
-            title: Consumer<FontSizeProvider>(
-              builder: (context, fontSizeProvider, child) {
-                return Text(
-                  'Button Haptic Feedback',
-                  style: TextStyle(
-                      color: isDarkMode ? Colors.white : Colors.black,
-                      fontSize: fontSizeProvider.fontSize),
-                ).tr();
-              },
+          SizedBox(
+            height: tileHeight, // Set the fixed height
+            child: Align(
+              alignment: Alignment.center,
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: screenWidth * 0.05,
+                ),
+                title: Consumer<FontSizeProvider>(
+                  builder: (context, fontSizeProvider, child) {
+                    return Text(
+                      'Button Haptic Feedback',
+                      style: TextStyle(
+                          color: isDarkMode ? Colors.white : Colors.black,
+                          fontSize: fontSizeProvider.fontSize),
+                    ).tr();
+                  },
+                ),
+                value: hapticFeedback,
+                onChanged: (bool value) async {
+                  setState(() {
+                    hapticFeedback = value;
+                  });
+                  await _saveHapticPreference(value);
+                  // Apply haptic feedback immediately to give instant feedback
+                  if (value) {
+                    Vibrate.feedback(FeedbackType.light);
+                  }
+                },
+                secondary: const Icon(Icons.touch_app, size: 38),
+                subtitle: Consumer<FontSizeProvider>(
+                  builder: (context, fontSizeProvider, child) {
+                    return Text(
+                      'Enable or disable haptic feedback for the buttons',
+                      style: TextStyle(
+                          color: isDarkMode ? Colors.white : Colors.black,
+                          fontStyle: FontStyle.italic,
+                          fontSize: smallFontSize),
+                    ).tr();
+                  },
+                ),
+                isThreeLine: true,
+                dense: false,
+                activeColor: Colors.lightBlue,
+                inactiveThumbColor: Colors.white,
+                inactiveTrackColor: Colors.white.withOpacity(0.5),
+                activeTrackColor: Colors.lightBlue.withOpacity(0.5),
+                tileColor: Colors.transparent,
+                selected: hapticFeedback,
+                selectedTileColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                controlAffinity: ListTileControlAffinity.trailing,
+                autofocus: false,
+                visualDensity: VisualDensity.comfortable,
+              ),
             ),
-            value: hapticFeedback,
-            onChanged: (bool value) {
-              setState(() {
-                hapticFeedback = value;
-              });
-              _saveHapticPreference(value); // Save haptic feedback setting
-            },
-            secondary: const Icon(Icons.touch_app, size: 38),
-            subtitle: Consumer<FontSizeProvider>(
-              builder: (context, fontSizeProvider, child) {
-                return Text(
-                  'Enable or disable haptic feedback for the buttons',
-                  style: TextStyle(
-                      color: isDarkMode ? Colors.white : Colors.black,
-                      fontStyle: FontStyle.italic,
-                      fontSize: smallFontSize),
-                ).tr();
-              },
-            ),
-            isThreeLine: true,
-            dense: false,
-            contentPadding: const EdgeInsets.all(8),
-            activeColor: Colors.lightBlue,
-            inactiveThumbColor: Colors.white,
-            inactiveTrackColor: Colors.white.withOpacity(0.5),
-            activeTrackColor: Colors.lightBlue.withOpacity(0.5),
-            tileColor: isDarkMode
-                ? Colors.grey[800]
-                : const Color.fromARGB(255, 152, 151, 151),
-            selected: hapticFeedback,
-            selectedTileColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            controlAffinity: ListTileControlAffinity.trailing,
-            autofocus: false,
-            visualDensity: VisualDensity.comfortable,
           ),
         ],
         // Add other UI components for different settings here

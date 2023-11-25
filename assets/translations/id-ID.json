@@ -1,9 +1,17 @@
 {
     "UnitApp": "UnitApp",
+    "Language": "Bahasa",
     "Tap an option": "Ketuk opsi",
 "Type Magnitude/Unit/Symbol": "Ketik Besaran/Satuan/Simbol",
 "Reset default settings": "Atur ulang pengaturan bawaan",
 "Share a screenshot of your results!": "Bagikan tangkapan layar hasil Anda!",
+"Formula:   ": "Rumus:   ",
+"Reset default settings" : "Atur ulang pengaturan bawaan",
+"resetButton" : "Atur ulang",
+"Share a screenshot of your results!" : "Bagikan tangkapan layar hasil Anda!",
+"shareButton" : "Bagikan",
+
+"Select Language": "  ",
 "Formula": "Rumus",
 "Formula ": "Rumus",
 "Formula  ": "Rumus",

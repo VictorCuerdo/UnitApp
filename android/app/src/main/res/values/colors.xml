@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="design_default_color_primary">#FF6200EE</color> <!-- Example purple color, replace with the color you want -->
+    <!-- Define other colors here if needed -->
+</resources>

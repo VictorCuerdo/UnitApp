@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.8.10' // Set the latest Kotlin version here
+    ext.kotlin_version = '1.9.10' // Set the latest Kotlin version here
     repositories {
         google()
         mavenCentral()
@@ -8,7 +8,14 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:7.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // Use the latest version of the Google services Gradle plugin
+        classpath 'com.google.gms:google-services:4.4.0'
+
+        classpath 'com.google.firebase:perf-plugin:1.4.1'
+        // Use the latest version of the Firebase Crashlytics Gradle plugin
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.5'
     }
+
 }
 
 allprojects {
@@ -22,9 +29,9 @@ rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
-subprojects {
+/* subprojects {
     project.evaluationDependsOn(':app')
-}
+} */
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir

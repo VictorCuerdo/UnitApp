@@ -1,9 +1,17 @@
 {
   "UnitApp": "UnitApp",
+  "Language":"Lingua",
   "Tap an option": "Tocca un'opzione",
 "Type Magnitude/Unit/Symbol": "Digita Magnitudine/Unità/Simbolo",
 "Reset default settings": "Ripristina impostazioni predefinite",
 "Share a screenshot of your results!": "Condividi uno screenshot dei tuoi risultati!",
+"Formula:   ": "Formula:   ",
+"Reset default settings" : "Ripristina impostazioni predefinite",
+"resetButton" : "Ripristina impostazioni predefinite",
+"Share a screenshot of your results!" : "Condividi uno screenshot dei tuoi risultati!",
+"shareButton" : "Condividi",
+
+"Select Language": "  ",
 "Formula": "Formula",
 "Formula ": "Formula",
 "Formula  ": "Formula",

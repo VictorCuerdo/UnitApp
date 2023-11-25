@@ -1,9 +1,17 @@
 {
   "UnitApp": "UnitApp",
+  "Language": "Språk",
   "Tap an option": "Trykk på en valgmulighet",
 "Type Magnitude/Unit/Symbol": "Skriv inn Størrelse/Enhet/Symbol",
 "Reset default settings": "Tilbakestill standardinnstillinger",
 "Share a screenshot of your results!": "Del et skjermbilde av resultatene dine!",
+"Formula:   ": "Formel:   ",
+"Reset default settings" : "Tilbakestill standardinnstillinger",
+"resetButton" : "Tilbakestill",
+"Share a screenshot of your results!" : "Del et skjermbilde av resultatene dine!",
+"shareButton" : "Del",
+
+"Select Language": "  ",
 "Formula": "Formel",
 "Formula ": "Formel",
 "Formula  ": "Formel",

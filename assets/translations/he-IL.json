@@ -1,9 +1,18 @@
 {
     "UnitApp": "UnitApp",
+    "Language": "שפה",
     "Tap an option": "הקש אפשרות",
 "Type Magnitude/Unit/Symbol": "הקלד גודל/יחידה/סמל",
 "Reset default settings": "אפס הגדרות ברירת מחדל",
 "Share a screenshot of your results!": "שתף צילום מסך של התוצאות שלך!",
+"Formula:   ": "נוסחה:   ",
+"Reset default settings" : "אפס הגדרות ברירת מחדל",
+"resetButton" : "אפס",
+"Share a screenshot of your results!" : "שתף צילום מסך של התוצאות שלך!",
+"shareButton" : "שתף",
+
+
+"Select Language": "  ",
 "Formula": "נוסח",
 "Formula ": "נוסח",
 "Formula  ": "נוסח",

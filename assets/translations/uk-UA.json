@@ -1,9 +1,17 @@
 {
   "UnitApp": "UnitApp",
+  "Language": "Мова",
   "Tap an option": "Виберіть опцію",
 "Type Magnitude/Unit/Symbol": "Введіть Величину/Одиницю/Символ",
 "Reset default settings": "Скинути налаштування за замовчуванням",
 "Share a screenshot of your results!": "Поділіться знімком екрану з результатами!",
+"Formula:   ": "Формула:   ",
+"Reset default settings" : "Скинути налаштування за замовчуванням",
+"resetButton" : "Скинути",
+"Share a screenshot of your results!" : "Поділіться знімком екрану з результатами!",
+"shareButton" : "Поділитися",
+
+"Select Language": "  ",
 "Formula": "Формула",
 "Formula ": "Формула",
 "Formula  ": "Формула",

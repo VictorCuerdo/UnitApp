@@ -1,5 +1,12 @@
 {
   "UnitApp": "UnitApp",
+  "Language": "اللغة",
+  "Formula:   ": "الصيغة:   ",
+  "Reset default settings" : "  إعادة تعيين الإعدادات الافتراضية",
+  "resetButton" : "إعادة تعيين",
+  "Share a screenshot of your results!" : "شارك لقطة شاشة لنتائجك!",
+  "shareButton" : "زر المشاركة",
+  "Select Language": "  ",
   "Tap an option": "اضغط على الخيار",
 "Type Magnitude/Unit/Symbol": "اكتب القيمة/الوحدة/الرمز",
 "Reset default settings": "إعادة تعيين الإعدادات الافتراضية",

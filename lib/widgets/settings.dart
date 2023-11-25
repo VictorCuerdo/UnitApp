@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unitapp/ads/natives.dart';
 import 'package:unitapp/controllers/font_size_provider.dart';
 import 'package:unitapp/controllers/navigation_utils.dart';
 import 'package:unitapp/controllers/theme_provider.dart';
@@ -18,21 +19,20 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool hapticFeedback = false;
-  bool pointSelected = true;
-  bool commaSelected = false;
+  bool hapticFeedback = true;
   bool statusBarVisible = false;
-  static const double smallFontSize = 14.0;
-  static const double mediumFontSize = 20.0;
-  static const double largeFontSize = 23.0;
+  static const double smallFontSize = 13.0;
+  static const double mediumFontSize = 16.0;
+  static const double largeFontSize = 19.0;
   Locale _selectedLocale = const Locale('en', 'US');
   double fontSize = mediumFontSize;
-  bool isDarkMode = false; // Added to handle theme changes
+  bool isDarkMode = true; // Added to handle theme changes
   static const double tileHeight = 120.0; // Example fixed height for each tile
+
   Future<void> _loadStatusBarVisibility() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      statusBarVisible = prefs.getBool('statusBarVisible') ?? false;
+      statusBarVisible = prefs.getBool('statusBarVisible') ?? true;
       // Update system UI mode based on the saved preference
       SystemChrome.setEnabledSystemUIMode(
         statusBarVisible ? SystemUiMode.immersiveSticky : SystemUiMode.manual,
@@ -44,36 +44,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadThemePreference();
-    _loadSettings();
-    _loadHapticPreference();
+    _loadPreferences();
     _loadStatusBarVisibility();
-    _loadPreferences(); // Load status bar visibility setting
   }
 
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      statusBarVisible = prefs.getBool('statusBarVisible') ?? false;
-      hapticFeedback = prefs.getBool('hapticFeedback') ?? false;
-      fontSize = prefs.getDouble('fontSize') ?? mediumFontSize;
-      // ... other preferences ...
+    Locale? tempLocale; // Declare the variable in an accessible scope
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      tempLocale = context.locale; // Assign to tempLocale within the callback
     });
+    String languageCode = prefs.getString('locale_languageCode') ?? 'en';
+    String countryCode = prefs.getString('locale_countryCode') ?? 'US';
+    Locale savedLocale = Locale(languageCode, countryCode);
+    bool isHapticFeedbackEnabled = prefs.getBool('hapticFeedback') ?? false;
+    bool isStatusBarVisible = prefs.getBool('statusBarVisible') ?? true;
+    bool isDarkModeEnabled = prefs.getBool('isDarkMode') ?? false;
+    double savedFontSize = prefs.getDouble('fontSize') ?? mediumFontSize;
+
+    // Apply all the loaded preferences
+    setState(() {
+      hapticFeedback = isHapticFeedbackEnabled;
+      statusBarVisible = isStatusBarVisible;
+      isDarkMode = isDarkModeEnabled;
+      fontSize = savedFontSize;
+      _selectedLocale = savedLocale;
+      context.setLocale(savedLocale); // Set the saved locale
+      if (tempLocale != null) {
+        _selectedLocale = tempLocale!;
+      }
+    });
+
     // Apply system UI mode based on the saved preference
     SystemChrome.setEnabledSystemUIMode(
       statusBarVisible ? SystemUiMode.immersiveSticky : SystemUiMode.manual,
       overlays: statusBarVisible ? [] : SystemUiOverlay.values,
     );
-    // Update providers or other state management solutions here if you decide to use them
-    Provider.of<FontSizeProvider>(context, listen: false).fontSize = fontSize;
-    // ... other provider updates ...
-  }
 
-  Future<void> _loadThemePreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isDarkMode = prefs.getBool('isDarkMode') ?? false;
-    });
+    // Update the FontSizeProvider if you are using Provider for font size management
+    Provider.of<FontSizeProvider>(context, listen: false).fontSize = fontSize;
+
+    // If you have a theme provider, update it as well
+    Provider.of<ThemeProvider>(context, listen: false).setTheme(isDarkMode);
+
+    // If any other providers or state management solutions are being used, update them here
   }
 
   Future<void> _saveThemePreference(bool isDarkMode) async {
@@ -81,21 +96,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await prefs.setBool('isDarkMode', isDarkMode);
   }
 
-  Future<void> _loadSettings() async {
+  Future<void> _saveLocalePreference(Locale locale) async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      fontSize = prefs.getDouble('fontSize') ?? mediumFontSize;
-      // Use null assertion operator `!` if you are sure it's never null at this point
-      _selectedLocale = context.locale;
-    });
-    Provider.of<FontSizeProvider>(context, listen: false).fontSize = fontSize;
-  }
-
-  Future<void> _loadHapticPreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      hapticFeedback = prefs.getBool('hapticFeedback') ?? false;
-    });
+    await prefs.setString('locale_languageCode', locale.languageCode);
+    await prefs.setString('locale_countryCode', locale.countryCode ?? '');
   }
 
   Future<void> _saveStatusBarVisibility(bool value) async {
@@ -118,7 +122,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Select Language"),
+          title: const Text("Select Language").tr(),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.6,
@@ -372,6 +376,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   'assets/images/filipinas_flag.png',
                   _selectedLocale == const Locale('tl', 'PH'),
                 ),
+                languageGridTile(
+                  context,
+                  const Locale('uk', 'UA'),
+                  'UA',
+                  'assets/images/ucrania_flag.png',
+                  _selectedLocale == const Locale('uk', 'UA'),
+                ),
               ],
             ),
           ),
@@ -386,9 +397,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       onTap: () {
         setState(() {
           _selectedLocale = locale;
-          // Make sure this method exists and sets the new locale correctly
           context.setLocale(locale);
         });
+        _saveLocalePreference(locale); // Save the locale once it's selected
         Navigator.of(context).pop();
       },
       child: Column(
@@ -452,6 +463,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       const Locale('sv', 'SE'): 'assets/images/suecia_flag.png',
       const Locale('sw', 'SW'): 'assets/images/swahili_flag.png',
       const Locale('tl', 'PH'): 'assets/images/filipinas_flag.png',
+      const Locale('uk', 'UA'): 'assets/images/ucrania_flag.png',
     };
 
     // Return the corresponding flag image path or a default one if not found
@@ -496,6 +508,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       const Locale('sv', 'SE'): 'SE',
       const Locale('sw', 'SW'): 'SW',
       const Locale('tl', 'PH'): 'PH',
+      const Locale('uk', 'UA'): 'UA',
     };
 
     // Return the corresponding language code or a default one if not found
@@ -508,9 +521,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         MediaQuery.of(context).size.width; // Get the screen width
 
     return Scaffold(
-      backgroundColor: isDarkMode
-          ? Colors.black
-          : const Color(0xFFFAE0E0), // Theme-aware background
+      backgroundColor:
+          isDarkMode ? Colors.black : Colors.white, // Theme-aware background
       body: ListView(
         children: <Widget>[
           const SizedBox(height: 30),
@@ -528,7 +540,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 18),
           SizedBox(
             height: tileHeight, // Set the fixed height
             child: Align(
@@ -545,7 +557,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   horizontal: screenWidth * 0.05,
                 ),
                 activeColor: Colors.lightBlue,
-                inactiveThumbColor: Colors.grey[800],
+                inactiveThumbColor: Colors.black,
                 inactiveTrackColor: Colors.grey.withOpacity(0.5),
                 activeTrackColor: Colors.lightBlue.withOpacity(0.5),
                 tileColor: Colors.transparent,
@@ -590,13 +602,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   vertical: 8.0,
                   horizontal: screenWidth * 0.05,
                 ),
-                leading: Image.asset(
-                  getFlagImagePath(
-                      _selectedLocale), // function to get the image path based on locale
-                  width: 30, // Adjust the size as needed
-                  height: 30, // Adjust the size as needed
-                  fit: BoxFit.cover,
+                leading: Container(
+                  padding: const EdgeInsets.all(
+                      0.5), // Adjust the padding for the size of the frame you want
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.black, // Color of the frame
+                      width: 2.5, // Thickness of the frame
+                    ),
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      getFlagImagePath(
+                          _selectedLocale), // function to get the image path based on locale
+                      width: 32, // Adjust the size as needed
+                      height: 32, // Adjust the size as needed
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
+
                 title: Text(
                   "Language".tr(),
                   style: TextStyle(
@@ -630,7 +656,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               alignment: Alignment.center,
               child: ListTile(
                 contentPadding: EdgeInsets.symmetric(
-                  vertical: 8.0,
+                  vertical: 5.0,
                   horizontal: screenWidth * 0.05,
                 ),
                 title: Text(
@@ -643,7 +669,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 subtitle: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
                     Center(
                       child: Row(
                         mainAxisSize: MainAxisSize.min, // This centers the row
@@ -820,8 +846,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 isThreeLine: true,
                 dense: false,
                 activeColor: Colors.lightBlue,
-                inactiveThumbColor: Colors.white,
-                inactiveTrackColor: Colors.white.withOpacity(0.5),
+                inactiveThumbColor: Colors.black,
+                inactiveTrackColor: Colors.grey.withOpacity(0.5),
                 activeTrackColor: Colors.lightBlue.withOpacity(0.5),
                 tileColor: Colors.transparent,
                 selected: statusBarVisible,
@@ -888,8 +914,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 isThreeLine: true,
                 dense: false,
                 activeColor: Colors.lightBlue,
-                inactiveThumbColor: Colors.white,
-                inactiveTrackColor: Colors.white.withOpacity(0.5),
+                inactiveThumbColor: Colors.black,
+                inactiveTrackColor: Colors.grey.withOpacity(0.5),
                 activeTrackColor: Colors.lightBlue.withOpacity(0.5),
                 tileColor: Colors.transparent,
                 selected: hapticFeedback,
@@ -903,8 +929,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
+          // Use the NativeAdWidget you defined
+          // The _showAd flag is no longer needed here if NativeAdWidget manages its own loading state.
+          const SizedBox(height: 20),
+          Divider(
+            color: isDarkMode ? Colors.white : Colors.grey[800],
+            thickness: 2,
+          ),
+          const SizedBox(height: 15),
+          const NativeAdWidget(), // This widget will only display if the ad is loaded due to its internal state management.
         ],
-        // Add other UI components for different settings here
       ),
     );
   }

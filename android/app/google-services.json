@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "503073606477",
+    "project_id": "unitapp-e732a",
+    "storage_bucket": "unitapp-e732a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:503073606477:android:cab051fcb58e78f651c504",
+        "android_client_info": {
+          "package_name": "com.example.unitapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYq-rTDyaq4nIxSS7fpYEJfdnXXqW-zjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

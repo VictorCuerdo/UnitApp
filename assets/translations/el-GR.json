@@ -1,6 +1,13 @@
 {
     "UnitApp": "UnitApp",
+    "Language":"Ελληνικά",
     "Tap an option": "Πατήστε μια επιλογή",
+    "Formula:   ": "Τύπος:   ",
+    "Reset default settings" : "Επαναφορά προεπιλεγμένων ρυθμίσεων",
+    "resetButton" : "Επαναφορά",
+    "Share a screenshot of your results!" : "Κοινοποιήστε μια στιγμιότυπη οθόνη των αποτελεσμάτων σας!",
+    "shareButton" : "Κοινοποίηση",
+    "Select Language": "  ",
 "Type Magnitude/Unit/Symbol": "Πληκτρολογήστε Μέγεθος/Μονάδα/Σύμβολο",
 "Reset default settings": "Επαναφορά προεπιλεγμένων ρυθμίσεων",
 "Share a screenshot of your results!": "Κοινοποιήστε μια στιγμιότυπη οθόνη των αποτελεσμάτων σας!",

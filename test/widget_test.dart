@@ -1,29 +1,22 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:unitapp/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const UnitApp());
+  testWidgets('Widget Test', (WidgetTester tester) async {
+    // Build your app and trigger a frame.
+    await tester.pumpWidget(UnitApp(analytics: FirebaseAnalytics.instance));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Add your test logic here.
+    // For example, you can find widgets by their key and interact with them.
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify the expected results of your test.
+    // For example, you can check if a widget is displayed correctly.
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // You can also use the `expect` function to assert the results.
+    // For example, you can check if a widget has a specific text.
+
+    // Remember to call `pumpAndSettle` to ensure all animations have completed.
+    await tester.pumpAndSettle();
   });
 }

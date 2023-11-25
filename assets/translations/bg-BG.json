@@ -1,5 +1,12 @@
 {
     "UnitApp": "UnitApp",
+    "Language": "\u0435\u0437\u0438\u043a",
+    "Formula:   ": "\u0424\u043e\u0440\u043c\u0443\u043b\u0430:   ",
+    "Select Language": "  ",
+"Reset default settings" : "Възстановяване на настройките по подразбиране",
+"resetButton" : " ",
+"Share a screenshot of your results!" : "Споделете снимка на резултатите!",
+"shareButton" : " ",
     "Scroll and pick a color!": "Превъртете и изберете цвят!",
     "Tap an option": "Натиснете опция",
 "Type Magnitude/Unit/Symbol": "Въведете размер/единица/символ",

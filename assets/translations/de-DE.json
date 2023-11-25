@@ -1,5 +1,14 @@
 {
   "UnitApp": "UnitApp",
+  "Language": "Sprache",
+  "Formula:   ": "Formel:   ",
+  "Reset default settings" : "Standardeinstellungen zurücksetzen",
+  "resetButton" : "Zurücksetzen",
+  "Select Language": "  ",
+  "Share a screenshot of your results!" : "Teilen Sie einen Screenshot Ihrer Ergebnisse!",
+  "shareButton" : "Teilen",
+
+
   "Tap an option": "Wählen Sie eine Option aus",
 "Type Magnitude/Unit/Symbol": "Typ Größe/Einheit/Symbol",
 "Reset default settings": "Standardeinstellungen zurücksetzen",

@@ -29,7 +29,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF015480),
+      backgroundColor: Colors.black,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -37,21 +37,36 @@ class _LoadingScreenState extends State<LoadingScreen> {
             LottieBuilder.asset(
               'assets/animations/U.json',
               // You can adjust the width and height as per your requirements.
-              width: 500,
-              height: 500,
+              width: 250,
+              height: 250,
               fit: BoxFit.fill,
               animate: true, // True by default
             ),
             const SizedBox(
                 height: 15), // Space between the animation and the text
-            const Text(
-              'UnitApp',
-              style: TextStyle(
-                color: Colors.lightBlue,
-                fontWeight: FontWeight.bold,
-                fontSize: 38, // Adjust the font size as per your requirements
+
+            RichText(
+              text: const TextSpan(
+                text: 'Unit',
+                style: TextStyle(
+                    color: Colors.lightBlue,
+                    fontFamily: 'Work Sans',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 68),
+                children: [
+                  TextSpan(
+                    text: 'App',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Work Sans',
+                      fontWeight: FontWeight.w500,
+                      fontSize:
+                          68, // Adjust the font size as per your requirements
+                    ),
+                  ),
+                ],
               ),
-            )
+            ),
           ],
         ),
       ),

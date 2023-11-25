@@ -1,9 +1,17 @@
 {
     "UnitApp": "UnitApp",
+    "Language": "Jezik",
     "Tap an option": "Tapnite možnost",
 "Type Magnitude/Unit/Symbol": "Vnesite Velikost/Enoto/Simbol",
 "Reset default settings": "Ponastavi privzete nastavitve",
 "Share a screenshot of your results!": "Deli sliko z rezultati!",
+"Formula:   ": "Formula:   ",
+"Reset default settings" : "Ponastavi privzete nastavitve",
+"resetButton" : "Ponastavi",
+"Share a screenshot of your results!" : "Deli sliko z rezultati!",
+"shareButton" : "Deli",
+
+"Select Language": "  ",
 "Formula": "Formula",
 "Formula ": "Formula",
 "Formula  ": "Formula",

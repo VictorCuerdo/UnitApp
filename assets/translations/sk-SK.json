@@ -1,6 +1,13 @@
 {
     "UnitApp": "UnitApp",
+    "Language":"Jazyk",
     "Tap an option": "Kliknite na možnosť",
+    "Formula:   ": "Vzorec:   ",
+    "Reset default settings" : "Obnoviť predvolené nastavenia",
+    "resetButton" : "Obnoviť",
+    "Share a screenshot of your results!" : "Zdieľajte snímku obrazovky s výsledkami!",
+    "shareButton" : "Zdieľať",
+    "Select Language": "  ",
 "Type Magnitude/Unit/Symbol": "Napíšte Veľkosť/Jednotku/Symbol",
 "Reset default settings": "Obnoviť predvolené nastavenia",
 "Share a screenshot of your results!": "Zdieľajte snímku obrazovky s výsledkami!",

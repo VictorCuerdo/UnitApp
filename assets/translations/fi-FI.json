@@ -1,7 +1,15 @@
 
 {
     "UnitApp": "UnitApp",
+    "Language": "Kieli",
     "Tap an option": "Napauta vaihtoehtoa",
+    "Formula:   ": "Kaava:   ",
+    "Reset default settings" : "Palauta oletusasetukset",
+    "resetButton" : "Palauta",
+    "Share a screenshot of your results!" : "Jaa näyttötallenne tuloksistasi!",
+    "shareButton" : "Jaa",
+
+    "Select Language": "  ",
 "Type Magnitude/Unit/Symbol": "Kirjoita Magnitudi/Yksikkö/Symboli",
 "Reset default settings": "Palauta oletusasetukset",
 "Share a screenshot of your results!": "Jaa näyttötallenne tuloksistasi!",

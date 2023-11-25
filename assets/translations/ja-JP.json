@@ -1,9 +1,17 @@
 {
   "UnitApp": "UnitApp",
+  "Language": "言語",
   "Tap an option": "オプションをタップ",
 "Type Magnitude/Unit/Symbol": "サイズ/単位/シンボルを入力",
 "Reset default settings": "デフォルト設定にリセット",
 "Share a screenshot of your results!": "結果のスクリーンショットを共有！",
+"Formula:   ": "式：   ",
+"Reset default settings" : "デフォルト設定にリセット",
+"resetButton" : "リセット",
+"Share a screenshot of your results!" : "結果のスクリーンショットを共有！",
+"shareButton" : "共有",
+
+"Select Language": "  ",
 "Formula": "式",
 "Formula ": "式",
 "Formula  ": "式",

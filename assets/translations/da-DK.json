@@ -1,5 +1,12 @@
 {
     "UnitApp": "UnitApp",
+    "Language": "Sprog",
+    "Formula:   ": "Formel:   ",
+"Reset default settings" : "Nulstil standardindstillinger",
+"Select Language": "  ",
+"resetButton" : "Nulstil",
+"Share a screenshot of your results!" : "Del et skærmbillede af dine resultater!",
+"shareButton" : "Del",
     "Tap an option": "Tryk på en mulighed",
 "Type Magnitude/Unit/Symbol": "Indtast Størrelse/Enhed/Symbol",
 "Reset default settings": "Nulstil standardindstillinger",

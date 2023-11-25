@@ -1,5 +1,13 @@
 {
   "UnitApp": "UnitApp",
+  "Language": "Язык",
+  "Formula:   ": "Формула:   ",
+  "Reset default settings" : "Сбросить настройки по умолчанию",
+  "resetButton" : "Сбросить",
+  "Share a screenshot of your results!" : "Поделитесь скриншотом ваших результатов!",
+  "shareButton" : "Поделиться",
+
+  "Select Language": "  ",
   "Choose a conversion unit":"Выберите единицу конверсии",
   "Choose a conversion unit ":"Выберите единицу конверсии",
   "Choose a conversion unit  ":"Выберите единицу конверсии",
@@ -2667,7 +2675,7 @@
 "Speed": "Скорость",
 "Mass": "Масса",
 "Force": "Сила",
-"Torque": "Момент Силы",
+"Torque": "Крутящий Момент",
 "Pressure": "Давление",
 "Energy": "Энергия",
 "Frequency": "Частота",

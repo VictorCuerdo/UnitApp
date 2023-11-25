@@ -1,9 +1,17 @@
 {
     "UnitApp": "UnitApp",
+    "Language": "Lugha",
     "Tap an option": "Gonga chaguo",
 "Type Magnitude/Unit/Symbol": "Ingiza Kipimo/Kitengo/Keneno",
 "Reset default settings": "Weka upya mipangilio ya awali",
 "Share a screenshot of your results!": "Shiriki picha ya skrini ya matokeo yako!",
+"Formula:   ": "Fomula:   ",
+"Reset default settings" : "Weka upya mipangilio ya awali",
+"resetButton" : "",
+"Share a screenshot of your results!" : "Shiriki picha ya skrini ya matokeo yako!",
+"shareButton" : "",
+
+"Select Language": "  ",
 "Formula": "Fomula",
 "Formula ": "Fomula",
 "Formula  ": "Fomula",

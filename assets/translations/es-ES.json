@@ -1,5 +1,12 @@
 {
   "UnitApp": "UnitApp",
+  "Language": "Idioma",
+  "Formula:   ": "Formula:  ",
+  "Reset default settings" : "Restablecer la configuración predeterminada",
+  "resetButton" : "Botón de resetear ",
+  "Share a screenshot of your results!" : "¡Comparte una captura de pantalla de tus resultados!",
+  "shareButton" : "Botón de compartir",
+  "Select Language": "Elegir idioma",
   "Divide the volume value by 1,000": "Divida el valor del volumen por 1000.",
   "Divide the volume value by 1,000 (since 1 cubic decimetre = 1 litre)": "Divida el valor del volumen por 1000 (ya que 1 dec\u00edmetro c\u00fabico = 1 litro)",
   "Divide the volume value by 100,000": "Divida el valor del volumen por 100.000",

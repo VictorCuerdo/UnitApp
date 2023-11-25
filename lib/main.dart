@@ -1,5 +1,10 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unitapp/controllers/font_size_provider.dart';
@@ -24,13 +29,25 @@ import 'package:unitapp/widgets/loading_screen.dart';
 import 'package:unitapp/widgets/settings.dart';
 import 'package:unitapp/widgets/unit_conversion.dart';
 
+// Import the generated file
+import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Google Mobile Ads SDK
+  unawaited(MobileAds.instance.initialize());
   await EasyLocalization.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   ThemeProvider themeProvider = ThemeProvider();
-  await themeProvider.loadThemePreference(); // Make sure this is awaited
+  await themeProvider.loadThemePreference();
 
   bool hapticFeedback = await loadHapticPreference();
+
+  FirebaseAnalytics analytics =
+      FirebaseAnalytics.instance; // Instantiate FirebaseAnalytics
 
   runApp(
     EasyLocalization(
@@ -72,7 +89,6 @@ void main() async {
         Locale('tl', 'PH'),
         Locale('uk', 'UA'),
       ],
-
       path: 'assets/translations', // Path to translation files
       fallbackLocale: const Locale('en', 'US'),
       child: MultiProvider(
@@ -80,8 +96,8 @@ void main() async {
           ChangeNotifierProvider(create: (_) => FontSizeProvider()),
           ChangeNotifierProvider(create: (context) => themeProvider),
           Provider<bool>.value(value: hapticFeedback),
-        ], // Provide the haptic feedback value
-        child: const UnitApp(),
+        ],
+        child: UnitApp(analytics: analytics),
       ),
     ),
   );
@@ -93,11 +109,21 @@ Future<bool> loadHapticPreference() async {
 }
 
 class UnitApp extends StatelessWidget {
-  const UnitApp({Key? key}) : super(key: key);
+  final FirebaseAnalytics analytics; // Add analytics as a member variable
+
+  const UnitApp({super.key, required this.analytics});
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+
+    analytics.logEvent(
+      name: 'app_open',
+      parameters: <String, dynamic>{
+        'string_parameter': 'UnitApp Started',
+        'int_parameter': 1,
+      },
+    );
 
     return MaterialApp(
       title: 'UnitApp'.tr(),
@@ -125,7 +151,7 @@ class UnitApp extends StatelessWidget {
       },
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
-      locale: context.locale, // Add locale
+      locale: context.locale,
     );
   }
 }

@@ -1,10 +1,14 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unitapp/ads/banners.dart';
+import 'package:unitapp/ads/interstitial.dart';
 import 'package:unitapp/controllers/font_size_provider.dart';
 import 'package:unitapp/controllers/navigation_utils.dart';
 import 'package:unitapp/widgets/search_widget.dart';
@@ -28,7 +32,7 @@ class _UnitConversionState extends State<UnitConversion> {
   int?
       _tappedIndex; // Variable to keep track of the tapped grid item for the animation effect
 // Add a method to determine if dark mode is enabled
-  bool get isDarkMode => Theme.of(context).brightness == Brightness.dark;
+  bool get isDarkMode => Theme.of(context).brightness == Brightness.light;
   bool _isSearchBarVisible = false;
   // Method to handle outside tap to close the search bar
 
@@ -65,35 +69,43 @@ class _UnitConversionState extends State<UnitConversion> {
               color: Colors.black,
             ),
           ),
-          content: SizedBox(
+          content: Container(
             width: double.maxFinite,
             // Set the height to be 30% larger than the calculated height
             height: dialogHeight * 1.6,
             child: DefaultTabController(
               length: 2,
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                // mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   TabBar(
+                    splashBorderRadius: BorderRadius.circular(15),
+                    dividerColor: Colors.transparent,
+                    enableFeedback: true,
+                    indicatorWeight: dialogHeight *
+                        0.03, // Set indicator weight to 10% of the calculated height
+                    indicatorColor: Colors.transparent,
                     labelColor: Colors.white,
-                    unselectedLabelColor: Colors.black,
+                    unselectedLabelColor: Colors.grey[800],
                     indicator: const BoxDecoration(
                       color: Colors.blue,
                       borderRadius: BorderRadius.all(
                           Radius.circular(15)), // Rounded indicator
-                    ),
+                    ), // Rounded indicator
+
                     tabs: [
                       Tab(
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 15,
-                              horizontal: 16), // Adjust padding as needed
+                              horizontal: 10), // Adjust padding as needed
                           decoration: BoxDecoration(
                             color: Colors.blue.withOpacity(
                                 0.1), // Slight background color for tabs
                             borderRadius: BorderRadius.circular(
                                 15), // Round the corners of the tabs
                           ),
+
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment
                                 .center, // Center row contents horizontally
@@ -152,7 +164,8 @@ class _UnitConversionState extends State<UnitConversion> {
             TextButton(
               child: Text(
                 'Close'.tr(),
-                style: const TextStyle(fontSize: 18),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -168,7 +181,7 @@ class _UnitConversionState extends State<UnitConversion> {
     return ListView(
       shrinkWrap: true,
       children: [
-        const SizedBox(height: 25),
+        const SizedBox(height: 35),
         Image.asset(
           'assets/images/qrcode.png', // Replace with your actual QR code asset path
           height: 170,
@@ -178,9 +191,9 @@ class _UnitConversionState extends State<UnitConversion> {
         SelectableText(
           appLink,
           style: const TextStyle(
+            fontSize: 16,
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            decoration: TextDecoration.underline,
           ),
           textAlign: TextAlign.center,
         ),
@@ -190,13 +203,21 @@ class _UnitConversionState extends State<UnitConversion> {
             Clipboard.setData(ClipboardData(text: appLink)).then((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    'Link copied to clipboard'.tr(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Link copied to clipboard'.tr(),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   backgroundColor: const Color(0xFF1B3A4B),
                   duration: const Duration(seconds: 3),
@@ -204,8 +225,7 @@ class _UnitConversionState extends State<UnitConversion> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(25), // Increased rounding here
+                    borderRadius: BorderRadius.circular(25),
                   ),
                   elevation: 6.0,
                 ),
@@ -216,8 +236,7 @@ class _UnitConversionState extends State<UnitConversion> {
             backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(35.0), // Increased rounding here
+                borderRadius: BorderRadius.circular(35.0),
               ),
             ),
             padding: MaterialStateProperty.all<EdgeInsets>(
@@ -227,12 +246,12 @@ class _UnitConversionState extends State<UnitConversion> {
           child: Text(
             'Copy Link'.tr(),
             style: const TextStyle(
-              fontSize: 21,
+              fontSize: 20,
               color: Colors.white,
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 5),
       ],
     );
   }
@@ -345,13 +364,80 @@ class _UnitConversionState extends State<UnitConversion> {
     Provider.of<FontSizeProvider>(context, listen: false).fontSize = fontSize;
   }
 
+  void navigateOrShare(String label) {
+    switch (label) {
+      case 'Settings':
+        context.navigateTo('/settings');
+        break;
+      case 'Share':
+        _shareApp(context);
+        break;
+
+      case 'Distance':
+        context.navigateTo('/distance');
+        break;
+      case 'Area':
+        context.navigateTo('/area');
+        break;
+      case 'Volume':
+        context.navigateTo('/volume');
+        break;
+      case 'Mass':
+        context.navigateTo('/mass');
+        break;
+      case 'Time':
+        context.navigateTo('/time');
+        break;
+      case 'Speed':
+        context.navigateTo('/speed');
+        break;
+      case 'Frequency':
+        context.navigateTo('/frequency');
+        break;
+      case 'Force':
+        context.navigateTo('/force');
+        break;
+      case 'Torque':
+        context.navigateTo('/torque');
+        break;
+      case 'Pressure':
+        context.navigateTo('/pressure');
+        break;
+      case 'Energy':
+        context.navigateTo('/energy');
+        break;
+      case 'Power':
+        context.navigateTo('/power');
+        break;
+      case 'Temperature':
+        context.navigateTo('/temperature');
+        break;
+      case 'Angle':
+        context.navigateTo('/angle');
+        break;
+      case 'Fuel Consumption':
+        context.navigateTo('/fuel');
+        break;
+      case 'Data Sizes':
+        context.navigateTo('/datas');
+        break;
+
+      default:
+        // Handle unknown label, if necessary
+        break;
+    }
+  }
+
   _saveFontSize() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble('fontSize', fontSize);
   }
 
-  Widget _buildGridItem(
-      {required String label, required int index, required Function onTap}) {
+  Widget _buildGridItem({
+    required String label,
+    required int index,
+    required Function onTap,
+  }) {
     bool isTapped = _tappedIndex == index;
     var scaledMatrix = Matrix4.identity()..scale(1.1);
     var theme = Theme.of(context);
@@ -362,15 +448,14 @@ class _UnitConversionState extends State<UnitConversion> {
     Map<String, dynamic> gridItem =
         _gridItems.firstWhere((item) => item['label'] == label);
     if (gridItem.containsKey('image')) {
-      // If there's a single image for both themes
       imagePath = gridItem['image'];
     } else {
-      // If there are different images for dark and light themes
       imagePath = isDarkMode ? gridItem['imageDark'] : gridItem['imageLight'];
     }
     Color tileColor = isDarkMode
         ? Colors.black
-        : (index % 2 == 0 ? const Color(0xFFF2F2F2) : const Color(0xFFFAE0E0));
+        // : (index % 2 == 0 ? Colors.white : const Color(0xFFF5F5F5));
+        : (index % 2 == 0 ? const Color(0xFFFFF5E0) : const Color(0xFFFFF5E0));
     Color textColor = isDarkMode ? Colors.white : const Color(0xFF101820);
 
     return Material(
@@ -392,76 +477,28 @@ class _UnitConversionState extends State<UnitConversion> {
               Vibrate.feedback(FeedbackType.medium);
             }
           }
+          // Closure to handle what happens after the ad is closed or if no ad is loaded
+          void onAdClosedOrNotLoaded() {
+            setState(() => _tappedIndex = null); // Reset the tapped state
+            onTap(); // Execute the provided onTap function
+            navigateOrShare(label);
+          }
 
-          setState(() => _tappedIndex = null);
-          // Check if the tapped label is 'Share'.
-          if (label == 'Share') {
-            _shareApp(context);
+          setState(() => _tappedIndex = index); // Set the tapped state
+
+          // Check if the ad is ready and show it for 'Share' or 'Settings' grid
+          if ((label == 'Share' || label == 'Settings') &&
+              InterstitialAdManager.isAdReady()) {
+            InterstitialAdManager.showInterstitialAd(
+                onAdClosed: onAdClosedOrNotLoaded);
           } else {
-            // For other labels, use a delayed navigation to allow the tap animation to be seen.
-            Future.delayed(const Duration(milliseconds: 100), () {
-              switch (label) {
-                case 'Distance':
-                  context.navigateTo('/distance');
-                  break;
-                case 'Area':
-                  context.navigateTo('/area');
-                  break;
-                case 'Volume':
-                  context.navigateTo('/volume');
-                  break;
-                case 'Mass':
-                  context.navigateTo('/mass');
-                  break;
-                case 'Time':
-                  context.navigateTo('/time');
-                  break;
-                case 'Speed':
-                  context.navigateTo('/speed');
-                  break;
-                case 'Frequency':
-                  context.navigateTo('/frequency');
-                  break;
-                case 'Force':
-                  context.navigateTo('/force');
-                  break;
-                case 'Torque':
-                  context.navigateTo('/torque');
-                  break;
-                case 'Pressure':
-                  context.navigateTo('/pressure');
-                  break;
-                case 'Energy':
-                  context.navigateTo('/energy');
-                  break;
-                case 'Power':
-                  context.navigateTo('/power');
-                  break;
-                case 'Temperature':
-                  context.navigateTo('/temperature');
-                  break;
-                case 'Angle':
-                  context.navigateTo('/angle');
-                  break;
-                case 'Fuel Consumption':
-                  context.navigateTo('/fuel');
-                  break;
-                case 'Data Sizes':
-                  context.navigateTo('/datas');
-                  break;
-                case 'Settings':
-                  context.navigateTo('/settings');
-                  break;
-                case 'Share':
-                  _shareApp(context);
-                  break;
-                default:
-                  // Handle unknown label, if necessary
-                  break;
-              }
-            });
+            // If the ad is not ready, execute the onTap function directly
+            onAdClosedOrNotLoaded();
+            // Perform the usual navigation without showing an ad
+            navigateOrShare(label);
           }
         },
+
         splashColor: Colors.grey.withOpacity(0.3), // Customizable splash color
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 100),
@@ -469,33 +506,32 @@ class _UnitConversionState extends State<UnitConversion> {
           transform: isTapped ? scaledMatrix : Matrix4.identity(),
           decoration: BoxDecoration(
             color: tileColor,
-            borderRadius:
-                BorderRadius.circular(10), // Keep your existing border radius
+            borderRadius: BorderRadius.circular(10), // Border radius
             boxShadow: [
-              // Add your boxShadow here
               BoxShadow(
-                color: Colors.black.withOpacity(0.1), // Shadow color
-                spreadRadius: 0, // Spread radius
-                blurRadius: 10, // Blur radius
-                offset: const Offset(0, 5), // Horizontal and vertical offset
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 0,
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
             ],
-          ), // Set the borderRadius here for the container),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
                 child: Image.asset(imagePath, width: gridImageSize),
               ),
-              Text(label,
-                      style: TextStyle(
-                        fontFamily: 'Work Sans',
-                        fontWeight: FontWeight.w500, // Medium weight
-                        fontSize: gridLabelFontSize,
-                        color: textColor,
-                      ),
-                      textAlign: TextAlign.center)
-                  .tr(),
+              Text(
+                label,
+                style: TextStyle(
+                  fontFamily: 'Work Sans',
+                  fontWeight: FontWeight.w500,
+                  fontSize: gridLabelFontSize,
+                  color: textColor,
+                ),
+                textAlign: TextAlign.center,
+              ).tr(),
             ],
           ),
         ),
@@ -505,103 +541,115 @@ class _UnitConversionState extends State<UnitConversion> {
 
   @override
   Widget build(BuildContext context) {
-    // Use Theme.of(context) to determine the current theme's background color
+    // Your existing backgroundColor determination
     var backgroundColor = Theme.of(context).brightness == Brightness.light
-        ? const Color(0xFFFF4940)
+        ? const Color(0xFF3E001F)
         : Colors.black;
-    return GestureDetector(
-        onTap: _handleOutsideTap,
-        behavior: HitTestBehavior.opaque,
-        child: Scaffold(
-          backgroundColor: backgroundColor,
-          body: Column(
-            children: <Widget>[
-              Container(
-                color: Colors.black,
-                height: MediaQuery.of(context).size.height * 0.10,
-                // Ad content goes here
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: _isSearchBarVisible
-                    ? 0
-                    : MediaQuery.of(context).size.height * 0.07,
-                // color: const Color(0xFF28D885),
-                color: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _isSearchBarVisible
-                    ? null
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const SizedBox(width: 23), // Placeholder
-                          const Text(
-                            'Tap an option',
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.w700, // Medium weight
-                              fontSize: 25,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ).tr(),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _isSearchBarVisible = true;
-                              });
-                            },
-                            child: const Icon(
-                              Icons.search,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                        ],
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: Colors.black, // Set the status bar color to black
+        ),
+        child: GestureDetector(
+            onTap: _handleOutsideTap,
+            behavior: HitTestBehavior.opaque,
+            child: Scaffold(
+              backgroundColor: backgroundColor,
+              body: Column(
+                children: <Widget>[
+                  SafeArea(
+                    child: Container(
+                      color: Colors.black, // Set the background color to black
+                      alignment: Alignment
+                          .topCenter, // Align the ad to the top of the container
+                      child: MyBannerAdWidget(
+                        adUnitId: Platform.isAndroid
+                            ? 'ca-app-pub-3940256099942544/6300978111' // Replace with your actual Android ad unit ID
+                            : 'ca-app-pub-3940256099942544/2934735716', // Replace with your actual iOS ad unit ID
                       ),
-              ),
-              if (_isSearchBarVisible)
-                Expanded(
-                  child: SearchWidget(
-                    onClose: () {
-                      setState(() {
-                        _isSearchBarVisible = false;
-                      });
-                    },
+                    ),
                   ),
-                ),
-              const SizedBox(height: 5),
-              Expanded(
-                child: GridView.builder(
-                  padding: const EdgeInsets.only(
-                      top: 20.0, left: 8.0, right: 8.0), // Added top padding
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 1,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 10,
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    height: _isSearchBarVisible
+                        ? 0
+                        : MediaQuery.of(context).size.height * 0.07,
+                    // color: const Color(0xFF28D885),
+                    color: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _isSearchBarVisible
+                        ? null
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const SizedBox(width: 23), // Placeholder
+                              const Text(
+                                'Tap an option',
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w700, // Medium weight
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ).tr(),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isSearchBarVisible = true;
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                              ),
+                            ],
+                          ),
                   ),
-                  itemCount: _gridItems.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _buildGridItem(
-                      label: _gridItems[index]['label'],
-                      index: index,
-                      onTap: () {
-                        // Provide the onTap callback here
-                        if (_gridItems[index]['label'] == 'Share') {
-                          _shareApp(context); // Call the share method here
-                        } else {
-                          // Handle other labels if necessary
-                          // ... perform actions based on the label ...
-                        }
+                  if (_isSearchBarVisible)
+                    Expanded(
+                      child: SearchWidget(
+                        onClose: () {
+                          setState(() {
+                            _isSearchBarVisible = false;
+                          });
+                        },
+                      ),
+                    ),
+                  const SizedBox(height: 2.5),
+                  Expanded(
+                    child: GridView.builder(
+                      padding: const EdgeInsets.only(
+                          top: 20.0,
+                          left: 8.0,
+                          right: 8.0), // Added top padding
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 1,
+                        crossAxisSpacing: 5,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: _gridItems.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _buildGridItem(
+                          label: _gridItems[index]['label'],
+                          index: index,
+                          onTap: () {
+                            // Provide the onTap callback here
+                            if (_gridItems[index]['label'] == 'Share') {
+                              _shareApp(context); // Call the share method here
+                            }
+                          },
+                        );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                ],
               ),
-              const SizedBox(height: 2),
-            ],
-          ),
-        ));
+            )));
   }
 }

@@ -18,10 +18,8 @@ class VolumeUnitConverter extends StatefulWidget {
 }
 
 class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
-  static const double smallFontSize = 14.0;
   static const double mediumFontSize = 17.0;
-  static const double largeFontSize = 20.0;
-  Locale _selectedLocale = const Locale('en', 'US');
+
   double fontSize = mediumFontSize;
   bool get isDarkMode => Theme.of(context).brightness == Brightness.dark;
   String fromUnit = 'Cubic Metres';
@@ -274,93 +272,6 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
                 0.00000838641; // 1 Millilitre = 0.00000838641 Barrels
             break;
           case 'Millilitres': // No conversion needed if from and to units are the same
-            toValue = fromValue;
-            break;
-          default:
-            // Handle the default case or throw an error
-            break;
-        }
-        break;
-
-// LITRES UNIT CONVERSION
-      case 'Litres':
-        switch (toUnit) {
-          case 'Cubic Centimetres':
-            toValue = fromValue * 1000; // 1 Litre = 1000 Cubic Centimetres
-            break;
-          case 'Millilitres':
-            toValue = fromValue * 1000; // 1 Litre = 1000 Millilitres
-            break;
-          case 'Cubic Decimetres':
-            toValue = fromValue; // 1 Litre = 1 Cubic Decimetre (by definition)
-            break;
-          case 'Hectolitres':
-            toValue = fromValue * 0.01; // 100 Litres = 1 Hectolitre
-            break;
-          case 'Cubic Metres':
-            toValue = fromValue * 0.001; // 1000 Litres = 1 Cubic Metre
-            break;
-          case 'Cubic Inches':
-            toValue = fromValue * 61.0237; // 1 Litre = 61.0237 Cubic Inches
-            break;
-          case 'Cubic Feet':
-            toValue = fromValue * 0.0353147; // 1 Litre = 0.0353147 Cubic Feet
-            break;
-          case 'Cubic Yards':
-            toValue =
-                fromValue * 0.00130795; // 1 Litre = 0.00130795 Cubic Yards
-            break;
-          case 'Teaspoons (lmp)':
-            toValue =
-                fromValue * 168.936; // 1 Litre = 168.936 Imperial Teaspoons
-            break;
-          case 'Tablespoons (lmp)':
-            toValue =
-                fromValue * 56.3121; // 1 Litre = 56.3121 Imperial Tablespoons
-            break;
-          case 'Fluid Ounces (lmp)':
-            toValue =
-                fromValue * 35.1951; // 1 Litre = 35.1951 Imperial Fluid Ounces
-            break;
-          case 'Cups (lmp)':
-            toValue = fromValue * 4.39938; // 1 Litre = 4.39938 Imperial Cups
-            break;
-          case 'Pints (lmp)':
-            toValue = fromValue * 1.75975; // 1 Litre = 1.75975 Imperial Pints
-            break;
-          case 'Quarts (lmp)':
-            toValue =
-                fromValue * 0.879877; // 1 Litre = 0.879877 Imperial Quarts
-            break;
-          case 'Gallons (lmp)':
-            toValue =
-                fromValue * 0.219969; // 1 Litre = 0.219969 Imperial Gallons
-            break;
-          case 'Teaspoons (US)':
-            toValue = fromValue * 202.884; // 1 Litre = 202.884 US Teaspoons
-            break;
-          case 'Tablespoons (US)':
-            toValue = fromValue * 67.628; // 1 Litre = 67.628 US Tablespoons
-            break;
-          case 'Fluid Ounces (US)':
-            toValue = fromValue * 33.814; // 1 Litre = 33.814 US Fluid Ounces
-            break;
-          case 'Cups (US)':
-            toValue = fromValue * 4.16667; // 1 Litre = 4.16667 US Cups
-            break;
-          case 'Pints (US)':
-            toValue = fromValue * 2.11338; // 1 Litre = 2.11338 US Pints
-            break;
-          case 'Quarts (US)':
-            toValue = fromValue * 1.05669; // 1 Litre = 1.05669 US Quarts
-            break;
-          case 'Gallons (US)':
-            toValue = fromValue * 0.264172; // 1 Litre = 0.264172 US Gallons
-            break;
-          case 'Barrels':
-            toValue = fromValue * 0.00838641; // 1 Litre = 0.00838641 Barrels
-            break;
-          case 'Litres': // No conversion needed if from and to units are the same
             toValue = fromValue;
             break;
           default:
@@ -2288,45 +2199,6 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
     }
   }
 
-  String _formatWithCommas(String integerPart) {
-    // Use a buffer to build the formatted string for the integer part with commas.
-    StringBuffer formattedInt = StringBuffer();
-    int commaPosition = 3;
-
-    for (int i = 0; i < integerPart.length; i++) {
-      if (i % commaPosition == 0 && i > 0) {
-        formattedInt.write(',');
-      }
-      formattedInt.write(integerPart[i]);
-    }
-    return formattedInt.toString();
-  }
-
-  void _handleInputFormatting(TextEditingController controller,
-      {bool forDisplay = false}) {
-    String text = controller.text;
-    if (text.isNotEmpty) {
-      // Allow for a single decimal point or comma in the input
-      if ((text.contains('.') && text.indexOf('.') != text.length - 1) ||
-          (text.contains(',') && text.indexOf(',') != text.length - 1)) {
-        try {
-          String normalizedText = text.replaceAll(',', '.');
-          double value = double.parse(normalizedText);
-          _isUserInput = false;
-          String formattedText = _formatNumber(value, forDisplay: forDisplay);
-          controller.value = TextEditingValue(
-            text: formattedText,
-            selection: TextSelection.collapsed(offset: formattedText.length),
-          );
-        } catch (e) {
-          // Handle parsing error, if any.
-        } finally {
-          _isUserInput = true;
-        }
-      }
-    }
-  }
-
   void swapUnits() {
     setState(() {
       String tempUnit = fromUnit;
@@ -3795,133 +3667,141 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
             isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFF0F0F0),
         resizeToAvoidBottomInset:
             true, // Adjust the body size when the keyboard is visible
-        body: SingleChildScrollView(
-          // Allow the body to be scrollable
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 20), // Adjust space as needed
-                Row(
-                  mainAxisAlignment: MainAxisAlignment
-                      .center, // This centers the children horizontally
-                  mainAxisSize: MainAxisSize
-                      .max, // This makes the row take up all available horizontal space
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        context.navigateTo('/unit');
-                      },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        size: 40,
-                        color:
-                            isDarkMode ? Colors.white : const Color(0xFF2C3A47),
-                      ),
-                    ),
-                    Expanded(
-                      // This will take all available space, pushing the IconButton to the left and centering the text
-                      child: Text(
-                        'Convert Volume',
-                        textAlign: TextAlign
-                            .center, // This centers the text within the available space
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w700, // Medium weight
-                          fontSize: 28,
-                          color: isDarkMode
-                              ? Colors.white
-                              : const Color(0xFF2C3A47),
-                        ),
-                      ).tr(),
-                    ),
-                    const IconButton(
-                      onPressed: null,
-                      icon: Icon(Icons.arrow_back,
-                          size: 40, color: Colors.transparent),
-                    ), // You can place an invisible IconButton here to balance the row if necessary
-                  ],
-                ),
-
-                const SizedBox(height: 150),
-                SwitchListTile(
-                  title: Text(
-                    'Exponential Format',
-                    style: TextStyle(
-                        color:
-                            isDarkMode ? Colors.white : const Color(0xFF2C3A47),
-                        fontSize: 18),
-                  ).tr(),
-                  value: _isExponentialFormat,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _isExponentialFormat = value;
-                      double? lastValue = double.tryParse(
-                          fromController.text.replaceAll(',', ''));
-                      if (lastValue != null) {
-                        fromController.text =
-                            _formatNumber(lastValue, forDisplay: true);
-                      }
-                      convert(fromController.text);
-                    });
-                  },
-                  activeColor: Colors.lightBlue,
-                  activeTrackColor: Colors.lightBlue.shade200,
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                  width: double.infinity,
-                  child: _buildUnitColumn(
-                      'From'.tr(), fromController, fromUnit, fromPrefix, true),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.swap_vert,
-                    color: isDarkMode ? Colors.grey : const Color(0xFF374259),
-                    size: 40,
-                  ),
-                  onPressed: swapUnits,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                  width: double.infinity,
-                  child: _buildUnitColumn(
-                      'To'.tr(), toController, toUnit, toPrefix, false),
-                ),
-                const SizedBox(height: 30),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            // Allow the body to be scrollable
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 20), // Adjust space as needed
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment
+                        .center, // This centers the children horizontally
+                    mainAxisSize: MainAxisSize
+                        .max, // This makes the row take up all available horizontal space
                     children: [
-                      TextSpan(
-                        text: 'Formula:  '.tr(),
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.orange : Colors.red,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextSpan(
-                        text: _conversionFormula.tr(),
-                        style: TextStyle(
+                      IconButton(
+                        onPressed: () {
+                          context.navigateTo('/unit');
+                        },
+                        icon: Icon(
+                          Icons.arrow_back,
+                          size: 40,
                           color: isDarkMode
                               ? Colors.white
                               : const Color(0xFF2C3A47),
-                          fontSize: 18,
-                          fontStyle: FontStyle.normal,
                         ),
                       ),
+                      Expanded(
+                        // This will take all available space, pushing the IconButton to the left and centering the text
+                        child: Text(
+                          'Convert Volume',
+                          textAlign: TextAlign
+                              .center, // This centers the text within the available space
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontWeight: FontWeight.w700, // Medium weight
+                            fontSize: 28,
+                            color: isDarkMode
+                                ? Colors.white
+                                : const Color(0xFF2C3A47),
+                          ),
+                        ).tr(),
+                      ),
+                      const IconButton(
+                        onPressed: null,
+                        icon: Icon(Icons.arrow_back,
+                            size: 40, color: Colors.transparent),
+                      ), // You can place an invisible IconButton here to balance the row if necessary
                     ],
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 150),
+                  SwitchListTile(
+                    title: Text(
+                      'Exponential Format',
+                      style: TextStyle(
+                          color: isDarkMode
+                              ? Colors.white
+                              : const Color(0xFF2C3A47),
+                          fontSize: 18),
+                    ).tr(),
+                    value: _isExponentialFormat,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _isExponentialFormat = value;
+                        double? lastValue = double.tryParse(
+                            fromController.text.replaceAll(',', ''));
+                        if (lastValue != null) {
+                          fromController.text =
+                              _formatNumber(lastValue, forDisplay: true);
+                        }
+                        convert(fromController.text);
+                      });
+                    },
+                    activeColor: Colors.lightBlue,
+                    activeTrackColor: Colors.lightBlue.shade200,
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.only(left: 0.125, right: 0.125),
+                    width: double.infinity,
+                    child: _buildUnitColumn('From'.tr(), fromController,
+                        fromUnit, fromPrefix, true),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.swap_vert,
+                      color: isDarkMode ? Colors.grey : const Color(0xFF374259),
+                      size: 40,
+                    ),
+                    onPressed: swapUnits,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(left: 0.125, right: 0.125),
+                    width: double.infinity,
+                    child: _buildUnitColumn(
+                        'To'.tr(), toController, toUnit, toPrefix, false),
+                  ),
+                  const SizedBox(height: 30),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Formula:  '.tr(),
+                          style: TextStyle(
+                            color: isDarkMode ? Colors.orange : Colors.red,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: _conversionFormula.tr(),
+                          style: TextStyle(
+                            color: isDarkMode
+                                ? Colors.white
+                                : const Color(0xFF2C3A47),
+                            fontSize: 18,
+                            fontStyle: FontStyle.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
           ),
         ),
         floatingActionButton: Container(
-          margin: const EdgeInsets.only(bottom: 50),
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).padding.bottom +
+                50, // Add the bottom padding
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -3929,7 +3809,7 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
                 highlightElevation:
                     BouncingScrollSimulation.maxSpringTransferVelocity,
                 enableFeedback: true,
-                splashColor: Colors.lightGreen,
+                splashColor: Colors.red,
                 tooltip: 'Reset default settings'.tr(),
                 heroTag: 'resetButton'.tr(),
                 onPressed: _resetToDefault,
@@ -4017,7 +3897,6 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
     Color inputFillColor = isDarkMode
         ? const Color(0xFF2C3A47)
         : Colors.white; // This should be light in both themes
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0.125),
       child: Column(
@@ -4071,18 +3950,18 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
                 ),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.content_copy,
-                      color: Colors.grey, size: 23),
+                      color: Colors.transparent, size: 23),
                   onPressed: () => copyToClipboard(controller.text, context),
                 ),
               ),
             )
           else
-            TextFormField(
+            TextField(
               controller: controller,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
-              enabled: false, // This disables the field
+              readOnly: true, // Make it read-only instead of disabled
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -4095,9 +3974,6 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
                     inputFillColor, // Use a fill color that contrasts with the text color
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                ),
-                disabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 3.0),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 10.0),
@@ -4118,8 +3994,7 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
                   ],
                 ),
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.content_copy,
-                      color: Colors.grey, size: 23),
+                  icon: const Icon(Icons.content_copy, size: 23),
                   onPressed: () => copyToClipboard(controller.text, context),
                 ),
               ),

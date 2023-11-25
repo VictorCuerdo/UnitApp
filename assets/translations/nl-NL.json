@@ -1,9 +1,17 @@
 {
   "UnitApp": "UnitApp",
+  "Language": "Taal",
   "Tap an option": "Tik op een optie",
 "Type Magnitude/Unit/Symbol": "Typ Grootte/Eenheid/Symbool",
 "Reset default settings": "Standaardinstellingen herstellen",
 "Share a screenshot of your results!": "Deel een schermafbeelding van je resultaten!",
+"Formula:   ": "Formule:   ",
+"Reset default settings" : "Standaardinstellingen herstellen",
+"resetButton" : "Standaardinstellingen herstellen",
+"Share a screenshot of your results!" : "Deel een schermafbeelding van je resultaten!",
+"shareButton" : "Deel",
+
+"Select Language": "  ",
 "Formula": "Formule",
 "Formula ": "Formule",
 "Formula  ": "Formule",

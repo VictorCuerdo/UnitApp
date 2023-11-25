@@ -15,4 +15,9 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+
+    <!-- Style for italic text -->
+    <style name="TextAppearance.App.Italic" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">italic</item>
+    </style>
 </resources>

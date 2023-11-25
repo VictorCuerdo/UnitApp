@@ -19,10 +19,8 @@ class FrequencyUnitConverter extends StatefulWidget {
 }
 
 class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
-  static const double smallFontSize = 14.0;
   static const double mediumFontSize = 17.0;
-  static const double largeFontSize = 20.0;
-  Locale _selectedLocale = const Locale('en', 'US');
+
   double fontSize = mediumFontSize;
 
   bool get isDarkMode => Theme.of(context).brightness == Brightness.dark;
@@ -100,13 +98,6 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
     const double nanohertzToHertz = 1e-9;
     const double microhertzToHertz = 1e-6;
     const double millihertzToHertz = 1e-3;
-    const double hertzToHertz = 1; // No conversion needed
-    const double kilohertzToHertz = 1e3;
-    const double megahertzToHertz = 1e6;
-    const double gigahertzToHertz = 1e9;
-
-// Since Cycles per Second is another name for Hertz, its conversion is the same as Hertz
-    const double cyclesPerSecondToHertz = 1; // No conversion needed
 
 // Revolutions per Minute to Hertz (1 revolution per minute is 1/60 Hz)
     const double revolutionsPerMinuteToHertz = 1.0 / 60.0;
@@ -657,45 +648,6 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
     }
   }
 
-  String _formatWithCommas(String integerPart) {
-    // Use a buffer to build the formatted string for the integer part with commas.
-    StringBuffer formattedInt = StringBuffer();
-    int commaPosition = 3;
-    int offset = integerPart.length % commaPosition;
-    for (int i = 0; i < integerPart.length; i++) {
-      if (i % commaPosition == 0 && i > 0) {
-        formattedInt.write(',');
-      }
-      formattedInt.write(integerPart[i]);
-    }
-    return formattedInt.toString();
-  }
-
-  void _handleInputFormatting(TextEditingController controller,
-      {bool forDisplay = false}) {
-    String text = controller.text;
-    if (text.isNotEmpty) {
-      // Allow for a single decimal point or comma in the input
-      if ((text.contains('.') && text.indexOf('.') != text.length - 1) ||
-          (text.contains(',') && text.indexOf(',') != text.length - 1)) {
-        try {
-          String normalizedText = text.replaceAll(',', '.');
-          double value = double.parse(normalizedText);
-          _isUserInput = false;
-          String formattedText = _formatNumber(value, forDisplay: forDisplay);
-          controller.value = TextEditingValue(
-            text: formattedText,
-            selection: TextSelection.collapsed(offset: formattedText.length),
-          );
-        } catch (e) {
-          // Handle parsing error, if any.
-        } finally {
-          _isUserInput = true;
-        }
-      }
-    }
-  }
-
   void swapUnits() {
     setState(() {
       String tempUnit = fromUnit;
@@ -751,7 +703,7 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
             break;
           case 'Radians per Second':
             formula =
-                'Divide the frequency value by 1,000,000,000 and multiply by \(2\pi\)';
+                'Divide the frequency value by 1,000,000,000 and multiply by (2 / pi)';
             break;
           case 'Degrees per Second':
             formula =
@@ -802,7 +754,7 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
             break;
           case 'Radians per Second':
             formula =
-                'Divide the frequency value by 1,000,000 and multiply by \(2\pi\)'; // Conversion to Radians per Second
+                'Divide the frequency value by 1,000,000 and multiply by (2 / pi)'; // Conversion to Radians per Second
             break;
           case 'Degrees per Second':
             formula =
@@ -853,7 +805,7 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
             break;
           case 'Radians per Second':
             formula =
-                'Divide the frequency value by 1,000 and multiply by \(2\pi\)'; // Conversion to Radians per Second
+                'Divide the frequency value by 1,000 and multiply by (2 / pi)'; // Conversion to Radians per Second
             break;
           case 'Degrees per Second':
             formula =
@@ -1299,133 +1251,141 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
             isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFF0F0F0),
         resizeToAvoidBottomInset:
             true, // Adjust the body size when the keyboard is visible
-        body: SingleChildScrollView(
-          // Allow the body to be scrollable
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 20), // Adjust space as needed
-                Row(
-                  mainAxisAlignment: MainAxisAlignment
-                      .center, // This centers the children horizontally
-                  mainAxisSize: MainAxisSize
-                      .max, // This makes the row take up all available horizontal space
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        context.navigateTo('/unit');
-                      },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        size: 40,
-                        color:
-                            isDarkMode ? Colors.white : const Color(0xFF2C3A47),
-                      ),
-                    ),
-                    Expanded(
-                      // This will take all available space, pushing the IconButton to the left and centering the text
-                      child: Text(
-                        'Convert Frequency',
-                        textAlign: TextAlign
-                            .center, // This centers the text within the available space
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w700, // Medium weight
-                          fontSize: 28,
-                          color: isDarkMode
-                              ? Colors.white
-                              : const Color(0xFF2C3A47),
-                        ),
-                      ).tr(),
-                    ),
-                    const IconButton(
-                      onPressed: null,
-                      icon: Icon(Icons.arrow_back,
-                          size: 40, color: Colors.transparent),
-                    ), // You can place an invisible IconButton here to balance the row if necessary
-                  ],
-                ),
-
-                const SizedBox(height: 150),
-                SwitchListTile(
-                  title: Text(
-                    'Exponential Format',
-                    style: TextStyle(
-                        color:
-                            isDarkMode ? Colors.white : const Color(0xFF2C3A47),
-                        fontSize: 18),
-                  ).tr(),
-                  value: _isExponentialFormat,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _isExponentialFormat = value;
-                      double? lastValue = double.tryParse(
-                          fromController.text.replaceAll(',', ''));
-                      if (lastValue != null) {
-                        fromController.text =
-                            _formatNumber(lastValue, forDisplay: true);
-                      }
-                      convert(fromController.text);
-                    });
-                  },
-                  activeColor: Colors.lightBlue,
-                  activeTrackColor: Colors.lightBlue.shade200,
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                  width: double.infinity,
-                  child: _buildUnitColumn(
-                      'From'.tr(), fromController, fromUnit, fromPrefix, true),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.swap_vert,
-                    color: isDarkMode ? Colors.grey : const Color(0xFF374259),
-                    size: 40,
-                  ),
-                  onPressed: swapUnits,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                  width: double.infinity,
-                  child: _buildUnitColumn(
-                      'To'.tr(), toController, toUnit, toPrefix, false),
-                ),
-                const SizedBox(height: 30),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            // Allow the body to be scrollable
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 20), // Adjust space as needed
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment
+                        .center, // This centers the children horizontally
+                    mainAxisSize: MainAxisSize
+                        .max, // This makes the row take up all available horizontal space
                     children: [
-                      TextSpan(
-                        text: 'Formula:  '.tr(),
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.orange : Colors.red,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextSpan(
-                        text: _conversionFormula.tr(),
-                        style: TextStyle(
+                      IconButton(
+                        onPressed: () {
+                          context.navigateTo('/unit');
+                        },
+                        icon: Icon(
+                          Icons.arrow_back,
+                          size: 40,
                           color: isDarkMode
                               ? Colors.white
                               : const Color(0xFF2C3A47),
-                          fontSize: 18,
-                          fontStyle: FontStyle.normal,
                         ),
                       ),
+                      Expanded(
+                        // This will take all available space, pushing the IconButton to the left and centering the text
+                        child: Text(
+                          'Convert Frequency',
+                          textAlign: TextAlign
+                              .center, // This centers the text within the available space
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontWeight: FontWeight.w700, // Medium weight
+                            fontSize: 28,
+                            color: isDarkMode
+                                ? Colors.white
+                                : const Color(0xFF2C3A47),
+                          ),
+                        ).tr(),
+                      ),
+                      const IconButton(
+                        onPressed: null,
+                        icon: Icon(Icons.arrow_back,
+                            size: 40, color: Colors.transparent),
+                      ), // You can place an invisible IconButton here to balance the row if necessary
                     ],
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 150),
+                  SwitchListTile(
+                    title: Text(
+                      'Exponential Format',
+                      style: TextStyle(
+                          color: isDarkMode
+                              ? Colors.white
+                              : const Color(0xFF2C3A47),
+                          fontSize: 18),
+                    ).tr(),
+                    value: _isExponentialFormat,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _isExponentialFormat = value;
+                        double? lastValue = double.tryParse(
+                            fromController.text.replaceAll(',', ''));
+                        if (lastValue != null) {
+                          fromController.text =
+                              _formatNumber(lastValue, forDisplay: true);
+                        }
+                        convert(fromController.text);
+                      });
+                    },
+                    activeColor: Colors.lightBlue,
+                    activeTrackColor: Colors.lightBlue.shade200,
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.only(left: 0.125, right: 0.125),
+                    width: double.infinity,
+                    child: _buildUnitColumn('From'.tr(), fromController,
+                        fromUnit, fromPrefix, true),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.swap_vert,
+                      color: isDarkMode ? Colors.grey : const Color(0xFF374259),
+                      size: 40,
+                    ),
+                    onPressed: swapUnits,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(left: 0.125, right: 0.125),
+                    width: double.infinity,
+                    child: _buildUnitColumn(
+                        'To'.tr(), toController, toUnit, toPrefix, false),
+                  ),
+                  const SizedBox(height: 30),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Formula:  '.tr(),
+                          style: TextStyle(
+                            color: isDarkMode ? Colors.orange : Colors.red,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: _conversionFormula.tr(),
+                          style: TextStyle(
+                            color: isDarkMode
+                                ? Colors.white
+                                : const Color(0xFF2C3A47),
+                            fontSize: 18,
+                            fontStyle: FontStyle.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
           ),
         ),
         floatingActionButton: Container(
-          margin: const EdgeInsets.only(bottom: 50),
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).padding.bottom +
+                50, // Add the bottom padding
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -1433,7 +1393,7 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
                 highlightElevation:
                     BouncingScrollSimulation.maxSpringTransferVelocity,
                 enableFeedback: true,
-                splashColor: Colors.lightGreen,
+                splashColor: Colors.red,
                 tooltip: 'Reset default settings'.tr(),
                 heroTag: 'resetButton'.tr(),
                 onPressed: _resetToDefault,
@@ -1495,7 +1455,6 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
     Color inputFillColor = isDarkMode
         ? const Color(0xFF2C3A47)
         : Colors.white; // This should be light in both themes
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0.125),
       child: Column(
@@ -1549,18 +1508,18 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
                 ),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.content_copy,
-                      color: Colors.grey, size: 23),
+                      color: Colors.transparent, size: 23),
                   onPressed: () => copyToClipboard(controller.text, context),
                 ),
               ),
             )
           else
-            TextFormField(
+            TextField(
               controller: controller,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
-              enabled: false, // This disables the field
+              readOnly: true, // Make it read-only instead of disabled
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -1573,9 +1532,6 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
                     inputFillColor, // Use a fill color that contrasts with the text color
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                ),
-                disabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 3.0),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 10.0),
@@ -1596,8 +1552,7 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
                   ],
                 ),
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.content_copy,
-                      color: Colors.grey, size: 23),
+                  icon: const Icon(Icons.content_copy, size: 23),
                   onPressed: () => copyToClipboard(controller.text, context),
                 ),
               ),

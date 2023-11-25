@@ -1,9 +1,16 @@
 {
   "UnitApp": "UnitApp",
+  "Language": "भाषा",
   "Tap an option": "एक विकल्प चुनें",
 "Type Magnitude/Unit/Symbol": "मात्रा/इकाई/प्रतीक टाइप करें",
 "Reset default settings": "डिफ़ॉल्ट सेटिंग्स रीसेट करें",
 "Share a screenshot of your results!": "अपने परिणामों का एक स्क्रीनशॉट साझा करें!",
+"Formula:   ": "सूत्र:   ",
+"Reset default settings" : "डिफ़ॉल्ट सेटिंग्स रीसेट करें",
+"resetButton" : "",
+"shareButton" : "",
+
+"Select Language": "  ",
 "Formula": "सूत्र",
 "Formula ": "सूत्र",
 "Formula  ": "सूत्र",

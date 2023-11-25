@@ -7,10 +7,16 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeData get currentTheme => _currentTheme;
 
+  // Existing toggleTheme method
   void toggleTheme(bool isDarkMode) {
     _currentTheme = isDarkMode ? darkTheme : lightTheme;
     notifyListeners();
     _saveThemePreference(isDarkMode);
+  }
+
+  void setTheme(bool isDarkMode) {
+    _currentTheme = isDarkMode ? darkTheme : lightTheme;
+    notifyListeners();
   }
 
   Future<void> _saveThemePreference(bool isDarkMode) async {
@@ -26,6 +32,18 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  static final ThemeData darkTheme = ThemeData(
+    // Define dark theme properties
+    colorScheme: const ColorScheme.dark(
+      primary: Colors.blue,
+      secondary: Colors.blueAccent,
+      // Add other custom colors if needed
+      background: Colors.black,
+      // ... other colors
+    ),
+    // Additional ThemeData properties specific to dark theme
+  );
+
   static final ThemeData lightTheme = ThemeData(
     // Define light theme properties
     colorScheme: const ColorScheme.light(
@@ -37,17 +55,5 @@ class ThemeProvider extends ChangeNotifier {
       // ... other colors
     ),
     // Additional ThemeData properties specific to light theme
-  );
-
-  static final ThemeData darkTheme = ThemeData(
-    // Define dark theme properties
-    colorScheme: const ColorScheme.dark(
-      primary: Colors.blue,
-      secondary: Colors.blueAccent,
-      // Add other custom colors if needed
-      background: Colors.black,
-      // ... other colors
-    ),
-    // Additional ThemeData properties specific to dark theme
   );
 }

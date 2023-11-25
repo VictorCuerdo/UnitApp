@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -11,12 +13,8 @@ class SearchWidget extends StatefulWidget {
 }
 
 class _SearchWidgetState extends State<SearchWidget> {
-  static const double smallFontSize = 14.0;
   static const double mediumFontSize = 17.0;
-  static const double largeFontSize = 20.0;
-  static Color greyTextColor =
-      Colors.black54; // Define a constant for the grey text color
-  Locale _selectedLocale = const Locale('en', 'US');
+
   double fontSize = mediumFontSize;
   String _searchQuery = "";
   final Map<String, String> _navigationMap = {

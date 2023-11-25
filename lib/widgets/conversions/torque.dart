@@ -3612,7 +3612,7 @@ class _TorqueUnitConverterState extends State<TorqueUnitConverter> {
         floatingActionButton: Container(
           margin: EdgeInsets.only(
             bottom: MediaQuery.of(context).padding.bottom +
-                50, // Add the bottom padding
+                20, // Add the bottom padding
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

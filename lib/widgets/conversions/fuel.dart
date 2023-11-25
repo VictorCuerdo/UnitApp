@@ -816,7 +816,7 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
         floatingActionButton: Container(
           margin: EdgeInsets.only(
             bottom: MediaQuery.of(context).padding.bottom +
-                50, // Add the bottom padding
+                20, // Add the bottom padding
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

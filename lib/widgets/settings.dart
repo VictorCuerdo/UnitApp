@@ -51,7 +51,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     Locale? tempLocale; // Declare the variable in an accessible scope
-
+    // Load font size preference or set it to mediumFontSize if not available
+    double savedFontSize = prefs.getDouble('fontSize') ?? mediumFontSize;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       tempLocale = context.locale; // Assign to tempLocale within the callback
     });
@@ -61,7 +62,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     bool isHapticFeedbackEnabled = prefs.getBool('hapticFeedback') ?? false;
     bool isStatusBarVisible = prefs.getBool('statusBarVisible') ?? true;
     bool isDarkModeEnabled = prefs.getBool('isDarkMode') ?? false;
-    double savedFontSize = prefs.getDouble('fontSize') ?? mediumFontSize;
 
     // Apply all the loaded preferences
     setState(() {
@@ -70,6 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       isDarkMode = isDarkModeEnabled;
       fontSize = savedFontSize;
       _selectedLocale = savedLocale;
+      fontSize = savedFontSize;
       context.setLocale(savedLocale); // Set the saved locale
       if (tempLocale != null) {
         _selectedLocale = tempLocale!;

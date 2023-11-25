@@ -1384,7 +1384,7 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
         floatingActionButton: Container(
           margin: EdgeInsets.only(
             bottom: MediaQuery.of(context).padding.bottom +
-                50, // Add the bottom padding
+                20, // Add the bottom padding
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

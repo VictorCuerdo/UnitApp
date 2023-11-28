@@ -69,7 +69,7 @@ class _UnitConversionState extends State<UnitConversion> {
               color: Colors.black,
             ),
           ),
-          content: Container(
+          content: SizedBox(
             width: double.maxFinite,
             // Set the height to be 30% larger than the calculated height
             height: dialogHeight * 1.6,
@@ -168,7 +168,7 @@ class _UnitConversionState extends State<UnitConversion> {
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                context.navigateTo('/unit');
               },
             ),
           ],
@@ -240,7 +240,8 @@ class _UnitConversionState extends State<UnitConversion> {
               ),
             ),
             padding: MaterialStateProperty.all<EdgeInsets>(
-              const EdgeInsets.symmetric(horizontal: 25, vertical: 6),
+              // Reduce vertical padding to decrease the button's height
+              const EdgeInsets.symmetric(horizontal: 25, vertical: 2),
             ),
           ),
           child: Text(

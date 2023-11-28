@@ -34,8 +34,8 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
   // Flag to indicate if the change is due to user input
   bool _isUserInput = true;
   // Using string variables for prefixes
-  String fromPrefix = '°C';
-  String toPrefix = 'K';
+  String fromPrefix = '';
+  String toPrefix = '';
   final ScreenshotController screenshotController = ScreenshotController();
   String _conversionFormula = '';
   final GlobalKey _contentKey = GlobalKey();
@@ -1084,30 +1084,37 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
     ].map<DropdownMenuItem<String>>((String value) {
       String translatedValue = value.tr();
       return DropdownMenuItem<String>(
-          value: value,
-          child: RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: _getPrefix(value), // Prefix part
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold, // Make prefix bold
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    fontSize: 23,
-                  ),
+        value: value,
+        child: AutoSizeText.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: '${_getPrefix(value)} - ', // Prefix part with the dash
+                style: TextStyle(
+                  fontWeight: FontWeight.bold, // Make prefix bold
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
-                TextSpan(
-                  text: ' - $translatedValue', // The rest of the text
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal, // Normal weight for the rest
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    fontSize: 23,
-                  ),
+              ),
+              TextSpan(
+                text: translatedValue, // The translated value
+                style: TextStyle(
+                  fontWeight: FontWeight.normal, // Normal weight for the rest
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
-              ],
-            ),
-            overflow: TextOverflow.visible,
-          ));
+              ),
+            ],
+          ),
+          textAlign: TextAlign.left,
+          minFontSize: 10, // The minimum text size you want to allow
+          stepGranularity: 1, // The step size for downscaling the font
+          maxLines: 1, // The max number of lines for the text to span
+          overflow:
+              TextOverflow.ellipsis, // How to handle text that doesn't fit
+          style: const TextStyle(
+            fontSize: 23, // This is the starting font size
+          ),
+        ),
+      );
     }).toList();
 
     items.insert(

@@ -20,7 +20,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   _navigateToHomePage() async {
-    await Future.delayed(const Duration(seconds: 2), () {
+    await Future.delayed(const Duration(seconds: 1), () {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const UnitConversion()));
     });

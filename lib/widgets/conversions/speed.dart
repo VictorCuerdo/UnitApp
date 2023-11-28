@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -31,11 +32,11 @@ class _SpeedUnitConverterState extends State<SpeedUnitConverter> {
   // Flag to indicate if the change is due to user input
   bool _isUserInput = true;
   // Using string variables for prefixes
-  String fromPrefix = 'm/s';
-  String toPrefix = 'm/h';
+  String fromPrefix = '';
+  String toPrefix = '';
   final ScreenshotController screenshotController = ScreenshotController();
   String _conversionFormula = '';
-
+  final GlobalKey _contentKey = GlobalKey();
   @override
   void initState() {
     super.initState();
@@ -790,179 +791,215 @@ class _SpeedUnitConverterState extends State<SpeedUnitConverter> {
   @override
   Widget build(BuildContext context) {
     return Screenshot(
-      controller: screenshotController,
-      child: Scaffold(
-        backgroundColor:
-            // isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFF9A3B3B),
-            isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFF0F0F0),
-        resizeToAvoidBottomInset:
-            true, // Adjust the body size when the keyboard is visible
-        body: SafeArea(
-          child: SingleChildScrollView(
-            // Allow the body to be scrollable
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 20), // Adjust space as needed
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment
-                        .center, // This centers the children horizontally
-                    mainAxisSize: MainAxisSize
-                        .max, // This makes the row take up all available horizontal space
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          context.navigateTo('/unit');
-                        },
-                        icon: Icon(
-                          Icons.arrow_back,
-                          size: 40,
-                          color: isDarkMode
-                              ? Colors.white
-                              : const Color(0xFF2C3A47),
-                        ),
-                      ),
-                      Expanded(
-                        // This will take all available space, pushing the IconButton to the left and centering the text
-                        child: Text(
-                          'Convert Speed',
-                          textAlign: TextAlign
-                              .center, // This centers the text within the available space
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            fontWeight: FontWeight.w700, // Medium weight
-                            fontSize: 28,
-                            color: isDarkMode
-                                ? Colors.white
-                                : const Color(0xFF2C3A47),
-                          ),
-                        ).tr(),
-                      ),
-                      const IconButton(
-                        onPressed: null,
-                        icon: Icon(Icons.arrow_back,
-                            size: 40, color: Colors.transparent),
-                      ), // You can place an invisible IconButton here to balance the row if necessary
-                    ],
-                  ),
-
-                  const SizedBox(height: 150),
-                  SwitchListTile(
-                    title: Text(
-                      'Exponential Format',
-                      style: TextStyle(
-                          color: isDarkMode
-                              ? Colors.white
-                              : const Color(0xFF2C3A47),
-                          fontSize: 18),
-                    ).tr(),
-                    value: _isExponentialFormat,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _isExponentialFormat = value;
-                        double? lastValue = double.tryParse(
-                            fromController.text.replaceAll(',', ''));
-                        if (lastValue != null) {
-                          fromController.text =
-                              _formatNumber(lastValue, forDisplay: true);
-                        }
-                        convert(fromController.text);
-                      });
-                    },
-                    activeColor: Colors.lightBlue,
-                    activeTrackColor: Colors.lightBlue.shade200,
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                    width: double.infinity,
-                    child: _buildUnitColumn('From'.tr(), fromController,
-                        fromUnit, fromPrefix, true),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.swap_vert,
-                      color: isDarkMode ? Colors.grey : const Color(0xFF374259),
-                      size: 40,
-                    ),
-                    onPressed: swapUnits,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                    width: double.infinity,
-                    child: _buildUnitColumn(
-                        'To'.tr(), toController, toUnit, toPrefix, false),
-                  ),
-                  const SizedBox(height: 30),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
+        controller: screenshotController,
+        child: Scaffold(
+          backgroundColor:
+              isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFF0F0F0),
+          resizeToAvoidBottomInset:
+              true, // Adjust the body size when the keyboard is visible
+          body: SafeArea(
+            child: SingleChildScrollView(
+              // Allow the body to be scrollable
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 20), // Adjust space as needed
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // This centers the children horizontally
+                      mainAxisSize: MainAxisSize
+                          .max, // This makes the row take up all available horizontal space
                       children: [
-                        TextSpan(
-                          text: 'Formula:  '.tr(),
-                          style: TextStyle(
-                            color: isDarkMode ? Colors.orange : Colors.red,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextSpan(
-                          text: _conversionFormula.tr(),
-                          style: TextStyle(
+                        IconButton(
+                          onPressed: () {
+                            context.navigateTo('/unit');
+                          },
+                          icon: Icon(
+                            Icons.arrow_back,
+                            size: 40,
                             color: isDarkMode
                                 ? Colors.white
                                 : const Color(0xFF2C3A47),
-                            fontSize: 18,
-                            fontStyle: FontStyle.normal,
                           ),
                         ),
+                        Expanded(
+                          child: AutoSizeText('Convert Speed'.tr(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 28,
+                                color: isDarkMode
+                                    ? Colors.white
+                                    : const Color(0xFF2C3A47),
+                              ),
+                              maxLines:
+                                  1, // Change this to 2 if you want to allow text to take up two lines
+                              minFontSize: 15),
+                        ),
+                        const IconButton(
+                          onPressed: null,
+                          icon: Icon(Icons.arrow_back,
+                              size: 40, color: Colors.transparent),
+                        ), // You can place an invisible IconButton here to balance the row if necessary
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                ],
+
+                    const SizedBox(height: 150),
+                    SwitchListTile(
+                      title: AutoSizeText(
+                        'Exponential Format'.tr(),
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? Colors.white
+                              : const Color(0xFF2C3A47),
+                          fontSize: 18,
+                        ),
+                        maxLines: 1, // You can adjust this as needed
+                        minFontSize:
+                            14, // Set the minimum font size you allow (optional)
+                      ),
+                      value: _isExponentialFormat,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _isExponentialFormat = value;
+                          double? lastValue = double.tryParse(
+                              fromController.text.replaceAll(',', ''));
+                          if (lastValue != null) {
+                            fromController.text =
+                                _formatNumber(lastValue, forDisplay: true);
+                          }
+                          convert(fromController.text);
+                        });
+                      },
+                      activeColor: Colors.lightBlue,
+                      activeTrackColor: Colors.lightBlue.shade200,
+                    ),
+
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.only(left: 0.125, right: 0.125),
+                      width: double.infinity,
+                      child: _buildUnitColumn('From'.tr(), fromController,
+                          fromUnit, fromPrefix, true),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.swap_vert,
+                        color:
+                            isDarkMode ? Colors.grey : const Color(0xFF374259),
+                        size: 40,
+                      ),
+                      onPressed: swapUnits,
+                    ),
+                    Container(
+                      key: _contentKey,
+                      padding: const EdgeInsets.only(left: 0.125, right: 0.125),
+                      width: double.infinity,
+                      child: _buildUnitColumn(
+                          'To'.tr(), toController, toUnit, toPrefix, false),
+                    ),
+                    const SizedBox(height: 30),
+                    AutoSizeText.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Formula:  '.tr(),
+                            style: TextStyle(
+                              color: isDarkMode ? Colors.orange : Colors.red,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: _conversionFormula.tr(),
+                            style: TextStyle(
+                              color: isDarkMode
+                                  ? Colors.white
+                                  : const Color(0xFF2C3A47),
+                              fontSize: 18,
+                              fontStyle: FontStyle.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                      minFontSize:
+                          10, // The minimum text size you want to allow
+                      stepGranularity:
+                          1, // The step size for downscaling the font
+                      maxLines:
+                          3, // The max number of lines for the text to span, can be set to null
+                      overflow: TextOverflow
+                          .ellipsis, // How to handle text that doesn't fit
+                    ),
+
+                    const SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        floatingActionButton: Container(
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).padding.bottom +
-                20, // Add the bottom padding
+
+          floatingActionButton: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              // Check if the contentKey is attached to an existing widget and obtain its size
+              final RenderBox? contentBox =
+                  _contentKey.currentContext?.findRenderObject() as RenderBox?;
+              // The height of the content will be used to adjust the padding dynamically
+              final contentHeight = contentBox?.size.height ?? 0;
+              // The available height for the buttons is the total height minus the content's height
+              final availableHeight =
+                  MediaQuery.of(context).size.height - contentHeight;
+
+              // Ensure there is always some space between the content and the buttons
+              final bottomPadding =
+                  max(MediaQuery.of(context).padding.bottom + 20, 20.0);
+
+              // If the available height is less than a certain threshold, add additional padding
+              final extraPadding = availableHeight < 600 ? 50.0 : 0.0;
+
+              return Container(
+                margin: EdgeInsets.only(
+                  bottom: bottomPadding + extraPadding,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    FloatingActionButton(
+                      highlightElevation:
+                          BouncingScrollSimulation.maxSpringTransferVelocity,
+                      enableFeedback: true,
+                      splashColor: Colors.red,
+                      tooltip: 'Reset default settings'.tr(),
+                      heroTag: 'resetButton',
+                      onPressed: _resetToDefault,
+                      backgroundColor:
+                          isDarkMode ? Colors.white : const Color(0xFF2C3A47),
+                      child: Icon(Icons.restart_alt,
+                          size: 36,
+                          color: isDarkMode ? Colors.black : Colors.white),
+                    ),
+                    FloatingActionButton(
+                      tooltip: 'Share a screenshot of your results!'.tr(),
+                      heroTag: 'shareButton',
+                      onPressed: _takeScreenshotAndShare,
+                      backgroundColor:
+                          isDarkMode ? Colors.white : const Color(0xFF2C3A47),
+                      child: Icon(Icons.share,
+                          size: 36,
+                          color: isDarkMode ? Colors.black : Colors.white),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              FloatingActionButton(
-                highlightElevation:
-                    BouncingScrollSimulation.maxSpringTransferVelocity,
-                enableFeedback: true,
-                splashColor: Colors.red,
-                tooltip: 'Reset default settings'.tr(),
-                heroTag: 'resetButton'.tr(),
-                onPressed: _resetToDefault,
-                backgroundColor:
-                    isDarkMode ? Colors.white : const Color(0xFF2C3A47),
-                child: Icon(Icons.restart_alt,
-                    size: 36, color: isDarkMode ? Colors.black : Colors.white),
-              ),
-              FloatingActionButton(
-                tooltip: 'Share a screenshot of your results!'.tr(),
-                heroTag: 'shareButton'.tr(),
-                onPressed: _takeScreenshotAndShare,
-                backgroundColor:
-                    isDarkMode ? Colors.white : const Color(0xFF2C3A47),
-                child: Icon(Icons.share,
-                    size: 36, color: isDarkMode ? Colors.black : Colors.white),
-              ),
-            ],
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      ),
-    );
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        ));
   }
 
   String _getPrefix(String unit) {
@@ -1119,30 +1156,37 @@ class _SpeedUnitConverterState extends State<SpeedUnitConverter> {
     ].map<DropdownMenuItem<String>>((String value) {
       String translatedValue = value.tr();
       return DropdownMenuItem<String>(
-          value: value,
-          child: RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: _getPrefix(value), // Prefix part
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold, // Make prefix bold
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    fontSize: 23,
-                  ),
+        value: value,
+        child: AutoSizeText.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: '${_getPrefix(value)} - ', // Prefix part with the dash
+                style: TextStyle(
+                  fontWeight: FontWeight.bold, // Make prefix bold
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
-                TextSpan(
-                  text: ' - $translatedValue', // The rest of the text
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal, // Normal weight for the rest
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    fontSize: 23,
-                  ),
+              ),
+              TextSpan(
+                text: translatedValue, // The translated value
+                style: TextStyle(
+                  fontWeight: FontWeight.normal, // Normal weight for the rest
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
-              ],
-            ),
-            overflow: TextOverflow.visible,
-          ));
+              ),
+            ],
+          ),
+          textAlign: TextAlign.left,
+          minFontSize: 10, // The minimum text size you want to allow
+          stepGranularity: 1, // The step size for downscaling the font
+          maxLines: 1, // The max number of lines for the text to span
+          overflow:
+              TextOverflow.ellipsis, // How to handle text that doesn't fit
+          style: const TextStyle(
+            fontSize: 23, // This is the starting font size
+          ),
+        ),
+      );
     }).toList();
 
     items.insert(

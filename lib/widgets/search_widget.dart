@@ -557,13 +557,18 @@ class _SearchWidgetState extends State<SearchWidget> {
                     alignLabelWithHint: true,
                     hintText: 'Type Magnitude/Unit/Symbol'.tr(),
                     hintStyle: TextStyle(
+                      fontSize: 15,
                       color: Colors.grey
                           .shade600, // Use a light grey that is visible on white
                     ),
                     border: const OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.white,
-                    prefixIcon: Icon(Icons.search, color: Colors.grey[800]),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.grey[800],
+                      size: 20,
+                    ),
                   ),
                 ),
               ),
@@ -571,8 +576,8 @@ class _SearchWidgetState extends State<SearchWidget> {
                 icon: Icon(Icons.close,
                     color: Theme.of(context).brightness == Brightness.dark
                         ? Colors.white
-                        : Colors.black,
-                    size: 23),
+                        : Colors.white,
+                    size: 28),
                 onPressed: widget.onClose, // Call the onClose callback
               ),
             ],

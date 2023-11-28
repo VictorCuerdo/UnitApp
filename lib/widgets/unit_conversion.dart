@@ -65,7 +65,7 @@ class _UnitConversionState extends State<UnitConversion> {
             "Share the App".tr(),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 18,
               color: Colors.black,
             ),
           ),
@@ -197,7 +197,7 @@ class _UnitConversionState extends State<UnitConversion> {
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {
             Clipboard.setData(ClipboardData(text: appLink)).then((_) {
@@ -247,7 +247,7 @@ class _UnitConversionState extends State<UnitConversion> {
           child: Text(
             'Copy Link'.tr(),
             style: const TextStyle(
-              fontSize: 20,
+              fontSize: 18,
               color: Colors.white,
             ),
           ),
@@ -542,14 +542,13 @@ class _UnitConversionState extends State<UnitConversion> {
 
   @override
   Widget build(BuildContext context) {
-    // Your existing backgroundColor determination
     var backgroundColor = Theme.of(context).brightness == Brightness.light
         ? const Color(0xFF3E001F)
         : Colors.black;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light.copyWith(
-          statusBarColor: Colors.black, // Set the status bar color to black
+          statusBarColor: Colors.black,
         ),
         child: GestureDetector(
             onTap: _handleOutsideTap,
@@ -559,94 +558,81 @@ class _UnitConversionState extends State<UnitConversion> {
               body: Column(
                 children: <Widget>[
                   SafeArea(
+                    child: MyBannerAdWidget(
+                      adUnitId: Platform.isAndroid
+                          ? 'ca-app-pub-3940256099942544/6300978111'
+                          : 'ca-app-pub-3940256099942544/2934735716',
+                    ),
+                  ),
+                  Visibility(
+                    visible: !_isSearchBarVisible,
                     child: Container(
-                      color: Colors.black, // Set the background color to black
-                      alignment: Alignment
-                          .topCenter, // Align the ad to the top of the container
-                      child: MyBannerAdWidget(
-                        adUnitId: Platform.isAndroid
-                            ? 'ca-app-pub-3940256099942544/6300978111' // Replace with your actual Android ad unit ID
-                            : 'ca-app-pub-3940256099942544/2934735716', // Replace with your actual iOS ad unit ID
-                      ),
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    height: _isSearchBarVisible
-                        ? 0
-                        : MediaQuery.of(context).size.height * 0.07,
-                    // color: const Color(0xFF28D885),
-                    color: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: _isSearchBarVisible
-                        ? null
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const SizedBox(width: 23), // Placeholder
-                              const Text(
-                                'Tap an option',
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontWeight: FontWeight.w700, // Medium weight
-                                  fontSize: 25,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ).tr(),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _isSearchBarVisible = true;
-                                  });
-                                },
-                                child: const Icon(
-                                  Icons.search,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                              ),
-                            ],
+                      color: Colors.black,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10), // Increased padding
+                      height: MediaQuery.of(context).size.height *
+                          0.07, // Increased height
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const SizedBox(width: 23),
+                          const Text(
+                            'Tap an option',
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 25, // Increased font size
+                              color: Colors.white,
+                            ),
+                          ).tr(),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _isSearchBarVisible = true;
+                              });
+                            },
+                            child: const Icon(
+                              Icons.search,
+                              color: Colors.white,
+                              size: 32, // Slightly larger icon
+                            ),
                           ),
+                        ],
+                      ),
+                    ),
                   ),
-                  if (_isSearchBarVisible)
-                    Expanded(
-                      child: SearchWidget(
-                        onClose: () {
-                          setState(() {
-                            _isSearchBarVisible = false;
-                          });
-                        },
-                      ),
-                    ),
-                  const SizedBox(height: 2.5),
                   Expanded(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.only(
-                          top: 20.0,
-                          left: 8.0,
-                          right: 8.0), // Added top padding
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 1,
-                        crossAxisSpacing: 5,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemCount: _gridItems.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return _buildGridItem(
-                          label: _gridItems[index]['label'],
-                          index: index,
-                          onTap: () {
-                            // Provide the onTap callback here
-                            if (_gridItems[index]['label'] == 'Share') {
-                              _shareApp(context); // Call the share method here
-                            }
-                          },
-                        );
-                      },
-                    ),
+                    child: _isSearchBarVisible
+                        ? SearchWidget(
+                            onClose: () {
+                              setState(() {
+                                _isSearchBarVisible = false;
+                              });
+                            },
+                          )
+                        : GridView.builder(
+                            padding: const EdgeInsets.only(
+                                top: 20.0, left: 8.0, right: 8.0),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              childAspectRatio: 1,
+                              crossAxisSpacing: 5,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: _gridItems.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildGridItem(
+                                label: _gridItems[index]['label'],
+                                index: index,
+                                onTap: () {
+                                  if (_gridItems[index]['label'] == 'Share') {
+                                    _shareApp(context);
+                                  }
+                                },
+                              );
+                            },
+                          ),
                   ),
                   const SizedBox(height: 15),
                 ],

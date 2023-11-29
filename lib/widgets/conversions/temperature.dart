@@ -6,9 +6,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unitapp/controllers/navigation_utils.dart';
 
 class TemperatureUnitConverter extends StatefulWidget {
@@ -21,7 +23,7 @@ class TemperatureUnitConverter extends StatefulWidget {
 
 class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
   static const double mediumFontSize = 17.0;
-
+  GlobalKey tooltipKey = GlobalKey();
   double fontSize = mediumFontSize;
 
   bool get isDarkMode => Theme.of(context).brightness == Brightness.dark;
@@ -742,7 +744,18 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
                           .max, // This makes the row take up all available horizontal space
                       children: [
                         IconButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            // Haptic feedback logic
+                            final prefs = await SharedPreferences.getInstance();
+                            final hapticFeedbackEnabled =
+                                prefs.getBool('hapticFeedback') ?? false;
+                            if (hapticFeedbackEnabled) {
+                              bool canVibrate = await Vibrate.canVibrate;
+                              if (canVibrate) {
+                                Vibrate.feedback(FeedbackType.medium);
+                              }
+                            }
+
                             context.navigateTo('/unit');
                           },
                           icon: Icon(
@@ -777,34 +790,71 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
                     ),
 
                     const SizedBox(height: 150),
-                    SwitchListTile(
-                      title: AutoSizeText(
-                        'Exponential Format'.tr(),
-                        style: TextStyle(
-                          color: isDarkMode
-                              ? Colors.white
-                              : const Color(0xFF2C3A47),
-                          fontSize: 18,
-                        ),
-                        maxLines: 1, // You can adjust this as needed
-                        minFontSize:
-                            14, // Set the minimum font size you allow (optional)
+
+                    ListTile(
+                      title: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Tooltip(
+                            message:
+                                'If the displayed result is 0, change the format'
+                                    .tr(), // Add your tooltip text here
+                            child: IconButton(
+                              icon: Icon(Icons.info_outline,
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : Colors.grey[
+                                          800]), // Use an appropriate icon
+                              onPressed: () {
+                                // Add action if needed, or leave empty for a simple tooltip
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: AutoSizeText(
+                              'Exponential Format'.tr(),
+                              style: TextStyle(
+                                color: isDarkMode
+                                    ? Colors.white
+                                    : const Color(0xFF2C3A47),
+                                fontSize: 18,
+                              ),
+                              maxLines: 1, // You can adjust this as needed
+                              minFontSize:
+                                  14, // Set the minimum font size you allow (optional)
+                            ),
+                          ),
+                        ],
                       ),
-                      value: _isExponentialFormat,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _isExponentialFormat = value;
-                          double? lastValue = double.tryParse(
-                              fromController.text.replaceAll(',', ''));
-                          if (lastValue != null) {
-                            fromController.text =
-                                _formatNumber(lastValue, forDisplay: true);
+                      trailing: Switch(
+                        value: _isExponentialFormat,
+                        onChanged: (bool value) async {
+                          // Haptic feedback logic
+                          final prefs = await SharedPreferences.getInstance();
+                          final hapticFeedbackEnabled =
+                              prefs.getBool('hapticFeedback') ?? false;
+                          if (hapticFeedbackEnabled) {
+                            bool canVibrate = await Vibrate.canVibrate;
+                            if (canVibrate) {
+                              Vibrate.feedback(FeedbackType.light);
+                            }
                           }
-                          convert(fromController.text);
-                        });
-                      },
-                      activeColor: Colors.lightBlue,
-                      activeTrackColor: Colors.lightBlue.shade200,
+
+                          // Existing switch logic
+                          setState(() {
+                            _isExponentialFormat = value;
+                            double? lastValue = double.tryParse(
+                                fromController.text.replaceAll(',', ''));
+                            if (lastValue != null) {
+                              fromController.text =
+                                  _formatNumber(lastValue, forDisplay: true);
+                            }
+                            convert(fromController.text);
+                          });
+                        },
+                        activeColor: Colors.lightBlue,
+                        activeTrackColor: Colors.lightBlue.shade200,
+                      ),
                     ),
 
                     const SizedBox(height: 10),
@@ -904,7 +954,21 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
                       splashColor: Colors.red,
                       tooltip: 'Reset default settings'.tr(),
                       heroTag: 'resetButton',
-                      onPressed: _resetToDefault,
+                      onPressed: () async {
+                        // Haptic feedback logic
+                        final prefs = await SharedPreferences.getInstance();
+                        final hapticFeedbackEnabled =
+                            prefs.getBool('hapticFeedback') ?? false;
+                        if (hapticFeedbackEnabled) {
+                          bool canVibrate = await Vibrate.canVibrate;
+                          if (canVibrate) {
+                            Vibrate.feedback(FeedbackType.medium);
+                          }
+                        }
+
+                        // Original reset logic
+                        _resetToDefault();
+                      },
                       backgroundColor:
                           isDarkMode ? Colors.white : const Color(0xFF2C3A47),
                       child: Icon(Icons.restart_alt,
@@ -914,7 +978,21 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
                     FloatingActionButton(
                       tooltip: 'Share a screenshot of your results!'.tr(),
                       heroTag: 'shareButton',
-                      onPressed: _takeScreenshotAndShare,
+                      onPressed: () async {
+                        // Haptic feedback logic
+                        final prefs = await SharedPreferences.getInstance();
+                        final hapticFeedbackEnabled =
+                            prefs.getBool('hapticFeedback') ?? false;
+                        if (hapticFeedbackEnabled) {
+                          bool canVibrate = await Vibrate.canVibrate;
+                          if (canVibrate) {
+                            Vibrate.feedback(FeedbackType.medium);
+                          }
+                        }
+
+                        // Original share logic
+                        _takeScreenshotAndShare();
+                      },
                       backgroundColor:
                           isDarkMode ? Colors.white : const Color(0xFF2C3A47),
                       child: Icon(Icons.share,
@@ -1012,6 +1090,7 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
                     ),
                   ],
                 ),
+
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.content_copy,
                       color: Colors.transparent, size: 23),
@@ -1122,10 +1201,13 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
       DropdownMenuItem<String>(
         value: '',
         enabled: false,
-        child: Text(
+        child: AutoSizeText(
           'Choose a conversion unit'.tr(),
           style: TextStyle(
               color: isDarkMode ? Colors.white : Colors.black, fontSize: 20),
+          minFontSize: 12,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );
@@ -1146,14 +1228,28 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
             isDarkMode ? const Color(0xFF303134) : const Color(0xFFDBE6FD),
       ),
       value: currentValue.isNotEmpty ? currentValue : null,
-      hint: Text(
+      hint: AutoSizeText(
         'Choose a conversion unit'.tr(),
         style: TextStyle(
             color: isDarkMode ? Colors.white : const Color(0xFF374259),
             fontSize: 20),
         textAlign: TextAlign.center,
+        minFontSize: 12,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
-      onChanged: (String? newValue) {
+      onChanged: (String? newValue) async {
+        // Haptic feedback logic
+        final prefs = await SharedPreferences.getInstance();
+        final hapticFeedbackEnabled = prefs.getBool('hapticFeedback') ?? false;
+        if (hapticFeedbackEnabled && newValue != null && newValue.isNotEmpty) {
+          bool canVibrate = await Vibrate.canVibrate;
+          if (canVibrate) {
+            Vibrate.feedback(FeedbackType.medium);
+          }
+        }
+
+        // Original onChanged logic
         if (newValue != null && newValue.isNotEmpty) {
           setState(() {
             if (isFrom) {
@@ -1163,8 +1259,6 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
               toUnit = newValue;
               toPrefix = _getPrefix(newValue);
             }
-            // Do not clear the text fields here to retain the input value
-            // Trigger the conversion logic if needed with the new unit but same value
             convert(fromController.text);
           });
         }
@@ -1179,13 +1273,16 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
       selectedItemBuilder: (BuildContext context) {
         return items.map<Widget>((DropdownMenuItem<String> item) {
           return Center(
-            child: Text(
-              item.value == '' ? 'Choose a conversion unit' : item.value!,
+            child: AutoSizeText(
+              item.value == '' ? 'Choose a conversion unit'.tr() : item.value!,
               style: TextStyle(
                 color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
                 fontSize: 20,
               ),
-            ).tr(),
+              minFontSize: 12,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           );
         }).toList();
       },

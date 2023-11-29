@@ -10,12 +10,13 @@
 "resetButton" : " ",
 "Share a screenshot of your results!" : "결과 화면 캡처 공유하기!",
 "shareButton" : " ",
-"Select Language": "  ",
-"Formula": "수식",
-"Formula ": "수식",
-"Formula  ": "수식",
-"Formula   ": "수식",
-"Formula    ": "수식",
+"Select Language": "언어 선택",
+"If the displayed result is 0, change the format":"표시된 결과가 0이면 형식을 변경하십시오",
+"Formula:": "수식",
+"Formula: ": "수식",
+"Formula:  ": "수식",
+"Formula:   ": "수식",
+"Formula:    ": "수식",
 "Angstrom": "앙스트롬",
 "Furlongs": "퍼롱",
 "Fathoms": "페덤",
@@ -52,7 +53,7 @@
     "Copy Link": "링크 복사",
   "Close": "닫기",
   "Link copied to clipboard": "링크가 클립보드에 복사되었습니다",
-
+  "Choose a conversion unit" : "변환 단위를 선택하십시오",
 
 
   "Divide the volume value by 1,000": "\ubcfc\ub968 \uac12\uc744 1,000\uc73c\ub85c \ub098\ub215\ub2c8\ub2e4.",

@@ -16,7 +16,7 @@ class InterstitialAdManager {
   static final Connectivity _connectivity = Connectivity();
   static Timer? _connectivityRetryTimer;
   static DateTime? _lastAdShownTime;
-  static Duration _cooldownPeriod = Duration(minutes: 3);
+  static const Duration _cooldownPeriod = Duration(minutes: 3);
 
   static void loadInterstitialAd() {
     var connectivityResult = _connectivity.checkConnectivity();

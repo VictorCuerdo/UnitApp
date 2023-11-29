@@ -119,6 +119,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _showLanguageDialog() {
+    if (hapticFeedback) {
+      Vibrate.feedback(FeedbackType.selection); // Haptic feedback
+    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -395,13 +398,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget languageGridTile(BuildContext context, Locale locale,
       String languageCode, String flagImage, bool isSelected) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        // Trigger haptic feedback without waiting for it to complete
+        _triggerHapticFeedback();
+
+        // Your existing logic for language selection and dialog opening
         setState(() {
           _selectedLocale = locale;
           context.setLocale(locale);
         });
         _saveLocalePreference(locale); // Save the locale once it's selected
-        Navigator.of(context).pop();
+        Navigator.of(context)
+            .pop(); // Make sure this is correctly closing the dialog
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -424,6 +432,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+
+// Haptic feedback function
+  Future<void> _triggerHapticFeedback() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hapticFeedbackEnabled = prefs.getBool('hapticFeedback') ?? false;
+    if (hapticFeedbackEnabled) {
+      bool canVibrate = await Vibrate.canVibrate;
+      if (canVibrate) {
+        Vibrate.feedback(FeedbackType.selection);
+      }
+    }
   }
 
   String getFlagImagePath(Locale locale) {
@@ -530,13 +550,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Row(
             children: [
               IconButton(
-                onPressed: () {
-                  context.navigateTo('/');
+                onPressed: () async {
+                  // Haptic feedback logic
+                  final prefs = await SharedPreferences.getInstance();
+                  final hapticFeedbackEnabled =
+                      prefs.getBool('hapticFeedback') ?? false;
+                  if (hapticFeedbackEnabled) {
+                    bool canVibrate = await Vibrate.canVibrate;
+                    if (canVibrate) {
+                      Vibrate.feedback(FeedbackType.selection);
+                    }
+                  }
+
+                  context.navigateTo('/unit');
                 },
                 icon: Icon(
                   Icons.arrow_back,
                   size: 40,
-                  color: isDarkMode ? Colors.grey : Colors.grey[800],
+                  color: isDarkMode ? Colors.white : const Color(0xFF2C3A47),
                 ),
               ),
             ],
@@ -582,8 +613,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Provider.of<ThemeProvider>(context, listen: false)
                         .toggleTheme(value);
                   });
-                  // Save the preference
                   _saveThemePreference(value);
+                  if (hapticFeedback) {
+                    Vibrate.feedback(FeedbackType.selection); // Haptic feedback
+                  }
                 },
               ),
             ),
@@ -688,13 +721,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       : Colors.grey[850],
                                   onPressed: () {
                                     setState(() {
-                                      fontSize = smallFontSize;
+                                      fontSize =
+                                          smallFontSize; // or mediumFontSize or largeFontSize
                                       _saveFontSize();
                                     });
-                                    // Update the provider value
                                     Provider.of<FontSizeProvider>(context,
-                                            listen: false)
-                                        .fontSize = smallFontSize;
+                                                listen: false)
+                                            .fontSize =
+                                        smallFontSize; // or mediumFontSize or largeFontSize
+                                    if (hapticFeedback) {
+                                      Vibrate.feedback(FeedbackType
+                                          .selection); // Haptic feedback
+                                    }
                                   },
                                 ),
                                 Text(
@@ -723,13 +761,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       : Colors.grey[850],
                                   onPressed: () {
                                     setState(() {
-                                      fontSize = mediumFontSize;
+                                      fontSize =
+                                          mediumFontSize; // or mediumFontSize or largeFontSize
                                       _saveFontSize();
                                     });
-                                    // Update the provider value
                                     Provider.of<FontSizeProvider>(context,
-                                            listen: false)
-                                        .fontSize = mediumFontSize;
+                                                listen: false)
+                                            .fontSize =
+                                        smallFontSize; // or mediumFontSize or largeFontSize
+                                    if (hapticFeedback) {
+                                      Vibrate.feedback(FeedbackType
+                                          .selection); // Haptic feedback
+                                    }
                                   },
                                 ),
                                 Text(
@@ -758,13 +801,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       : Colors.grey[850],
                                   onPressed: () {
                                     setState(() {
-                                      fontSize = largeFontSize;
+                                      fontSize =
+                                          largeFontSize; // or mediumFontSize or largeFontSize
                                       _saveFontSize();
                                     });
-                                    // Update the provider value
                                     Provider.of<FontSizeProvider>(context,
-                                            listen: false)
-                                        .fontSize = largeFontSize;
+                                                listen: false)
+                                            .fontSize =
+                                        smallFontSize; // or mediumFontSize or largeFontSize
+                                    if (hapticFeedback) {
+                                      Vibrate.feedback(FeedbackType
+                                          .selection); // Haptic feedback
+                                    }
                                   },
                                 ),
                                 Text(
@@ -796,10 +844,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             thickness: 2,
           ),
           const SizedBox(height: 5),
-
-          // Settings UI
-          // STATUS BAR ROW
-          // Status Bar SwitchListTile
           SizedBox(
             height: tileHeight, // Set the fixed height
             child: Align(
@@ -830,7 +874,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       overlays: value ? [] : SystemUiOverlay.values,
                     );
                   });
-                  _saveStatusBarVisibility(value); // Save the preference
+                  _saveStatusBarVisibility(value);
+                  if (hapticFeedback) {
+                    Vibrate.feedback(FeedbackType.selection); // Haptic feedback
+                  }
                 },
                 secondary: const Icon(Icons.sim_card, size: 38),
                 subtitle: Consumer<FontSizeProvider>(
@@ -897,7 +944,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   await _saveHapticPreference(value);
                   // Apply haptic feedback immediately to give instant feedback
                   if (value) {
-                    Vibrate.feedback(FeedbackType.light);
+                    Vibrate.feedback(FeedbackType.selection);
                   }
                 },
                 secondary: const Icon(Icons.touch_app, size: 38),

@@ -20,7 +20,9 @@ class UnitConversion extends StatefulWidget {
   _UnitConversionState createState() => _UnitConversionState();
 }
 
-class _UnitConversionState extends State<UnitConversion> {
+class _UnitConversionState extends State<UnitConversion>
+    with TickerProviderStateMixin {
+  TabController? _tabController;
   static const double smallFontSize = 14.0;
   static const double mediumFontSize = 17.0;
   static const double largeFontSize = 20.0;
@@ -354,6 +356,27 @@ class _UnitConversionState extends State<UnitConversion> {
   void initState() {
     super.initState();
     _loadSettings();
+    _tabController = TabController(
+        length: 2,
+        vsync: this); // 'this' now refers to an object that is a TickerProvider
+    _tabController!.addListener(_handleTabSelection);
+  }
+
+  void _handleTabSelection() {
+    if (_tabController!.indexIsChanging) {
+      _triggerHapticFeedback();
+    }
+  }
+
+  Future<void> _triggerHapticFeedback() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hapticFeedbackEnabled = prefs.getBool('hapticFeedback') ?? false;
+    if (hapticFeedbackEnabled) {
+      bool canVibrate = await Vibrate.canVibrate;
+      if (canVibrate) {
+        Vibrate.feedback(FeedbackType.selection);
+      }
+    }
   }
 
   Future<void> _loadSettings() async {
@@ -586,7 +609,20 @@ class _UnitConversionState extends State<UnitConversion> {
                             ),
                           ).tr(),
                           GestureDetector(
-                            onTap: () {
+                            onTap: () async {
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              final hapticFeedbackEnabled =
+                                  prefs.getBool('hapticFeedback') ?? false;
+
+                              // Trigger haptic feedback if enabled.
+                              if (hapticFeedbackEnabled) {
+                                // Check if the device can vibrate
+                                bool canVibrate = await Vibrate.canVibrate;
+                                if (canVibrate) {
+                                  Vibrate.feedback(FeedbackType.medium);
+                                }
+                              }
                               setState(() {
                                 _isSearchBarVisible = true;
                               });

@@ -1,6 +1,7 @@
 {
   "UnitApp": "UnitApp",
   "Language":"语言",
+  "Select Language":"选择语言",
   "Tap an option": "点击选项",
 "Type Magnitude/Unit/Symbol": "键入大小/单位/符号",
 "Reset default settings": "重置默认设置",
@@ -11,6 +12,7 @@
 "Share a screenshot of your results!" : "分享您的结果截图！",
 "shareButton" : "分享",
 "Formula": "公式",
+"If the displayed result is 0, change the format":"如果显示的结果是0，请更改格式",
 "Formula ": "公式 ",
 "Formula  ": "公式 ",
 "Formula   ": "公式    ",

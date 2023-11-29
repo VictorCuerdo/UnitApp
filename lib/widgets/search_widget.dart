@@ -2,6 +2,8 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchWidget extends StatefulWidget {
   final VoidCallback onClose; // Callback to close the search widget
@@ -573,12 +575,30 @@ class _SearchWidgetState extends State<SearchWidget> {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.close,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.white,
-                    size: 28),
-                onPressed: widget.onClose, // Call the onClose callback
+                icon: Icon(
+                  Icons.close,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.white,
+                  size: 28,
+                ),
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  final hapticFeedbackEnabled =
+                      prefs.getBool('hapticFeedback') ?? false;
+
+                  // Trigger haptic feedback if enabled.
+                  if (hapticFeedbackEnabled) {
+                    // Check if the device can vibrate
+                    bool canVibrate = await Vibrate.canVibrate;
+                    if (canVibrate) {
+                      Vibrate.feedback(FeedbackType.medium);
+                    }
+                  }
+
+                  // Call the original onClose function if needed
+                  widget.onClose();
+                },
               ),
             ],
           ),
@@ -602,16 +622,33 @@ class _SearchWidgetState extends State<SearchWidget> {
                             .toLowerCase()
                             .contains(_searchQuery.toLowerCase()))
                         .map((key) => ListTile(
-                              title: Text(key.tr(),
-                                  style: const TextStyle(
-                                    fontFamily: 'Nunito',
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                    color: Colors
-                                        .black, // Set the text color to white
-                                  ),
-                                  textAlign: TextAlign.center),
-                              onTap: () {
+                              title: Text(
+                                key.tr(),
+                                style: const TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              onTap: () async {
+                                // Check for haptic feedback setting
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                final hapticFeedbackEnabled =
+                                    prefs.getBool('hapticFeedback') ?? false;
+
+                                // Trigger haptic feedback if enabled
+                                if (hapticFeedbackEnabled) {
+                                  // Check if the device can vibrate
+                                  bool canVibrate = await Vibrate.canVibrate;
+                                  if (canVibrate) {
+                                    Vibrate.feedback(FeedbackType.medium);
+                                  }
+                                }
+
+                                // Navigate to the selected page
                                 Navigator.of(context)
                                     .pushNamed(_navigationMap[key]!);
                               },

@@ -7,7 +7,7 @@
   "Share a screenshot of your results!" : "Поделитесь скриншотом ваших результатов!",
   "shareButton" : "Поделиться",
 
-  "Select Language": "  ",
+  "Select Language": "Выбрать язык",
   "Choose a conversion unit":"Выберите единицу конверсии",
   "Choose a conversion unit ":"Выберите единицу конверсии",
   "Choose a conversion unit  ":"Выберите единицу конверсии",
@@ -16,6 +16,7 @@
 "Reset default settings": "Сбросить настройки по умолчанию",
 "Share a screenshot of your results!": "Поделитесь скриншотом ваших результатов!",
 "Formula": "Формула",
+"If the displayed result is 0, change the format":" Если отображаемый результат равен 0, измените формат",
 "Formula ": "Формула",
 "Formula  ": "Формула",
 "Formula   ": "Формула",

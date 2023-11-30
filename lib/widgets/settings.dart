@@ -859,7 +859,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       'Status bar',
                       style: TextStyle(
                           color: isDarkMode ? Colors.white : Colors.black,
-                          fontSize: fontSizeProvider.fontSize),
+                          fontSize: fontSize),
                     ).tr();
                   },
                 ),
@@ -931,8 +931,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     return Text(
                       'Button Haptic Feedback',
                       style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.black,
-                          fontSize: fontSizeProvider.fontSize),
+                        color: isDarkMode ? Colors.white : Colors.black,
+                        fontSize: fontSize,
+                      ),
                     ).tr();
                   },
                 ),

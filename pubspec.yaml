@@ -79,6 +79,28 @@ flutter:
         - asset: assets/fonts/Lato/Lato-BlackItalic.ttf
           weight: 900
 
+    - family: PTSans
+      fonts:
+        - asset: assets/fonts/PTSans/PTC55F.ttf
+        - asset: assets/fonts/PTSans/PTC75F.ttf
+          weight: 700
+        - asset: assets/fonts/PTSans/PTN57F.ttf
+        - asset: assets/fonts/PTSans/PTN77F.ttf
+          weight: 700
+        - asset: assets/fonts/PTSans/PTS55F.ttf
+        - asset: assets/fonts/PTSans/PTS56F.ttf
+        - asset: assets/fonts/PTSans/PTS75F.ttf
+          weight: 700
+        - asset: assets/fonts/PTSans/PTS76F.ttf
+          weight: 700
+
+
+    - family: AbhayaLibre
+      fonts:
+        - asset: assets/fonts/abhaya-libre/AbhayaLibre-Regular.ttf
+        - asset: assets/fonts/abhaya-libre/AbhayaLibre-Bold.ttf
+          weight: 700
+          
 flutter_launcher_icons:
   android: true # or specify your launcher icon
   ios: true

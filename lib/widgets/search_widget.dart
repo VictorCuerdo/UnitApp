@@ -559,7 +559,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                     alignLabelWithHint: true,
                     hintText: 'Type Magnitude/Unit/Symbol'.tr(),
                     hintStyle: TextStyle(
-                      fontSize: 15,
+                      fontSize: 12,
                       color: Colors.grey
                           .shade600, // Use a light grey that is visible on white
                     ),

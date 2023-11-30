@@ -56,6 +56,50 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
     _conversionFormula = _getConversionFormula();
   }
 
+  String chooseFontFamily(Locale currentLocale) {
+    // List of locales supported by 'Lato'
+    const supportedLocales = [
+      'en',
+      'es',
+      'fr',
+      'de',
+      'zh',
+      'ja',
+      'pt',
+      'ru',
+      'ar',
+      'hi',
+      'it',
+      'ko',
+      'th',
+      'vi',
+      'bg',
+      'da',
+      'el',
+      'fi',
+      'he',
+      'id',
+      'lv',
+      'nb',
+      'nl',
+      'pl',
+      'sr',
+      'sv',
+      'sw',
+      'tl',
+      'uk',
+      'ro',
+    ];
+
+    if (supportedLocales.contains(currentLocale.languageCode)) {
+      return 'Lato'; // Primary font
+    } else if (currentLocale.languageCode == 'lt') {
+      return 'PTSans'; // Use PT Sans for Lithuanian
+    } else {
+      return 'AbhayaLibre'; // Fallback to Abhaya Libre for other languages
+    }
+  }
+
   @override
   void dispose() {
     fromController.dispose();
@@ -727,7 +771,8 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
                           child: AutoSizeText('Convert Fuel Consumption'.tr(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontFamily: 'Lato',
+                                fontFamily: chooseFontFamily(
+                                    Localizations.localeOf(context)),
                                 fontWeight: FontWeight.w700,
                                 fontSize: 28,
                                 color: isDarkMode
@@ -828,10 +873,24 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
                             isDarkMode ? Colors.grey : const Color(0xFF374259),
                         size: 40,
                       ),
-                      onPressed: swapUnits,
+                      onPressed: () async {
+                        // Call your swapUnits function.
+                        swapUnits();
+
+                        // Haptic feedback logic
+                        final prefs = await SharedPreferences.getInstance();
+                        final hapticFeedbackEnabled =
+                            prefs.getBool('hapticFeedback') ?? false;
+                        if (hapticFeedbackEnabled) {
+                          bool canVibrate = await Vibrate.canVibrate;
+                          if (canVibrate) {
+                            Vibrate.feedback(FeedbackType.heavy);
+                          }
+                        }
+                      },
                     ),
+
                     Container(
-                      key: _contentKey,
                       padding: const EdgeInsets.only(left: 0.125, right: 0.125),
                       width: double.infinity,
                       child: _buildUnitColumn(
@@ -1095,7 +1154,21 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
                 ),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.content_copy, size: 23),
-                  onPressed: () => copyToClipboard(controller.text, context),
+                  onPressed: () async {
+                    // Call your copyToClipboard function.
+                    copyToClipboard(controller.text, context);
+
+                    // Haptic feedback logic
+                    final prefs = await SharedPreferences.getInstance();
+                    final hapticFeedbackEnabled =
+                        prefs.getBool('hapticFeedback') ?? false;
+                    if (hapticFeedbackEnabled) {
+                      bool canVibrate = await Vibrate.canVibrate;
+                      if (canVibrate) {
+                        Vibrate.feedback(FeedbackType.selection);
+                      }
+                    }
+                  },
                 ),
               ),
             ),
@@ -1232,7 +1305,9 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
         return items.map<Widget>((DropdownMenuItem<String> item) {
           return Center(
             child: AutoSizeText(
-              item.value == '' ? 'Choose a conversion unit'.tr() : item.value!,
+              item.value == ''
+                  ? 'Choose a conversion unit'.tr()
+                  : item.value!.tr(),
               style: TextStyle(
                 color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
                 fontSize: 20,

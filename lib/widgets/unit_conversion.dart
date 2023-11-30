@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -201,7 +202,17 @@ class _UnitConversionState extends State<UnitConversion>
         ),
         const SizedBox(height: 10),
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
+            // Haptic feedback logic
+            final prefs = await SharedPreferences.getInstance();
+            final hapticFeedbackEnabled =
+                prefs.getBool('hapticFeedback') ?? false;
+            if (hapticFeedbackEnabled) {
+              bool canVibrate = await Vibrate.canVibrate;
+              if (canVibrate) {
+                Vibrate.feedback(FeedbackType.selection);
+              }
+            }
             Clipboard.setData(ClipboardData(text: appLink)).then((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -257,6 +268,50 @@ class _UnitConversionState extends State<UnitConversion>
         const SizedBox(height: 5),
       ],
     );
+  }
+
+  String chooseFontFamily(Locale currentLocale) {
+    // List of locales supported by 'Lato'
+    const supportedLocales = [
+      'en',
+      'es',
+      'fr',
+      'de',
+      'zh',
+      'ja',
+      'pt',
+      'ru',
+      'ar',
+      'hi',
+      'it',
+      'ko',
+      'th',
+      'vi',
+      'bg',
+      'da',
+      'el',
+      'fi',
+      'he',
+      'id',
+      'lv',
+      'nb',
+      'nl',
+      'pl',
+      'sr',
+      'sv',
+      'sw',
+      'tl',
+      'uk',
+      'ro',
+    ];
+
+    if (supportedLocales.contains(currentLocale.languageCode)) {
+      return 'Lato'; // Primary font
+    } else if (currentLocale.languageCode == 'lt') {
+      return 'PTSans'; // Use PT Sans for Lithuanian
+    } else {
+      return 'AbhayaLibre'; // Fallback to Abhaya Libre for other languages
+    }
   }
 
   void _handleOutsideTap() {
@@ -549,7 +604,7 @@ class _UnitConversionState extends State<UnitConversion>
               Text(
                 label,
                 style: TextStyle(
-                  fontFamily: 'Work Sans',
+                  fontFamily: chooseFontFamily(Localizations.localeOf(context)),
                   fontWeight: FontWeight.w500,
                   fontSize: gridLabelFontSize,
                   color: textColor,
@@ -599,15 +654,19 @@ class _UnitConversionState extends State<UnitConversion>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const SizedBox(width: 23),
-                          const Text(
-                            'Tap an option',
+                          AutoSizeText(
+                            'Tap an option'.tr(),
                             style: TextStyle(
-                              fontFamily: 'Lato',
+                              fontFamily: chooseFontFamily(
+                                  Localizations.localeOf(context)),
                               fontWeight: FontWeight.w700,
-                              fontSize: 25, // Increased font size
+                              fontSize: 25,
                               color: Colors.white,
                             ),
-                          ).tr(),
+                            maxLines: 1,
+                            minFontSize: 12,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           GestureDetector(
                             onTap: () async {
                               final prefs =

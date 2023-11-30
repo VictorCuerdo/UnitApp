@@ -86,7 +86,6 @@ class _SpeedUnitConverterState extends State<SpeedUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -95,7 +94,6 @@ class _SpeedUnitConverterState extends State<SpeedUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

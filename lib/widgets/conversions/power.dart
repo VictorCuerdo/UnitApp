@@ -97,7 +97,6 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -106,7 +105,6 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

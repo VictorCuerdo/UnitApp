@@ -97,7 +97,6 @@ class _MassUnitConverterState extends State<MassUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -106,7 +105,6 @@ class _MassUnitConverterState extends State<MassUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

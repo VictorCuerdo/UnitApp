@@ -82,7 +82,6 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -91,7 +90,6 @@ class _TemperatureUnitConverterState extends State<TemperatureUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

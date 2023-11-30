@@ -87,7 +87,6 @@ class _AngleUnitConverterState extends State<AngleUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -96,7 +95,6 @@ class _AngleUnitConverterState extends State<AngleUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

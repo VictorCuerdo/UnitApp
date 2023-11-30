@@ -80,7 +80,6 @@ class _TorqueUnitConverterState extends State<TorqueUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -89,7 +88,6 @@ class _TorqueUnitConverterState extends State<TorqueUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

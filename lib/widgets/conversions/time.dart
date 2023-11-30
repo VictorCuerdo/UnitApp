@@ -79,7 +79,6 @@ class _TimeUnitConverterState extends State<TimeUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -88,7 +87,6 @@ class _TimeUnitConverterState extends State<TimeUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

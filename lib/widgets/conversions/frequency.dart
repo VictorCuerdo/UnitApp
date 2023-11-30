@@ -87,7 +87,6 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -96,7 +95,6 @@ class _FrequencyUnitConverterState extends State<FrequencyUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

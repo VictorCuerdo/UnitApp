@@ -86,7 +86,6 @@ class _AreaUnitConverterState extends State<AreaUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -95,7 +94,6 @@ class _AreaUnitConverterState extends State<AreaUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

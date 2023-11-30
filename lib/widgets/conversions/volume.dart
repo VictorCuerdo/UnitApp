@@ -79,7 +79,6 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -88,7 +87,6 @@ class _VolumeUnitConverterState extends State<VolumeUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

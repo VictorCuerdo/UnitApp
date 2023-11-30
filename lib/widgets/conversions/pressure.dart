@@ -86,7 +86,6 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -95,7 +94,6 @@ class _PressureUnitConverterState extends State<PressureUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

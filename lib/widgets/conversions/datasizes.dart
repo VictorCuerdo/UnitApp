@@ -80,7 +80,6 @@ class _DatasUnitConverterState extends State<DatasUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -89,7 +88,6 @@ class _DatasUnitConverterState extends State<DatasUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

@@ -87,7 +87,6 @@ class _ForceUnitConverterState extends State<ForceUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -96,7 +95,6 @@ class _ForceUnitConverterState extends State<ForceUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

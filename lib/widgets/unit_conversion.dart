@@ -293,7 +293,6 @@ class _UnitConversionState extends State<UnitConversion>
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -302,7 +301,6 @@ class _UnitConversionState extends State<UnitConversion>
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

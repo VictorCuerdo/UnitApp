@@ -79,7 +79,6 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -88,7 +87,6 @@ class _FuelUnitConverterState extends State<FuelUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

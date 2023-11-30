@@ -87,7 +87,6 @@ class _DistanceUnitConverterState extends State<DistanceUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -96,7 +95,6 @@ class _DistanceUnitConverterState extends State<DistanceUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

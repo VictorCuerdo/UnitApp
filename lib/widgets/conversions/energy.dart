@@ -86,7 +86,6 @@ class _EnergyUnitConverterState extends State<EnergyUnitConverter> {
       'fi',
       'he',
       'id',
-      'lv',
       'nb',
       'nl',
       'pl',
@@ -95,7 +94,6 @@ class _EnergyUnitConverterState extends State<EnergyUnitConverter> {
       'sw',
       'tl',
       'uk',
-      'ro',
     ];
 
     if (supportedLocales.contains(currentLocale.languageCode)) {

@@ -26,8 +26,8 @@ class NativeAdWidgetState extends State<NativeAdWidget>
   final Connectivity _connectivity = Connectivity();
 
   // Ad Unit IDs for different platforms
-  final String _androidAdUnitId = 'ca-app-pub-3940256099942544/2247696110';
-  final String _iosAdUnitId = 'ca-app-pub-3940256099942544/3986624511';
+  final String _androidAdUnitId = 'ca-app-pub-1257505778072677/8288438571';
+  final String _iosAdUnitId = 'ca-app-pub-1257505778072677/5610304347';
 
   @override
   void initState() {
@@ -51,8 +51,10 @@ class NativeAdWidgetState extends State<NativeAdWidget>
 
   void _loadAd() {
     _nativeAd = NativeAd(
-      adUnitId: _adUnitId, // Corrected use of the adUnitId field
-      factoryId: 'listTile', // Your defined Factory ID for the ad layout
+      adUnitId: _adUnitId,
+      // Corrected use of the adUnitId field
+      factoryId: 'listTile',
+      // Your defined Factory ID for the ad layout
       listener: NativeAdListener(
         onAdLoaded: (Ad ad) {
           setState(() {

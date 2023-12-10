@@ -1,27 +1,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Existing permissions like VIBRATE -->
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
-<uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
+    <!-- Existing permissions -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
 
     <application
         android:label="UnitApp"
-        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
 
-       <!-- AdMob App ID meta-data tag -->
-        <!-- Replace 'ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy' with your actual AdMob App ID -->
+        <!-- AdMob App ID meta-data tag -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1257505778072677~6159442601"/>
+            android:value="ca-app-pub-1257505778072677~4032084080" />
 
-        <!-- Rest of your application configuration -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -29,18 +27,17 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:enableOnBackInvokedCallback="true"
             android:windowSoftInputMode="adjustResize">
-            
+
             <!-- Meta-data for the Android theme -->
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme"/>
+                android:resource="@style/NormalTheme" />
 
             <!-- Main entry-point filter -->
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 

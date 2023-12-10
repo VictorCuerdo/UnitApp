@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "503073606477",
-    "project_id": "unitapp-e732a",
-    "storage_bucket": "unitapp-e732a.appspot.com"
+    "project_number": "659362672663",
+    "project_id": "unitapp-firebase",
+    "storage_bucket": "unitapp-firebase.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:503073606477:android:cab051fcb58e78f651c504",
+        "mobilesdk_app_id": "1:659362672663:android:26d8c658e9af3bada0ac52",
         "android_client_info": {
-          "package_name": "com.example.unitapp"
+          "package_name": "com.appevolvelabs.unitapp"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBYq-rTDyaq4nIxSS7fpYEJfdnXXqW-zjY"
+          "current_key": "AIzaSyDYVi2cj4qyM9sRRVh0vefyd2OES3PiHfM"
         }
       ],
       "services": {

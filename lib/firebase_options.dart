@@ -44,38 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBMdktfzHcIq-6dh2QlrsW8BD-GCcRLsWc',
-    appId: '1:503073606477:web:7c6321fa00b87bf351c504',
-    messagingSenderId: '503073606477',
-    projectId: 'unitapp-e732a',
-    authDomain: 'unitapp-e732a.firebaseapp.com',
-    storageBucket: 'unitapp-e732a.appspot.com',
-    measurementId: 'G-RFDH27W6MD',
+    apiKey: 'AIzaSyAx4tFDMZGCWhKhG3bgD-KIvS2rp65Krx4',
+    appId: '1:659362672663:web:bfc797e755209ca2a0ac52',
+    messagingSenderId: '659362672663',
+    projectId: 'unitapp-firebase',
+    authDomain: 'unitapp-firebase.firebaseapp.com',
+    storageBucket: 'unitapp-firebase.appspot.com',
+    measurementId: 'G-K0K7Y4HMQD',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBYq-rTDyaq4nIxSS7fpYEJfdnXXqW-zjY',
-    appId: '1:503073606477:android:cab051fcb58e78f651c504',
-    messagingSenderId: '503073606477',
-    projectId: 'unitapp-e732a',
-    storageBucket: 'unitapp-e732a.appspot.com',
+    apiKey: 'AIzaSyDYVi2cj4qyM9sRRVh0vefyd2OES3PiHfM',
+    appId: '1:659362672663:android:26d8c658e9af3bada0ac52',
+    messagingSenderId: '659362672663',
+    projectId: 'unitapp-firebase',
+    storageBucket: 'unitapp-firebase.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD2-JTVPAdbM6ftOSITitpz3x6ajxd55ls',
-    appId: '1:503073606477:ios:32b3aeb71f4ade0151c504',
-    messagingSenderId: '503073606477',
-    projectId: 'unitapp-e732a',
-    storageBucket: 'unitapp-e732a.appspot.com',
-    iosBundleId: 'com.example.unitapp',
+    apiKey: 'AIzaSyBy3ImYUqeLOaUvKHycdNq7W9idCSFW1Eo',
+    appId: '1:659362672663:ios:388f703331927a42a0ac52',
+    messagingSenderId: '659362672663',
+    projectId: 'unitapp-firebase',
+    storageBucket: 'unitapp-firebase.appspot.com',
+    iosBundleId: 'com.appevolvelabs.unitapp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD2-JTVPAdbM6ftOSITitpz3x6ajxd55ls',
-    appId: '1:503073606477:ios:d668c68dc69d6e0a51c504',
-    messagingSenderId: '503073606477',
-    projectId: 'unitapp-e732a',
-    storageBucket: 'unitapp-e732a.appspot.com',
+    apiKey: 'AIzaSyBy3ImYUqeLOaUvKHycdNq7W9idCSFW1Eo',
+    appId: '1:659362672663:ios:32573a14e09d0f49a0ac52',
+    messagingSenderId: '659362672663',
+    projectId: 'unitapp-firebase',
+    storageBucket: 'unitapp-firebase.appspot.com',
     iosBundleId: 'com.example.unitapp.RunnerTests',
   );
 }

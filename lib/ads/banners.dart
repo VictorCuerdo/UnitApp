@@ -24,8 +24,8 @@ class _MyBannerAdWidgetState extends State<MyBannerAdWidget> {
   Timer? _retryTimer;
   AdSize? _adSize;
   final String adUnitId = Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/6300978111' // Replace with your Android ad unit ID
-      : 'ca-app-pub-3940256099942544/2934735716'; // Replace with your iOS ad unit ID
+      ? 'ca-app-pub-1257505778072677/5857662459' // Replace with your Android ad unit ID
+      : 'ca-app-pub-1257505778072677/2078253449'; // Replace with your iOS ad unit ID
   int _retryAttempt = 0; // Add this to track the number of retries
   void _createBannerAd() {
     AdSize.getAnchoredAdaptiveBannerAdSize(

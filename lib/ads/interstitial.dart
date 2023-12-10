@@ -28,8 +28,8 @@ class InterstitialAdManager {
 
       InterstitialAd.load(
         adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-3940256099942544/6300978111'
-            : 'ca-app-pub-3940256099942544/2934735716',
+            ? 'ca-app-pub-1257505778072677/6596082956'
+            : 'ca-app-pub-1257505778072677/2250424082',
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {

@@ -24,7 +24,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   static const double smallFontSize = 13.0;
   static const double mediumFontSize = 16.0;
   static const double largeFontSize = 19.0;
-  Locale _selectedLocale = const Locale('en', 'US');
+  Locale _selectedLocale = const Locale('en');
   double fontSize = mediumFontSize;
   bool isDarkMode = true; // Added to handle theme changes
   static const double tileHeight = 120.0; // Example fixed height for each tile
@@ -32,8 +32,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadStatusBarVisibility() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      statusBarVisible = prefs.getBool('statusBarVisible') ?? true;
-      // Update system UI mode based on the saved preference
+      statusBarVisible = prefs.getBool('statusBarVisible') ??
+          true; // set default value to true
       SystemChrome.setEnabledSystemUIMode(
         statusBarVisible ? SystemUiMode.immersiveSticky : SystemUiMode.manual,
         overlays: statusBarVisible ? [] : SystemUiOverlay.values,
@@ -44,8 +44,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadPreferences();
-    _loadStatusBarVisibility();
   }
 
   Future<void> _loadPreferences() async {
@@ -56,12 +54,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       tempLocale = context.locale; // Assign to tempLocale within the callback
     });
-    String languageCode = prefs.getString('locale_languageCode') ?? 'en';
-    String countryCode = prefs.getString('locale_countryCode') ?? 'US';
-    Locale savedLocale = Locale(languageCode, countryCode);
+
     bool isHapticFeedbackEnabled = prefs.getBool('hapticFeedback') ?? false;
     bool isStatusBarVisible = prefs.getBool('statusBarVisible') ?? true;
-    bool isDarkModeEnabled = prefs.getBool('isDarkMode') ?? false;
+    bool isDarkModeEnabled =
+        prefs.getBool('isDarkMode') ?? true; // set default value to true
 
     // Apply all the loaded preferences
     setState(() {
@@ -69,12 +66,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       statusBarVisible = isStatusBarVisible;
       isDarkMode = isDarkModeEnabled;
       fontSize = savedFontSize;
-      _selectedLocale = savedLocale;
-      fontSize = savedFontSize;
-      context.setLocale(savedLocale); // Set the saved locale
-      if (tempLocale != null) {
-        _selectedLocale = tempLocale!;
-      }
+      _selectedLocale = tempLocale ?? _selectedLocale;
     });
 
     // Apply system UI mode based on the saved preference
@@ -637,8 +629,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   horizontal: screenWidth * 0.05,
                 ),
                 leading: Container(
-                  padding: const EdgeInsets.all(
-                      0.5), // Adjust the padding for the size of the frame you want
+                  padding: const EdgeInsets.all(0.5),
+                  // Adjust the padding for the size of the frame you want
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
@@ -648,8 +640,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   child: ClipOval(
                     child: Image.asset(
-                      getFlagImagePath(
-                          _selectedLocale), // function to get the image path based on locale
+                      getFlagImagePath(_selectedLocale),
+                      // function to get the image path based on locale
                       width: 32, // Adjust the size as needed
                       height: 32, // Adjust the size as needed
                       fit: BoxFit.cover,
@@ -664,8 +656,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       fontSize: fontSize),
                 ),
                 trailing: Text(
-                  getLanguageCode(
-                      _selectedLocale), // function to get the language code based on locale
+                  getLanguageCode(_selectedLocale),
+                  // function to get the language code based on locale
                   style: TextStyle(
                       fontWeight: FontWeight.bold, // Make the text bold
                       color: isDarkMode ? Colors.white : Colors.black,
@@ -986,10 +978,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             thickness: 2,
           ),
           const SizedBox(height: 15),
-          const NativeAdWidget(), // This widget will only display if the ad is loaded due to its internal state management.
+          const NativeAdWidget(),
+          // This widget will only display if the ad is loaded due to its internal state management.
         ],
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadPreferences();
+    _loadStatusBarVisibility();
+    _selectedLocale = Localizations.localeOf(context);
   }
 
   Widget languageButton(Locale locale, String name, String assetPath) {

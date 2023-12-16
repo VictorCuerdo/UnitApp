@@ -1,5 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
-
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -8,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SearchWidget extends StatefulWidget {
   final VoidCallback onClose; // Callback to close the search widget
 
-  const SearchWidget({Key? key, required this.onClose}) : super(key: key);
+  const SearchWidget({super.key, required this.onClose});
 
   @override
   _SearchWidgetState createState() => _SearchWidgetState();
@@ -533,6 +532,12 @@ class _SearchWidgetState extends State<SearchWidget> {
     'ozf·in': '/torque',
   };
 
+  List<String> get filteredKeys {
+    return _navigationMap.keys
+        .where((key) => key.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -543,62 +548,71 @@ class _SearchWidgetState extends State<SearchWidget> {
           child: Row(
             children: [
               Expanded(
-                child: TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
+                child: GestureDetector(
+                  onTap: () {
+                    // Navigate to a search screen
                   },
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: fontSize), // Set text color to black
-                  decoration: InputDecoration(
-                    enabledBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                    ),
-                    alignLabelWithHint: true,
-                    hintText: 'Type Magnitude/Unit/Symbol'.tr(),
-                    hintStyle: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey
-                          .shade600, // Use a light grey that is visible on white
-                    ),
-                    border: const OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.grey[800],
-                      size: 20,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value;
+                        });
+                      },
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: fontSize,
+                      ),
+                      decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                        ),
+                        alignLabelWithHint: true,
+                        hintText: 'Type Magnitude/Unit/Symbol'.tr(),
+                        hintStyle: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.black54,
+                          fontFamily: 'PTSans',
+                        ),
+                        border: const OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.grey[800],
+                          size: 32, // Aumenta el tamaño del ícono a 48x48 dp
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.close,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.white,
-                  size: 28,
-                ),
-                onPressed: () async {
-                  final prefs = await SharedPreferences.getInstance();
-                  final hapticFeedbackEnabled =
-                      prefs.getBool('hapticFeedback') ?? false;
+              Semantics(
+                label: 'Close search',
+                child: IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.white,
+                    size: 48,
+                  ),
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    final hapticFeedbackEnabled =
+                        prefs.getBool('hapticFeedback') ?? false;
 
-                  // Trigger haptic feedback if enabled.
-                  if (hapticFeedbackEnabled) {
-                    // Check if the device can vibrate
-                    bool canVibrate = await Vibrate.canVibrate;
-                    if (canVibrate) {
-                      Vibrate.feedback(FeedbackType.medium);
+                    if (hapticFeedbackEnabled) {
+                      bool canVibrate = await Vibrate.canVibrate;
+                      if (canVibrate) {
+                        Vibrate.feedback(FeedbackType.medium);
+                      }
                     }
-                  }
 
-                  // Call the original onClose function if needed
-                  widget.onClose();
-                },
+                    widget.onClose();
+                  },
+                ),
               ),
             ],
           ),
@@ -606,53 +620,49 @@ class _SearchWidgetState extends State<SearchWidget> {
         Expanded(
           child: Padding(
             padding: EdgeInsets.only(
-                top: 0,
-                left: MediaQuery.of(context).size.width * 0.02,
-                right: MediaQuery.of(context).size.width * 0.14),
+              top: 0,
+              left: MediaQuery.of(context).size.width * 0.02,
+              right: MediaQuery.of(context).size.width * 0.02,
+            ),
             child: ClipRRect(
               borderRadius: const BorderRadius.all(
-                  Radius.circular(10)), // Set border radius
+                Radius.circular(10),
+              ),
               child: Container(
-                color: Colors
-                    .white, // Set the background color of the container to black
+                color: Colors.white,
                 child: SingleChildScrollView(
                   child: Column(
-                    children: _navigationMap.keys
-                        .where((key) => key
-                            .toLowerCase()
-                            .contains(_searchQuery.toLowerCase()))
-                        .map((key) => ListTile(
-                              title: Text(
-                                key.tr(),
-                                style: const TextStyle(
-                                  fontFamily: 'Nunito',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                ),
-                                textAlign: TextAlign.center,
+                    children: filteredKeys
+                        .map(
+                          (key) => ListTile(
+                            title: Text(
+                              key.tr(),
+                              style: const TextStyle(
+                                fontFamily: 'Nunito',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                                color: Colors.black,
                               ),
-                              onTap: () async {
-                                // Check for haptic feedback setting
-                                final prefs =
-                                    await SharedPreferences.getInstance();
-                                final hapticFeedbackEnabled =
-                                    prefs.getBool('hapticFeedback') ?? false;
+                              textAlign: TextAlign.center,
+                            ),
+                            onTap: () async {
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              final hapticFeedbackEnabled =
+                                  prefs.getBool('hapticFeedback') ?? false;
 
-                                // Trigger haptic feedback if enabled
-                                if (hapticFeedbackEnabled) {
-                                  // Check if the device can vibrate
-                                  bool canVibrate = await Vibrate.canVibrate;
-                                  if (canVibrate) {
-                                    Vibrate.feedback(FeedbackType.medium);
-                                  }
+                              if (hapticFeedbackEnabled) {
+                                bool canVibrate = await Vibrate.canVibrate;
+                                if (canVibrate) {
+                                  Vibrate.feedback(FeedbackType.medium);
                                 }
+                              }
 
-                                // Navigate to the selected page
-                                Navigator.of(context)
-                                    .pushNamed(_navigationMap[key]!);
-                              },
-                            ))
+                              Navigator.of(context)
+                                  .pushNamed(_navigationMap[key]!);
+                            },
+                          ),
+                        )
                         .toList(),
                   ),
                 ),

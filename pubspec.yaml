@@ -39,6 +39,7 @@ dependencies:
   firebase_remote_config: ^4.3.4
   material_color_utilities: ^0.5.0
   connectivity_plus: ^5.0.2
+  flutter_keyboard_visibility: ^5.4.1
 
 dev_dependencies:
   flutter_test:
@@ -64,7 +65,7 @@ flutter:
 
     - family: Work Sans
       fonts:
-        
+
         - asset: assets/fonts/Work_Sans/WorkSans-Medium.ttf
           weight: 500
         - asset: assets/fonts/Work_Sans/WorkSans-Bold.ttf
@@ -100,7 +101,7 @@ flutter:
         - asset: assets/fonts/abhaya-libre/AbhayaLibre-Regular.ttf
         - asset: assets/fonts/abhaya-libre/AbhayaLibre-Bold.ttf
           weight: 700
-          
+
 flutter_launcher_icons:
   android: true # or specify your launcher icon
   ios: true

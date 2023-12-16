@@ -13,10 +13,12 @@ import 'package:unitapp/ads/interstitial.dart';
 import 'package:unitapp/controllers/font_size_provider.dart';
 import 'package:unitapp/controllers/navigation_utils.dart';
 import 'package:unitapp/widgets/search_widget.dart';
+import 'package:unitapp/widgets/share_app.dart';
 
 // Assume other necessary imports are here
 class UnitConversion extends StatefulWidget {
-  const UnitConversion({Key? key}) : super(key: key);
+  const UnitConversion({super.key});
+
   @override
   _UnitConversionState createState() => _UnitConversionState();
 }
@@ -37,238 +39,8 @@ class _UnitConversionState extends State<UnitConversion>
 // Add a method to determine if dark mode is enabled
   bool get isDarkMode => Theme.of(context).brightness == Brightness.light;
   bool _isSearchBarVisible = false;
+
   // Method to handle outside tap to close the search bar
-
-  void _shareApp(BuildContext context) {
-    String androidAppLink =
-        "https://play.google.com/store/apps/details?id=com.yourapp";
-    String iosAppLink = "https://apps.apple.com/app/idyourappid";
-
-    // Get the current MediaQuery data
-    var mediaQuery = MediaQuery.of(context);
-
-    // Calculate 30% of the available height
-    double dialogHeight = mediaQuery.size.height * 0.3;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: true,
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(15.0), // Increased rounding here
-            side: const BorderSide(
-              color: Color(0xFF1B3A4B),
-              width: 5.0,
-            ),
-          ),
-          title: Text(
-            "Share the App".tr(),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.black,
-            ),
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            // Set the height to be 30% larger than the calculated height
-            height: dialogHeight * 1.6,
-            child: DefaultTabController(
-              length: 2,
-              child: Column(
-                // mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  TabBar(
-                    splashBorderRadius: BorderRadius.circular(15),
-                    dividerColor: Colors.transparent,
-                    enableFeedback: true,
-                    indicatorWeight: dialogHeight *
-                        0.03, // Set indicator weight to 10% of the calculated height
-                    indicatorColor: Colors.transparent,
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.grey[800],
-                    indicator: const BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(15)), // Rounded indicator
-                    ), // Rounded indicator
-
-                    tabs: [
-                      Tab(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15,
-                              horizontal: 10), // Adjust padding as needed
-                          decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(
-                                0.1), // Slight background color for tabs
-                            borderRadius: BorderRadius.circular(
-                                15), // Round the corners of the tabs
-                          ),
-
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .center, // Center row contents horizontally
-                            children: <Widget>[
-                              Image.asset('assets/images/android.png',
-                                  height: 18), // Android icon
-                              const SizedBox(
-                                  width: 8), // Space between icon and text
-                              const Text("Android",
-                                  style: TextStyle(fontSize: 15)), // Text label
-                            ],
-                          ),
-                        ),
-                      ),
-                      Tab(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 16), // Adjust padding as needed
-                          decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(
-                                0.1), // Slight background color for tabs
-                            borderRadius: BorderRadius.circular(
-                                15), // Round the corners of the tabs
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .center, // Center row contents horizontally
-                            children: <Widget>[
-                              Image.asset('assets/images/apple.png',
-                                  height: 18), // iOS icon
-                              const SizedBox(
-                                  width: 8), // Space between icon and text
-                              const Text("iOS",
-                                  style: TextStyle(fontSize: 15)), // Text label
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    // Use Expanded to fill the available space
-                    child: TabBarView(
-                      children: [
-                        _tabContent(androidAppLink), // Android tab content
-                        _tabContent(iosAppLink), // iOS tab content
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'Close'.tr(),
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                context.navigateTo('/unit');
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _tabContent(String appLink) {
-    return ListView(
-      shrinkWrap: true,
-      children: [
-        const SizedBox(height: 35),
-        Image.asset(
-          'assets/images/qrcode.png', // Replace with your actual QR code asset path
-          height: 170,
-          width: 170,
-        ),
-        const SizedBox(height: 20),
-        SelectableText(
-          appLink,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () async {
-            // Haptic feedback logic
-            final prefs = await SharedPreferences.getInstance();
-            final hapticFeedbackEnabled =
-                prefs.getBool('hapticFeedback') ?? false;
-            if (hapticFeedbackEnabled) {
-              bool canVibrate = await Vibrate.canVibrate;
-              if (canVibrate) {
-                Vibrate.feedback(FeedbackType.selection);
-              }
-            }
-            Clipboard.setData(ClipboardData(text: appLink)).then((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Link copied to clipboard'.tr(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  backgroundColor: const Color(0xFF1B3A4B),
-                  duration: const Duration(seconds: 3),
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  elevation: 6.0,
-                ),
-              );
-            });
-          },
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(35.0),
-              ),
-            ),
-            padding: MaterialStateProperty.all<EdgeInsets>(
-              // Reduce vertical padding to decrease the button's height
-              const EdgeInsets.symmetric(horizontal: 25, vertical: 2),
-            ),
-          ),
-          child: Text(
-            'Copy Link'.tr(),
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        const SizedBox(height: 5),
-      ],
-    );
-  }
 
   String chooseFontFamily(Locale currentLocale) {
     // List of locales supported by 'Lato'
@@ -405,6 +177,7 @@ class _UnitConversionState extends State<UnitConversion>
     },
     {'image': 'assets/images/share.png', 'label': 'Share'},
   ];
+
   @override
   void initState() {
     super.initState();
@@ -447,7 +220,7 @@ class _UnitConversionState extends State<UnitConversion>
         context.navigateTo('/settings');
         break;
       case 'Share':
-        _shareApp(context);
+        ShareApp().share(context);
         break;
 
       case 'Distance':
@@ -576,7 +349,8 @@ class _UnitConversionState extends State<UnitConversion>
           }
         },
 
-        splashColor: Colors.grey.withOpacity(0.3), // Customizable splash color
+        splashColor: Colors.grey.withOpacity(0.3),
+        // Customizable splash color
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 100),
           curve: Curves.easeOut,
@@ -623,113 +397,115 @@ class _UnitConversionState extends State<UnitConversion>
         : Colors.black;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light.copyWith(
-          statusBarColor: Colors.black,
-        ),
-        child: GestureDetector(
-            onTap: _handleOutsideTap,
-            behavior: HitTestBehavior.opaque,
-            child: Scaffold(
-              backgroundColor: backgroundColor,
-              body: Column(
-                children: <Widget>[
-                  SafeArea(
-                    child: MyBannerAdWidget(
-                      adUnitId: Platform.isAndroid
-                          ? 'ca-app-pub-3940256099942544/6300978111'
-                          : 'ca-app-pub-3940256099942544/2934735716',
-                    ),
-                  ),
-                  Visibility(
-                    visible: !_isSearchBarVisible,
-                    child: Container(
-                      color: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10), // Increased padding
-                      height: MediaQuery.of(context).size.height *
-                          0.07, // Increased height
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const SizedBox(width: 23),
-                          AutoSizeText(
-                            'Tap an option'.tr(),
-                            style: TextStyle(
-                              fontFamily: chooseFontFamily(
-                                  Localizations.localeOf(context)),
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25,
-                              color: Colors.white,
-                            ),
-                            maxLines: 1,
-                            minFontSize: 12,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-                              final hapticFeedbackEnabled =
-                                  prefs.getBool('hapticFeedback') ?? false;
-
-                              // Trigger haptic feedback if enabled.
-                              if (hapticFeedbackEnabled) {
-                                // Check if the device can vibrate
-                                bool canVibrate = await Vibrate.canVibrate;
-                                if (canVibrate) {
-                                  Vibrate.feedback(FeedbackType.medium);
-                                }
-                              }
-                              setState(() {
-                                _isSearchBarVisible = true;
-                              });
-                            },
-                            child: const Icon(
-                              Icons.search,
-                              color: Colors.white,
-                              size: 32, // Slightly larger icon
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: _isSearchBarVisible
-                        ? SearchWidget(
-                            onClose: () {
-                              setState(() {
-                                _isSearchBarVisible = false;
-                              });
-                            },
-                          )
-                        : GridView.builder(
-                            padding: const EdgeInsets.only(
-                                top: 20.0, left: 8.0, right: 8.0),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              childAspectRatio: 1,
-                              crossAxisSpacing: 5,
-                              mainAxisSpacing: 10,
-                            ),
-                            itemCount: _gridItems.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildGridItem(
-                                label: _gridItems[index]['label'],
-                                index: index,
-                                onTap: () {
-                                  if (_gridItems[index]['label'] == 'Share') {
-                                    _shareApp(context);
-                                  }
-                                },
-                              );
-                            },
-                          ),
-                  ),
-                  const SizedBox(height: 15),
-                ],
+      value: SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: Colors.black,
+      ),
+      child: GestureDetector(
+        onTap: _handleOutsideTap,
+        behavior: HitTestBehavior.opaque,
+        child: Scaffold(
+          backgroundColor: backgroundColor,
+          body: Column(
+            children: <Widget>[
+              SafeArea(
+                child: MyBannerAdWidget(
+                  adUnitId: Platform.isAndroid
+                      ? 'ca-app-pub-3940256099942544/6300978111'
+                      : 'ca-app-pub-3940256099942544/2934735716',
+                ),
               ),
-            )));
+              Visibility(
+                visible: !_isSearchBarVisible,
+                child: Semantics(
+                  label: 'Choose an option from the grid tiles',
+                  // Accessibility label
+                  child: Container(
+                    color: Colors.black,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(width: 23),
+                        AutoSizeText(
+                          'Tap an option'.tr(),
+                          style: TextStyle(
+                            fontFamily: chooseFontFamily(
+                                Localizations.localeOf(context)),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                          minFontSize: 12,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            final hapticFeedbackEnabled =
+                                prefs.getBool('hapticFeedback') ?? false;
+
+                            if (hapticFeedbackEnabled) {
+                              bool canVibrate = await Vibrate.canVibrate;
+                              if (canVibrate) {
+                                Vibrate.feedback(FeedbackType.medium);
+                              }
+                            }
+                            setState(() {
+                              _isSearchBarVisible = true;
+                            });
+                          },
+                          child: const Icon(
+                            Icons.search,
+                            color: Colors.white,
+                            size: 48,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: _isSearchBarVisible
+                    ? SearchWidget(
+                        onClose: () {
+                          setState(() {
+                            _isSearchBarVisible = false;
+                          });
+                        },
+                      )
+                    : GridView.builder(
+                        padding: const EdgeInsets.only(
+                            top: 20.0, left: 8.0, right: 8.0),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 1,
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemCount: _gridItems.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return _buildGridItem(
+                            label: _gridItems[index]['label'],
+                            index: index,
+                            onTap: () {
+                              if (_gridItems[index]['label'] == 'Share') {
+                                ShareApp().share(context);
+                              }
+                            },
+                          );
+                        },
+                      ),
+              ),
+              const SizedBox(height: 15),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

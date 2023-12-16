@@ -13,6 +13,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unitapp/controllers/navigation_utils.dart';
 
+import '../action_row_button.dart';
+
 class PowerUnitConverter extends StatefulWidget {
   const PowerUnitConverter({super.key});
 
@@ -21,24 +23,30 @@ class PowerUnitConverter extends StatefulWidget {
 }
 
 class _PowerUnitConverterState extends State<PowerUnitConverter> {
-  static const double mediumFontSize = 17.0;
   GlobalKey tooltipKey = GlobalKey();
+  static const double mediumFontSize = 17.0;
   double fontSize = mediumFontSize;
+  bool isTyping = false;
+
   bool get isDarkMode => Theme.of(context).brightness == Brightness.dark;
   String fromUnit = 'Watts';
   String toUnit = 'Kilowatts';
+
   // Removed duplicate declarations of TextEditingController
   final TextEditingController fromController = TextEditingController();
   final TextEditingController toController = TextEditingController();
   bool _isExponentialFormat = false;
+
   // Flag to indicate if the change is due to user input
   bool _isUserInput = true;
+
   // Using string variables for prefixes
   String fromPrefix = '';
   String toPrefix = '';
   final ScreenshotController screenshotController = ScreenshotController();
   String _conversionFormula = '';
   final GlobalKey _contentKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -63,22 +71,27 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
     super.dispose();
   }
 
-  void _resetToDefault() {
-    setState(() {
-      fromController.clear();
-      toController.clear();
-      fromUnit = ''; // Set to an empty string or a valid default value
-      toUnit = ''; // Set to an empty string or a valid default value
-      _isExponentialFormat = false;
-      _conversionFormula = _getConversionFormula();
-    });
+  Future<void> _handleActionButtonPress({
+    required FeedbackType hapticFeedback,
+    required VoidCallback actionLogic,
+  }) async {
+    // Haptic feedback logic
+    final prefs = await SharedPreferences.getInstance();
+    final hapticFeedbackEnabled = prefs.getBool('hapticFeedback') ?? false;
+    if (hapticFeedbackEnabled) {
+      bool canVibrate = await Vibrate.canVibrate;
+      if (canVibrate) {
+        Vibrate.feedback(hapticFeedback);
+      }
+    }
+
+    // Execute the provided action logic
+    actionLogic();
   }
 
   String chooseFontFamily(Locale currentLocale) {
     // List of locales supported by 'Lato'
     const supportedLocales = [
-      'en',
-      'es',
       'fr',
       'de',
       'zh',
@@ -116,6 +129,17 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
     }
   }
 
+  void _resetToDefault() {
+    setState(() {
+      fromController.clear();
+      toController.clear();
+      fromUnit = ''; // Set to an empty string or a valid default value
+      toUnit = ''; // Set to an empty string or a valid default value
+      _isExponentialFormat = false;
+      _conversionFormula = _getConversionFormula();
+    });
+  }
+
   void _takeScreenshotAndShare() async {
     // Capture the screenshot using the screenshotController
     final Uint8List? imageBytes = await screenshotController.capture();
@@ -126,7 +150,7 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
       await imagePath.writeAsBytes(imageBytes);
       // Using shareXFiles
       await Share.shareXFiles([XFile(imagePath.path)],
-          text: 'Check out my power result!'.tr());
+          text: 'Check out my power conversion result!'.tr());
     }
   }
 
@@ -1598,307 +1622,295 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
 
   @override
   Widget build(BuildContext context) {
-    return Screenshot(
+    final isSmallScreen = MediaQuery.of(context).size.height < 630;
+
+    return GestureDetector(
+      onTap: () {
+        // Close the keyboard when tapping outside the input fields
+        FocusScope.of(context).unfocus();
+      },
+      child: Screenshot(
         controller: screenshotController,
         child: Scaffold(
-          backgroundColor:
-              isDarkMode ? const Color(0xFF2C3A47) : const Color(0xFFF0F0F0),
-          resizeToAvoidBottomInset:
-              true, // Adjust the body size when the keyboard is visible
-          body: SafeArea(
-            child: SingleChildScrollView(
-              // Allow the body to be scrollable
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 20), // Adjust space as needed
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment
-                          .center, // This centers the children horizontally
-                      mainAxisSize: MainAxisSize
-                          .max, // This makes the row take up all available horizontal space
+          // Use a Stack to layer the background components
+          body: Stack(
+            children: [
+              // Background Container with Gradient and Image
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.transparent,
+                      // Change these colors according to your design
+                      isDarkMode
+                          ? const Color(0xFF2C3A47)
+                          : const Color(0xFFF0F0F0),
+                    ],
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage(
+                      isDarkMode
+                          ? 'assets/images/background_angle_opc1.png'
+                          : 'assets/images/background_angle_opc2.png',
+                    ),
+                    // Adjust as needed
+                    // Replace with your image asset path
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.2),
+                      // Adjust the opacity as needed
+                      BlendMode.dstATop,
+                    ),
+                  ),
+                ),
+                child: const SizedBox.expand(),
+              ),
+
+              // Rest of your UI components
+              SafeArea(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: isSmallScreen ? 8.0 : 16.0,
+                      horizontal: isSmallScreen ? 8.0 : 16.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            IconButton(
+                              onPressed: () async {
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                final hapticFeedbackEnabled =
+                                    prefs.getBool('hapticFeedback') ?? false;
+                                if (hapticFeedbackEnabled) {
+                                  bool canVibrate = await Vibrate.canVibrate;
+                                  if (canVibrate) {
+                                    Vibrate.feedback(FeedbackType.medium);
+                                  }
+                                }
+                                context.navigateTo('/unit');
+                              },
+                              icon: Icon(
+                                semanticLabel:
+                                    'Back Button: Navigates to the previous screen',
+                                Icons.arrow_back,
+                                size: isSmallScreen ? 20 : 30,
+                                color: isDarkMode
+                                    ? Colors.white
+                                    : const Color(0xFF2C3A47),
+                              ),
+                            ),
+                            Expanded(
+                              child: AutoSizeText('Convert Power'.tr(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: chooseFontFamily(
+                                        Localizations.localeOf(context)),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: isSmallScreen ? 20 : 28,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : const Color(0xFF2C3A47),
+                                  ),
+                                  maxLines: 1,
+                                  minFontSize: isSmallScreen ? 12 : 15),
+                            ),
+                            const IconButton(
+                              onPressed: null,
+                              icon: Icon(Icons.arrow_back,
+                                  size: 40, color: Colors.transparent),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: isSmallScreen ? 20 : 100),
+                        // Adjusted value using MediaQuery
+                        ListTile(
+                          title: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Tooltip(
+                                message:
+                                    'If the displayed result is 0, change the format'
+                                        .tr(),
+                                child: IconButton(
+                                  icon: Icon(Icons.info_outline,
+                                      semanticLabel:
+                                          'Tooltip, change the format if the result is 0',
+                                      color: isDarkMode
+                                          ? Colors.white
+                                          : Colors.grey[800]),
+                                  onPressed: () {},
+                                ),
+                              ),
+                              Expanded(
+                                child: AutoSizeText(
+                                  'Exponential Format'.tr(),
+                                  style: TextStyle(
+                                      color: isDarkMode
+                                          ? Colors.white
+                                          : const Color(0xFF2C3A47),
+                                      fontSize: isSmallScreen ? 14 : 18),
+                                  maxLines: 1,
+                                  minFontSize: isSmallScreen ? 8 : 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                          trailing: Switch(
+                            value: _isExponentialFormat,
+                            onChanged: (bool value) async {
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              final hapticFeedbackEnabled =
+                                  prefs.getBool('hapticFeedback') ?? false;
+                              if (hapticFeedbackEnabled) {
+                                bool canVibrate = await Vibrate.canVibrate;
+                                if (canVibrate) {
+                                  Vibrate.feedback(FeedbackType.light);
+                                }
+                              }
+                              setState(() {
+                                _isExponentialFormat = value;
+                                double? lastValue = double.tryParse(
+                                    fromController.text.replaceAll(',', ''));
+                                if (lastValue != null) {
+                                  fromController.text = _formatNumber(lastValue,
+                                      forDisplay: true);
+                                }
+                                convert(fromController.text);
+                              });
+                            },
+                            activeColor: Colors.lightBlue,
+                            activeTrackColor: Colors.lightBlue.shade200,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          padding:
+                              const EdgeInsets.only(left: 0.125, right: 0.125),
+                          width: double.infinity,
+                          child: _buildUnitColumn('From'.tr(), fromController,
+                              fromUnit, fromPrefix, true),
+                        ),
                         IconButton(
+                          icon: Icon(
+                            semanticLabel:
+                                'Swap vertically : Switch between conversion units',
+                            Icons.swap_vert,
+                            color: isDarkMode
+                                ? Colors.grey
+                                : const Color(0xFF374259),
+                            size: 40,
+                          ),
                           onPressed: () async {
-                            // Haptic feedback logic
+                            swapUnits();
                             final prefs = await SharedPreferences.getInstance();
                             final hapticFeedbackEnabled =
                                 prefs.getBool('hapticFeedback') ?? false;
                             if (hapticFeedbackEnabled) {
                               bool canVibrate = await Vibrate.canVibrate;
                               if (canVibrate) {
-                                Vibrate.feedback(FeedbackType.medium);
+                                Vibrate.feedback(FeedbackType.heavy);
                               }
                             }
-
-                            context.navigateTo('/unit');
                           },
-                          icon: Icon(
-                            Icons.arrow_back,
-                            size: 40,
-                            color: isDarkMode
-                                ? Colors.white
-                                : const Color(0xFF2C3A47),
-                          ),
                         ),
-                        Expanded(
-                          child: AutoSizeText('Convert Power'.tr(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: chooseFontFamily(
-                                    Localizations.localeOf(context)),
-                                fontWeight: FontWeight.w700,
-                                fontSize: 28,
-                                color: isDarkMode
-                                    ? Colors.white
-                                    : const Color(0xFF2C3A47),
+                        Container(
+                          padding:
+                              const EdgeInsets.only(left: 0.125, right: 0.125),
+                          width: double.infinity,
+                          child: _buildUnitColumn(
+                              'To'.tr(), toController, toUnit, toPrefix, false),
+                        ),
+                        const SizedBox(height: 30),
+                        AutoSizeText.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Formula:  '.tr(),
+                                style: TextStyle(
+                                  color: isDarkMode
+                                      ? Colors.orange
+                                      : const Color(0xFF374259),
+                                  fontSize: isSmallScreen ? 16 : 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              maxLines:
-                                  1, // Change this to 2 if you want to allow text to take up two lines
-                              minFontSize: 15),
-                        ),
-                        const IconButton(
-                          onPressed: null,
-                          icon: Icon(Icons.arrow_back,
-                              size: 40, color: Colors.transparent),
-                        ), // You can place an invisible IconButton here to balance the row if necessary
-                      ],
-                    ),
-
-                    const SizedBox(height: 150),
-
-                    ListTile(
-                      title: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Tooltip(
-                            message:
-                                'If the displayed result is 0, change the format'
-                                    .tr(), // Add your tooltip text here
-                            child: IconButton(
-                              icon: Icon(Icons.info_outline,
+                              TextSpan(
+                                text: _conversionFormula.tr(),
+                                style: TextStyle(
                                   color: isDarkMode
                                       ? Colors.white
-                                      : Colors.grey[
-                                          800]), // Use an appropriate icon
-                              onPressed: () {
-                                // Add action if needed, or leave empty for a simple tooltip
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: AutoSizeText(
-                              'Exponential Format'.tr(),
-                              style: TextStyle(
-                                color: isDarkMode
-                                    ? Colors.white
-                                    : const Color(0xFF2C3A47),
-                                fontSize: 18,
+                                      : const Color(0xFF2C3A47),
+                                  fontSize: isSmallScreen ? 14 : 18,
+                                  fontStyle: FontStyle.normal,
+                                ),
                               ),
-                              maxLines: 1, // You can adjust this as needed
-                              minFontSize:
-                                  14, // Set the minimum font size you allow (optional)
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                      trailing: Switch(
-                        value: _isExponentialFormat,
-                        onChanged: (bool value) async {
-                          // Haptic feedback logic
-                          final prefs = await SharedPreferences.getInstance();
-                          final hapticFeedbackEnabled =
-                              prefs.getBool('hapticFeedback') ?? false;
-                          if (hapticFeedbackEnabled) {
-                            bool canVibrate = await Vibrate.canVibrate;
-                            if (canVibrate) {
-                              Vibrate.feedback(FeedbackType.light);
-                            }
-                          }
-
-                          // Existing switch logic
-                          setState(() {
-                            _isExponentialFormat = value;
-                            double? lastValue = double.tryParse(
-                                fromController.text.replaceAll(',', ''));
-                            if (lastValue != null) {
-                              fromController.text =
-                                  _formatNumber(lastValue, forDisplay: true);
-                            }
-                            convert(fromController.text);
-                          });
-                        },
-                        activeColor: Colors.lightBlue,
-                        activeTrackColor: Colors.lightBlue.shade200,
-                      ),
+                          textAlign: TextAlign.center,
+                          minFontSize: isSmallScreen ? 8 : 10,
+                          stepGranularity: 1,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 30),
+                      ],
                     ),
-
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                      width: double.infinity,
-                      child: _buildUnitColumn('From'.tr(), fromController,
-                          fromUnit, fromPrefix, true),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.swap_vert,
-                        color:
-                            isDarkMode ? Colors.grey : const Color(0xFF374259),
-                        size: 40,
-                      ),
-                      onPressed: () async {
-                        // Call your swapUnits function.
-                        swapUnits();
-
-                        // Haptic feedback logic
-                        final prefs = await SharedPreferences.getInstance();
-                        final hapticFeedbackEnabled =
-                            prefs.getBool('hapticFeedback') ?? false;
-                        if (hapticFeedbackEnabled) {
-                          bool canVibrate = await Vibrate.canVibrate;
-                          if (canVibrate) {
-                            Vibrate.feedback(FeedbackType.heavy);
-                          }
-                        }
-                      },
-                    ),
-
-                    Container(
-                      padding: const EdgeInsets.only(left: 0.125, right: 0.125),
-                      width: double.infinity,
-                      child: _buildUnitColumn(
-                          'To'.tr(), toController, toUnit, toPrefix, false),
-                    ),
-                    const SizedBox(height: 30),
-                    AutoSizeText.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Formula:  '.tr(),
-                            style: TextStyle(
-                              color: isDarkMode ? Colors.orange : Colors.red,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextSpan(
-                            text: _conversionFormula.tr(),
-                            style: TextStyle(
-                              color: isDarkMode
-                                  ? Colors.white
-                                  : const Color(0xFF2C3A47),
-                              fontSize: 18,
-                              fontStyle: FontStyle.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                      minFontSize:
-                          10, // The minimum text size you want to allow
-                      stepGranularity:
-                          1, // The step size for downscaling the font
-                      maxLines:
-                          3, // The max number of lines for the text to span, can be set to null
-                      overflow: TextOverflow
-                          .ellipsis, // How to handle text that doesn't fit
-                    ),
-
-                    const SizedBox(height: 30),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-
           floatingActionButton: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
-              // Check if the contentKey is attached to an existing widget and obtain its size
               final RenderBox? contentBox =
                   _contentKey.currentContext?.findRenderObject() as RenderBox?;
-              // The height of the content will be used to adjust the padding dynamically
               final contentHeight = contentBox?.size.height ?? 0;
-              // The available height for the buttons is the total height minus the content's height
               final availableHeight =
                   MediaQuery.of(context).size.height - contentHeight;
-
-              // Ensure there is always some space between the content and the buttons
               final bottomPadding =
                   max(MediaQuery.of(context).padding.bottom + 20, 20.0);
-
-              // If the available height is less than a certain threshold, add additional padding
               final extraPadding = availableHeight < 600 ? 50.0 : 0.0;
 
-              return Container(
-                margin: EdgeInsets.only(
-                  bottom: bottomPadding + extraPadding,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    FloatingActionButton(
-                      highlightElevation:
-                          BouncingScrollSimulation.maxSpringTransferVelocity,
-                      enableFeedback: true,
-                      splashColor: Colors.red,
-                      tooltip: 'Reset default settings'.tr(),
-                      heroTag: 'resetButton',
-                      onPressed: () async {
-                        // Haptic feedback logic
-                        final prefs = await SharedPreferences.getInstance();
-                        final hapticFeedbackEnabled =
-                            prefs.getBool('hapticFeedback') ?? false;
-                        if (hapticFeedbackEnabled) {
-                          bool canVibrate = await Vibrate.canVibrate;
-                          if (canVibrate) {
-                            Vibrate.feedback(FeedbackType.medium);
-                          }
-                        }
+              final buttonHeight = availableHeight * 0.09;
 
-                        // Original reset logic
-                        _resetToDefault();
-                      },
-                      backgroundColor:
-                          isDarkMode ? Colors.white : const Color(0xFF2C3A47),
-                      child: Icon(Icons.restart_alt,
-                          size: 36,
-                          color: isDarkMode ? Colors.black : Colors.white),
-                    ),
-                    FloatingActionButton(
-                      tooltip: 'Share a screenshot of your results!'.tr(),
-                      heroTag: 'shareButton',
-                      onPressed: () async {
-                        // Haptic feedback logic
-                        final prefs = await SharedPreferences.getInstance();
-                        final hapticFeedbackEnabled =
-                            prefs.getBool('hapticFeedback') ?? false;
-                        if (hapticFeedbackEnabled) {
-                          bool canVibrate = await Vibrate.canVibrate;
-                          if (canVibrate) {
-                            Vibrate.feedback(FeedbackType.medium);
-                          }
-                        }
-
-                        // Original share logic
-                        _takeScreenshotAndShare();
-                      },
-                      backgroundColor:
-                          isDarkMode ? Colors.white : const Color(0xFF2C3A47),
-                      child: Icon(Icons.share,
-                          size: 36,
-                          color: isDarkMode ? Colors.black : Colors.white),
-                    ),
-                  ],
+              return SizedBox(
+                height: buttonHeight,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: bottomPadding + extraPadding),
+                  child: ActionButtonRow(
+                    onResetPressed: () async {
+                      await _handleActionButtonPress(
+                        hapticFeedback: FeedbackType.medium,
+                        actionLogic: _resetToDefault,
+                      );
+                    },
+                    onScreenshotPressed: () async {
+                      await _handleActionButtonPress(
+                        hapticFeedback: FeedbackType.medium,
+                        actionLogic: _takeScreenshotAndShare,
+                      );
+                    },
+                    showButtons: !isTyping,
+                  ),
                 ),
               );
             },
           ),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-        ));
+              FloatingActionButtonLocation.centerDocked,
+        ),
+      ),
+    );
   }
 
   String _getPrefix(String unit) {
@@ -1954,26 +1966,27 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
-              onChanged: (value) {
+              onTap: () {
                 _isUserInput =
-                    true; // Set this flag to true to indicate user input.
-                convert(
-                    value); // Call convert directly with the current input value.
+                    true; // Set this flag to true when the user taps the TextField.
+              },
+              onChanged: (value) {
+                convert(value);
               },
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: inputTextColor, // Adjust text color based on the theme
+                color: inputTextColor,
               ),
               decoration: InputDecoration(
                 labelText: label,
                 filled: true,
-                fillColor:
-                    inputFillColor, // Use a fill color that contrasts with the text color
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                enabledBorder: const OutlineInputBorder(
+                fillColor: inputFillColor,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8.0),
+                    topRight: Radius.circular(8.0),
+                  ),
                   borderSide: BorderSide(color: Colors.blue, width: 3.0),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
@@ -1994,12 +2007,6 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
                     ),
                   ],
                 ),
-
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.content_copy,
-                      color: Colors.transparent, size: 23),
-                  onPressed: () => copyToClipboard(controller.text, context),
-                ),
               ),
             )
           else
@@ -2008,19 +2015,26 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
-              readOnly: true, // Make it read-only instead of disabled
+              readOnly: true,
+              onTap: () {
+                _isUserInput =
+                    true; // Set this flag to true when the user taps the TextField.
+              },
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: inputTextColor, // Adjust text color based on the theme
+                color: inputTextColor,
               ),
               decoration: InputDecoration(
                 labelText: label.tr(),
                 filled: true,
-                fillColor:
-                    inputFillColor, // Use a fill color that contrasts with the text color
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                fillColor: inputFillColor,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8.0),
+                    topRight: Radius.circular(8.0),
+                  ),
+                  borderSide: BorderSide(color: Colors.blue, width: 3.0),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 10.0),
@@ -2043,10 +2057,8 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.content_copy, size: 23),
                   onPressed: () async {
-                    // Call your copyToClipboard function.
                     copyToClipboard(controller.text, context);
 
-                    // Haptic feedback logic
                     final prefs = await SharedPreferences.getInstance();
                     final hapticFeedbackEnabled =
                         prefs.getBool('hapticFeedback') ?? false;
@@ -2070,6 +2082,9 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
 
   // Correct the method signature by adding the isFrom parameter
   Widget _buildDropdownButton(String type, String currentValue, bool isFrom) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 630;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double fontSize = screenWidth * 0.04; // Adjust the factor as needed
     List<DropdownMenuItem<String>> items = <String>[
       'Watts',
       'Kilowatts',
@@ -2109,13 +2124,16 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
             ],
           ),
           textAlign: TextAlign.left,
-          minFontSize: 10, // The minimum text size you want to allow
-          stepGranularity: 1, // The step size for downscaling the font
-          maxLines: 1, // The max number of lines for the text to span
-          overflow:
-              TextOverflow.ellipsis, // How to handle text that doesn't fit
-          style: const TextStyle(
-            fontSize: 23, // This is the starting font size
+          minFontSize: 10,
+          // The minimum text size you want to allow
+          stepGranularity: 1,
+          // The step size for downscaling the font
+          maxLines: 1,
+          // The max number of lines for the text to span
+          overflow: TextOverflow.ellipsis,
+          // How to handle text that doesn't fit
+          style: TextStyle(
+            fontSize: fontSize, // This is the starting font size
           ),
         ),
       );
@@ -2126,93 +2144,103 @@ class _PowerUnitConverterState extends State<PowerUnitConverter> {
       DropdownMenuItem<String>(
         value: '',
         enabled: false,
-        child: AutoSizeText(
-          'Choose a conversion unit'.tr(),
-          style: TextStyle(
-              color: isDarkMode ? Colors.white : Colors.black, fontSize: 20),
-          minFontSize: 12,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        child: Semantics(
+          label: 'This is a dropdown menu to choose your unit',
+          child: AutoSizeText(
+            'Choose a conversion unit'.tr(),
+            style: TextStyle(
+              color: isDarkMode ? Colors.white : Colors.black45,
+              fontSize: isSmallScreen ? 14 : 18,
+            ),
+            minFontSize: 12,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ),
     );
 
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12.0),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(color: Colors.white),
+    return Flexible(
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12.0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: const BorderSide(color: Colors.white),
+          ),
+          filled: true,
+          fillColor:
+              //isDarkMode ? const Color(0xFF303134) : const Color(0xFFADC4CE),
+              //DBE6FD
+              //isDarkMode ? const Color(0xFF303134) : const Color(0xFFF5F5F5),
+              isDarkMode ? const Color(0xFF303134) : const Color(0xFFDBE6FD),
         ),
-        filled: true,
-        fillColor:
-            //isDarkMode ? const Color(0xFF303134) : const Color(0xFFADC4CE),
-            //DBE6FD
-            //isDarkMode ? const Color(0xFF303134) : const Color(0xFFF5F5F5),
-            isDarkMode ? const Color(0xFF303134) : const Color(0xFFDBE6FD),
-      ),
-      value: currentValue.isNotEmpty ? currentValue : null,
-      hint: AutoSizeText(
-        'Choose a conversion unit'.tr(),
-        style: TextStyle(
-            color: isDarkMode ? Colors.white : const Color(0xFF374259),
-            fontSize: 20),
-        textAlign: TextAlign.center,
-        minFontSize: 12,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      onChanged: (String? newValue) async {
-        // Haptic feedback logic
-        final prefs = await SharedPreferences.getInstance();
-        final hapticFeedbackEnabled = prefs.getBool('hapticFeedback') ?? false;
-        if (hapticFeedbackEnabled && newValue != null && newValue.isNotEmpty) {
-          bool canVibrate = await Vibrate.canVibrate;
-          if (canVibrate) {
-            Vibrate.feedback(FeedbackType.medium);
-          }
-        }
-
-        // Original onChanged logic
-        if (newValue != null && newValue.isNotEmpty) {
-          setState(() {
-            if (isFrom) {
-              fromUnit = newValue;
-              fromPrefix = _getPrefix(newValue);
-            } else {
-              toUnit = newValue;
-              toPrefix = _getPrefix(newValue);
+        value: currentValue.isNotEmpty ? currentValue : null,
+        hint: AutoSizeText(
+          'Choose a conversion unit'.tr(),
+          style: TextStyle(
+              color: isDarkMode ? Colors.white : const Color(0xFF374259),
+              fontSize: 20),
+          textAlign: TextAlign.center,
+          minFontSize: 12,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        onChanged: (String? newValue) async {
+          // Haptic feedback logic
+          final prefs = await SharedPreferences.getInstance();
+          final hapticFeedbackEnabled =
+              prefs.getBool('hapticFeedback') ?? false;
+          if (hapticFeedbackEnabled &&
+              newValue != null &&
+              newValue.isNotEmpty) {
+            bool canVibrate = await Vibrate.canVibrate;
+            if (canVibrate) {
+              Vibrate.feedback(FeedbackType.medium);
             }
-            convert(fromController.text);
-          });
-        }
-      },
-      dropdownColor:
-          isDarkMode ? const Color(0xFF303134) : const Color(0xFFDBE6FD),
-      items: items,
-      isExpanded: true,
-      icon: Icon(Icons.arrow_drop_down,
-          color: isDarkMode ? Colors.white : Colors.black),
-      iconSize: 26,
-      selectedItemBuilder: (BuildContext context) {
-        return items.map<Widget>((DropdownMenuItem<String> item) {
-          return Center(
-            child: AutoSizeText(
-              item.value == ''
-                  ? 'Choose a conversion unit'.tr()
-                  : item.value!.tr(),
-              style: TextStyle(
-                color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
-                fontSize: 20,
+          }
+
+          // Original onChanged logic
+          if (newValue != null && newValue.isNotEmpty) {
+            setState(() {
+              if (isFrom) {
+                fromUnit = newValue;
+                fromPrefix = _getPrefix(newValue);
+              } else {
+                toUnit = newValue;
+                toPrefix = _getPrefix(newValue);
+              }
+              convert(fromController.text);
+            });
+          }
+        },
+        dropdownColor:
+            isDarkMode ? const Color(0xFF303134) : const Color(0xFFDBE6FD),
+        items: items,
+        isExpanded: true,
+        icon: Icon(Icons.arrow_drop_down,
+            color: isDarkMode ? Colors.white : Colors.black),
+        iconSize: 26,
+        selectedItemBuilder: (BuildContext context) {
+          return items.map<Widget>((DropdownMenuItem<String> item) {
+            return Center(
+              child: AutoSizeText(
+                item.value == ''
+                    ? 'Choose a conversion unit'.tr()
+                    : item.value!.tr(),
+                style: TextStyle(
+                  color: isDarkMode ? const Color(0xFF9CC0C5) : Colors.black,
+                  fontSize: 20,
+                ),
+                minFontSize: 12,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              minFontSize: 12,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          );
-        }).toList();
-      },
+            );
+          }).toList();
+        },
+      ),
     );
   }
 }

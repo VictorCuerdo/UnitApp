@@ -29,7 +29,6 @@ import 'package:unitapp/widgets/loading_screen.dart';
 import 'package:unitapp/widgets/settings.dart';
 import 'package:unitapp/widgets/unit_conversion.dart';
 
-// Import the generated file
 import 'firebase_options.dart';
 
 void main() async {
@@ -40,15 +39,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   ThemeProvider themeProvider = ThemeProvider();
   await themeProvider.loadThemePreference();
-
   bool hapticFeedback = await loadHapticPreference();
-
   FirebaseAnalytics analytics =
       FirebaseAnalytics.instance; // Instantiate FirebaseAnalytics
-
   runApp(
     EasyLocalization(
       supportedLocales: const [
@@ -105,12 +100,11 @@ void main() async {
 
 Future<bool> loadHapticPreference() async {
   final prefs = await SharedPreferences.getInstance();
-  return prefs.getBool('hapticFeedback') ?? false;
+  return prefs.getBool('hapticFeedback') ?? true; // set default value to true
 }
 
 class UnitApp extends StatelessWidget {
   final FirebaseAnalytics analytics; // Add analytics as a member variable
-
   const UnitApp({super.key, required this.analytics});
 
   @override
@@ -124,7 +118,6 @@ class UnitApp extends StatelessWidget {
         'int_parameter': 1,
       },
     );
-
     return MaterialApp(
       title: 'UnitApp'.tr(),
       theme: themeProvider.currentTheme,
